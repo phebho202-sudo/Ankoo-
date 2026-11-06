@@ -1,0 +1,13 @@
+{
+  "name": "ankoo",
+  "version": "0.1.0",
+  "description": "Offline-first bookkeeping and 2026 tax-readiness app for Nigerian small businesses",
+  "main": "src/server.js",
+  "private": true,
+  "engines": { "node": ">=22.5" },
+  "scripts": {
+    "start": "node --no-warnings=ExperimentalWarning src/server.js",
+    "test": "node --no-warnings=ExperimentalWarning --test test/*.test.js"
+  },
+  "license": "UNLICENSED"
+}

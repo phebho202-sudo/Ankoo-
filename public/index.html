@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Ankoo — Business Book</title>
+  <meta name="description" content="Record sales, expenses and customer debts. Get your 2026 tax readiness report. Works offline.">
+  <meta name="theme-color" content="#0b6b3a">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand"><img src="/icon.svg" alt="" width="28" height="28"> <span>Ankoo</span></div>
+    <span id="net" class="pill" hidden>Offline — saving on phone</span>
+  </header>
+
+  <!-- Logged-out screen -->
+  <main id="auth" hidden>
+    <section class="hero">
+      <h1>Your shop book, on your phone.</h1>
+      <p>Record sales, expenses and who owes you. Ankoo shows your daily profit and gets you ready for Nigeria's 2026 tax rules — every business must now keep records for 6 years.</p>
+      <ul class="ticks">
+        <li>Works with poor network and no light — syncs later</li>
+        <li>WhatsApp reminders to customers who owe you</li>
+        <li>Know if you qualify for ₦0 tax, with a report to prove it</li>
+      </ul>
+    </section>
+    <section class="card">
+      <div class="tabs2"><button id="showSignup" class="on">Create account</button><button id="showLogin">Log in</button></div>
+      <form id="signupForm">
+        <label>Business name<input name="business_name" required maxlength="100" autocomplete="organization"></label>
+        <label>Email<input name="email" type="email" required autocomplete="email"></label>
+        <label>Phone (WhatsApp)<input name="phone" type="tel" inputmode="tel" autocomplete="tel"></label>
+        <label>Password<input name="password" type="password" minlength="8" required autocomplete="new-password"></label>
+        <label>Business type
+          <select name="business_type"><option value="individual">Individual / business name</option><option value="company">Limited company (Ltd)</option></select>
+        </label>
+        <input type="hidden" name="ref">
+        <button class="primary" type="submit">Start free</button>
+      </form>
+      <form id="loginForm" hidden>
+        <label>Email<input name="email" type="email" required autocomplete="email"></label>
+        <label>Password<input name="password" type="password" required autocomplete="current-password"></label>
+        <button class="primary" type="submit">Log in</button>
+      </form>
+      <p class="err" id="authErr" role="alert"></p>
+    </section>
+  </main>
+
+  <!-- Logged-in app -->
+  <main id="app" hidden>
+    <section data-view="home">
+      <h2 id="hello"></h2>
+      <div class="stats">
+        <div class="stat"><span>Today's sales</span><strong id="tSales">—</strong></div>
+        <div class="stat"><span>Today's expenses</span><strong id="tExp">—</strong></div>
+        <div class="stat"><span>Today's profit</span><strong id="tProfit">—</strong></div>
+        <div class="stat"><span>Profit this month</span><strong id="mProfit">—</strong></div>
+        <div class="stat"><span>Customers owe you</span><strong id="owed">—</strong></div>
+      </div>
+      <form id="quickForm" class="card">
+        <div class="seg"><label><input type="radio" name="kind" value="sale" checked> Sale</label><label><input type="radio" name="kind" value="expense"> Expense</label></div>
+        <label>Amount (₦)<input name="amount" type="number" inputmode="decimal" min="0.01" step="0.01" required></label>
+        <label>What for?<input name="category" list="cats" maxlength="50" placeholder="e.g. Rice, Transport, Rent"></label>
+        <datalist id="cats"><option>Goods sold</option><option>Stock / restock</option><option>Transport</option><option>Rent</option><option>Fuel / diesel</option><option>Salaries</option><option>Data / airtime</option><option>Electricity</option></datalist>
+        <div class="row">
+          <label>Paid by<select name="method"><option value="cash">Cash</option><option value="transfer">Transfer</option><option value="pos">POS</option></select></label>
+          <label>Date<input name="date" type="date" required></label>
+        </div>
+        <label>Note<input name="note" maxlength="200"></label>
+        <button class="primary" type="submit">Save</button>
+        <p class="err" id="quickErr" role="alert"></p>
+      </form>
+    </section>
+
+    <section data-view="book" hidden>
+      <div class="row between"><h2>Book</h2><input id="monthPick" type="month" aria-label="Month"></div>
+      <p class="muted" id="bookTotals"></p>
+      <ul id="entryList" class="list"></ul>
+    </section>
+
+    <section data-view="debts" hidden>
+      <h2>Who owes you</h2>
+      <form id="debtForm" class="card">
+        <label>Customer name<input name="customer" required maxlength="80"></label>
+        <div class="row">
+          <label>Amount (₦)<input name="amount" type="number" inputmode="decimal" min="0.01" step="0.01" required></label>
+          <label>Due date<input name="due_date" type="date"></label>
+        </div>
+        <label>Customer WhatsApp number<input name="phone" type="tel" inputmode="tel" placeholder="0803 000 0000"></label>
+        <button class="primary" type="submit">Add debt</button>
+        <p class="err" id="debtErr" role="alert"></p>
+      </form>
+      <ul id="debtList" class="list"></ul>
+    </section>
+
+    <section data-view="tax" hidden>
+      <div class="row between"><h2>Tax readiness</h2><select id="taxYear" aria-label="Year"></select></div>
+      <div id="taxBox" class="card"></div>
+      <div class="card">
+        <h3>Your report</h3>
+        <p>Print-ready annual report with monthly sales, expenses and profit — keep it as proof of your tax position.</p>
+        <div class="row"><a class="btn" id="reportLink" target="_blank" rel="noopener">Open report</a><a class="btn" id="csvLink">Download CSV</a></div>
+        <p class="muted" id="proNote"></p>
+      </div>
+      <p class="muted">Estimates only, not tax advice. Based on the Nigeria Tax Act 2025 (effective January 2026).</p>
+    </section>
+
+    <section data-view="account" hidden>
+      <h2>Account</h2>
+      <div class="card" id="planBox"></div>
+      <div class="card">
+        <h3>Earn as an Ankoo agent</h3>
+        <p>Share your link with traders in your market. You earn <strong id="rate"></strong> of every payment they make in their first year.</p>
+        <div class="copy"><input id="refLink" readonly aria-label="Your referral link"><button id="copyRef">Copy</button></div>
+        <a class="btn" id="shareRef" target="_blank" rel="noopener">Share on WhatsApp</a>
+        <div class="stats small">
+          <div class="stat"><span>Signed up</span><strong id="refCount">0</strong></div>
+          <div class="stat"><span>Paying</span><strong id="refPaying">0</strong></div>
+          <div class="stat"><span>Earned</span><strong id="refEarned">₦0</strong></div>
+          <div class="stat"><span>To be paid</span><strong id="refUnpaid">₦0</strong></div>
+        </div>
+      </div>
+      <form id="profileForm" class="card">
+        <h3>Business details</h3>
+        <label>Business name<input name="business_name" maxlength="100"></label>
+        <label>Phone<input name="phone" type="tel"></label>
+        <label>Business type<select name="business_type"><option value="individual">Individual / business name</option><option value="company">Limited company (Ltd)</option></select></label>
+        <label>Value of fixed assets (₦) — equipment, vehicles, property<input name="fixed_assets" type="number" min="0" step="1"></label>
+        <label class="inline"><input type="checkbox" name="professional_services"> We provide professional services (law, accounting, consulting, etc.)</label>
+        <button type="submit">Save details</button>
+        <p class="muted" id="profileMsg" role="status"></p>
+      </form>
+      <div class="card" id="adminBox" hidden></div>
+      <button id="logout" class="link">Log out</button>
+    </section>
+  </main>
+
+  <nav id="nav" hidden>
+    <a href="#home" data-tab="home">Home</a>
+    <a href="#book" data-tab="book">Book</a>
+    <a href="#debts" data-tab="debts">Debts</a>
+    <a href="#tax" data-tab="tax">Tax</a>
+    <a href="#account" data-tab="account">Account</a>
+  </nav>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <script src="/app.js"></script>
+</body>
+</html>
