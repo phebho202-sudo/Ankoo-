@@ -4,6 +4,5 @@ COPY package.json ./
 COPY src ./src
 COPY public ./public
 ENV NODE_ENV=production DB_PATH=/data/ankoo.db PORT=3000 TRUST_PROXY=1
-VOLUME /data
 EXPOSE 3000
 CMD ["node", "--no-warnings=ExperimentalWarning", "src/server.js"]
