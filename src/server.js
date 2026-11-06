@@ -86,6 +86,14 @@ function sessionCookie(token, maxAge) {
   return `ankoo_session=${token}; HttpOnly; SameSite=Lax; Path=/; Max-Age=${maxAge}${secure}`;
 }
 
+// Behind a hosting proxy (Railway, Render, Fly) the socket address is the proxy's.
+// With TRUST_PROXY=1, use the address the proxy appended (last X-Forwarded-For entry).
+function clientIp(req) {
+  const fwd = String(req.headers['x-forwarded-for'] || '');
+  if (process.env.TRUST_PROXY === '1' && fwd) return fwd.split(',').pop().trim();
+  return req.socket.remoteAddress;
+}
+
 function isAdmin(user) {
   const admins = String(process.env.ADMIN_EMAILS || '').toLowerCase().split(',').map((s) => s.trim()).filter(Boolean);
   return Boolean(user && admins.includes(user.email));
@@ -120,9 +128,11 @@ function createApp(db) {
     const needUser = () => { if (!user) throw new HttpError(401, 'Please log in'); return user; };
     const needPro = () => { needUser(); if (!billing.isPro(user)) throw new HttpError(402, 'This is a Pro feature. Upgrade for ₦1,500/month.'); return user; };
 
+    if (p === '/healthz') return send(res, 200, { ok: true });
+
     // ---------- Auth ----------
     if (method === 'POST' && p === '/api/signup') {
-      const ip = req.socket.remoteAddress;
+      const ip = clientIp(req);
       if (auth.rateLimited(`signup:${ip}`, 20)) throw new HttpError(429, 'Too many attempts. Try later.');
       const email = str(body.email, 120).toLowerCase();
       const password = String(body.password || '');

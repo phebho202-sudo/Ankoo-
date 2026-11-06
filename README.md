@@ -28,6 +28,7 @@ Without a Paystack key, "Get Pro" uses a fake dev checkout so you can test the w
 | `DB_PATH` | SQLite file. **Must be on a persistent disk.** | `./data/ankoo.db` |
 | `BASE_URL` | Public URL, e.g. `https://ankoo.ng` (used in Paystack callbacks and referral links) | request host |
 | `NODE_ENV` | Set to `production` live: secure cookies, dev checkout off | — |
+| `TRUST_PROXY` | `1` behind a hosting proxy so rate limits see real visitor IPs (set in Dockerfile) | — |
 | `PAYSTACK_SECRET_KEY` | From Paystack Dashboard → Settings → API Keys | — |
 | `ADMIN_EMAILS` | Comma-separated emails that see the Admin panel (revenue, agent payouts) | — |
 | `SMALL_COMPANY_TURNOVER_NGN` | Small-company turnover limit. **Check ₦50m vs ₦100m against the Act.** | `100000000` |
@@ -37,6 +38,8 @@ Without a Paystack key, "Get Pro" uses a fake dev checkout so you can test the w
 In the Paystack dashboard, set the **webhook URL** to `https://YOUR_DOMAIN/webhooks/paystack`.
 
 ## Deploy (cheapest options)
+**Step-by-step for beginners: [`docs/DEPLOY.md`](docs/DEPLOY.md) (Railway, ~$5/month).**
+
 The app is one Node process plus one SQLite file, so any host with a **persistent disk** works:
 
 - **A $4–6/month VPS** (Hetzner, DigitalOcean, Contabo): install Node 22, clone the repo, then run it under a process manager with HTTPS (Caddy):
