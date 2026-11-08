@@ -23,11 +23,17 @@ What the app tests cover:
 - Sign-up, log-in, email code and password reset: forms reject bad input in plain language, send
   the right request to Supabase, and handle wrong passwords, unconfirmed emails and taken emails.
 
+- Marketplace: search parameters, "time ago" wording, Explore results, search-as-you-type,
+  category links, empty states, product page details, safety advice, and log-in prompts for
+  saving and reporting.
+
 ## Database security tests
 
 `supabase/tests/run.sh` builds a throwaway practice PostgreSQL database, applies the Mojere Market
 migrations to it, and plays four people (a seller, a buyer, someone misbehaving and an admin).
-53 checks confirm, for example, that users cannot make themselves admin, edit other people's listings,
+It then runs 28 marketplace checks (search by word and part of a word, filters, sorting,
+pagination, featured items, hidden drafts/paused/rejected items, private view counts).
+The 53 security checks confirm, for example, that users cannot make themselves admin, edit other people's listings,
 read other people's messages, mark payments as paid, activate promotions without paying, review
 people they never traded with, or upload photos into someone else's folder. It also checks that
 the migration refuses to run if a table name already exists, and that it leaves existing tables,
@@ -58,5 +64,13 @@ Use Expo Go on both an Android phone and an iPhone (see BEGINNER_SETUP.md).
 4. **Log out**, then **Log in** with a wrong password (clear message), then the right one.
 5. **Forgot your password?** → code by email → set a new password → log in with it.
 6. Close the app completely and reopen it: you should still be logged in.
+
+## Manual checks for the marketplace (Phase 4)
+
+These need at least one real listing, which becomes possible in Phase 5 (selling). Until then:
+1. Home shows "No listings yet" under **Recently added**, without errors.
+2. Explore: type a word in the search box; you should see "No matching items" and a **Clear** button.
+3. Explore: open the filter button, set a max price lower than the min price; you should see a clear message.
+4. Pull down on Home or Explore to refresh, with no errors.
 
 Record the phone model and result for each check.

@@ -159,6 +159,19 @@ tap **Test Supabase connection** and you should see **Success**.
 Admin rights can only be given this way, from the Supabase dashboard. Nobody can make themselves an
 admin from inside the app.
 
+## Part G — Marketplace browsing functions (Phase 4)
+
+This adds the server functions that power search, filters and the product page. It **only adds
+functions**: no tables or data are changed.
+
+1. **SQL Editor** → **+** (new empty tab).
+2. In PowerShell inside `C:\dev\Ankoo-\mojere-market`, run
+   `notepad supabase\migrations\20261109000100_mojere_market_marketplace.sql`,
+   then **Ctrl + A**, **Ctrl + C**.
+3. Paste into Supabase and click **Run**.
+
+**What you should see:** `Success. No rows returned`.
+
 ## Undoing (only if ever needed)
 
 The `.down.sql` files in `supabase/migrations` reverse each step. Undoing the core migration

@@ -54,6 +54,8 @@ export default function RootLayout() {
               name="auth/forgot-password"
               options={{ title: "Reset password" }}
             />
+            <Stack.Screen name="listing/[id]" options={{ title: "Item" }} />
+            <Stack.Screen name="seller/[id]" options={{ title: "Seller" }} />
             <Stack.Screen
               name="edit-profile"
               options={{ title: "Edit profile" }}
