@@ -55,6 +55,8 @@ export function friendlyAuthError(message: string | undefined): string {
     return 'An account with this email already exists. Try logging in instead.';
   if (m.includes('token has expired') || m.includes('otp_expired') || m.includes('invalid otp'))
     return 'That code is wrong or has expired. Request a new code and try again.';
+  if (m.includes('error sending') || m.includes('smtp'))
+    return 'We could not send the email right now. Please try again in a few minutes.';
   if (m.includes('rate limit') || m.includes('too many'))
     return 'Too many attempts. Please wait a few minutes and try again.';
   if (m.includes('network') || m.includes('fetch'))

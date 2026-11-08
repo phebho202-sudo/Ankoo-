@@ -54,5 +54,6 @@ describe('friendly error messages', () => {
     expect(friendlyAuthError('Token has expired or is invalid')).toMatch(/code is wrong or has expired/);
     expect(friendlyAuthError('User already registered')).toMatch(/already exists/);
     expect(friendlyAuthError('email rate limit exceeded')).toMatch(/Too many attempts/);
+    expect(friendlyAuthError('Error sending confirmation email')).toMatch(/could not send the email/);
   });
 });

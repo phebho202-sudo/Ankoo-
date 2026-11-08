@@ -27,10 +27,15 @@ export default function RootLayout() {
           <Stack
             screenOptions={{
               headerTintColor: colors.primary,
+              // Show only the back arrow, never internal route names like "(tabs)".
+              headerBackButtonDisplayMode: "minimal",
               contentStyle: { backgroundColor: colors.background },
             }}
           >
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="(tabs)"
+              options={{ headerShown: false, title: "Back" }}
+            />
             <Stack.Screen name="auth/welcome" options={{ title: "" }} />
             <Stack.Screen
               name="auth/sign-up"
