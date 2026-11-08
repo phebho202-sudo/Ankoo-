@@ -31,7 +31,7 @@ should see". If you see something different, take a screenshot and share it.
    ```
 
 **What you should see:** a version number like `v22.13.0` or higher
-(anything starting `v22.13`+, `v24` or above works). If it says
+(`v22.13` or newer, `v24` or `v26` all work). If it says
 "not recognised" or "command not found", restart the laptop and try step 5 again.
 
 ## Part 2 — Install Git (once)
@@ -50,7 +50,8 @@ Git downloads the project from GitHub.
 1. In the terminal, paste these lines **one at a time**, pressing Enter after each:
 
    ```
-   cd Desktop
+   mkdir C:\dev
+   cd C:\dev
    git clone https://github.com/phebho202-sudo/Ankoo-.git
    cd Ankoo-
    git checkout claude/great-carson-txy0xu
@@ -59,8 +60,14 @@ Git downloads the project from GitHub.
 
    (GitHub may ask you to sign in. Use your GitHub account.)
 
-**What you should see:** no red error text. You now have a folder called
-`Ankoo-` on your Desktop, with `mojere-market` inside it.
+On a Mac, use `mkdir ~/dev` and `cd ~/dev` for the first two lines instead.
+
+We use `C:\dev` rather than the Desktop because developer tools can trip over
+spaces in folder names (like a Windows username with spaces) and over the
+Desktop being synced by OneDrive.
+
+**What you should see:** no red error text. You now have the folder
+`C:\dev\Ankoo-`, with `mojere-market` inside it.
 
 ## Part 4 — Install the app's building blocks (once, takes a few minutes)
 
