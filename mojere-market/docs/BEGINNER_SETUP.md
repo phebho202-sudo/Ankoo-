@@ -126,3 +126,21 @@ npm run check
 ```
 
 **What you should see:** `Tests: 18 passed` at the end, with no red errors.
+
+---
+
+## Windows tips (lessons from the first setup)
+
+- **"running scripts is disabled on this system"**: add `.cmd` to the command:
+  `npm.cmd install`, `npm.cmd start`, `npx.cmd expo ...`. Everything else stays the same.
+- **`ENOSPC: no space left on device`** means the C: drive is full. Check with `Get-PSDrive C`
+  (look at **Free (GB)**). Keep at least 5 GB free, ideally 10 GB or more. Safe ways to free space:
+  empty the Recycle Bin, run Windows **Disk Cleanup**, and `npm.cmd cache clean --force`.
+  If an install failed half-way, delete the half-finished folder with
+  `Remove-Item -Recurse -Force node_modules` (inside `mojere-market`) and install again.
+- **Expo account**: Expo Go now needs you signed in to the **same free Expo account** on the phone
+  (person icon in Expo Go) and on the laptop. If `npx.cmd expo login` crashes while opening the browser,
+  use `npx.cmd expo login --no-browser` and type your email and password in PowerShell.
+  Check with `npx.cmd expo whoami`.
+- **"The request timed out" on the phone**: the Wi-Fi is blocking phone ↔ laptop traffic. Start the app with
+  `npx.cmd expo start --tunnel` instead of `npm.cmd start`.

@@ -16,9 +16,9 @@ The app is built in phases. Each phase is checked before the next one starts.
 | Phase | What it covers | Status |
 |---|---|---|
 | 1 | Project setup, navigation, brand, structure, tests | **Done** |
-| 2 | Connect your existing Supabase project, database tables, security rules, seed data | Next |
-| 3 | Sign-up, login, password reset, profiles, location | Not started |
-| 4 | Home feed, categories, search, filters, product page | Not started |
+| 2 | Connect your existing Supabase project, database tables, security rules, seed data | **Built and tested on a practice database.** Waiting for you to apply it ([docs/SUPABASE_SETUP.md](docs/SUPABASE_SETUP.md)) |
+| 3 | Sign-up, login, password reset, profiles, location | **Built and tested with automated tests.** Needs a real-device test once Supabase is connected |
+| 4 | Home feed, categories, search, filters, product page | Next |
 | 5 | Selling, photo uploads, Declutter My Home | Not started |
 | 6 | Favourites, offers, realtime messages, notifications | Not started |
 | 7 | Business storefronts, promotions, payment preparation | Not started |
@@ -54,13 +54,20 @@ npm run check        # TypeScript check + automated tests
 
 ```
 src/app/            Screens. Every file here is a screen (Expo Router).
-  _layout.tsx       App-wide setup (data cache, safe areas)
+  _layout.tsx       App-wide setup (data cache, login state, safe areas)
   (tabs)/           The five bottom tabs: Home, Explore, Sell, Messages, Profile
+  auth/             Welcome, sign-up, log-in, email code, password reset
+  edit-profile.tsx  Edit name, LGA, town, area and bio
+  terms.tsx         Terms and Privacy (draft, pending legal review)
 src/components/     Reusable pieces: logo, buttons, cards, notices
 src/constants/      Brand text, Ondo State LGAs, categories, item conditions
 src/lib/            Supabase connection, money formatting
 src/theme/          Colours, spacing and text sizes
 __tests__/          Automated tests
+testing/            Shared helpers for the automated tests
+supabase/migrations Database changes (with matching .down.sql undo files)
+supabase/inspect    Read-only check to run on your project first
+supabase/tests      Security tests that run on a practice database
 assets/             App icon and splash screen (temporary logo, replaceable)
 docs/               Guides
 ```
@@ -70,7 +77,8 @@ docs/               Guides
 - Only the **public** Supabase key ever goes in the app. The app refuses to
   start if a secret/service-role key is pasted in by mistake.
 - `.env` is never committed to Git.
-- Every database table will have Row Level Security (Phase 2).
+- Every database table has Row Level Security, checked by 53 automated security tests.
+- Admin roles can only be granted from the Supabase dashboard, never from the app.
 - Payments are never marked as paid from the phone; they are verified on a server (Phase 7).
 
 ## Note on this repository

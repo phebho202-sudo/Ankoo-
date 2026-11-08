@@ -1,6 +1,8 @@
+import Ionicons from '@expo/vector-icons/Ionicons';
 import Constants from 'expo-constants';
+import { router } from 'expo-router';
 import { useState } from 'react';
-import { View } from 'react-native';
+import { ActivityIndicator, View } from 'react-native';
 
 import { Logo } from '@/components/logo';
 import { SetupNotice } from '@/components/setup-notice';
@@ -8,9 +10,93 @@ import { AppText, Button, Card, Notice, Screen } from '@/components/ui';
 import { BRAND } from '@/constants/brand';
 import { INITIAL_CATEGORIES } from '@/constants/catalog';
 import { ONDO_LGAS } from '@/constants/ondo';
-import { checkSupabaseConnection, type ConnectionCheck } from '@/lib/supabase';
+import { useAuth } from '@/lib/auth';
+import { useLocations, useMyProfile } from '@/lib/profile';
+import { checkSupabaseConnection, supabase, type ConnectionCheck } from '@/lib/supabase';
 import { supabaseConfig } from '@/lib/supabase-config';
-import { spacing } from '@/theme';
+import { colors, spacing } from '@/theme';
+
+function formatJoined(iso: string) {
+  return new Date(iso).toLocaleDateString('en-NG', { month: 'long', year: 'numeric' });
+}
+
+function AccountCard() {
+  const { session, loading } = useAuth();
+  const profile = useMyProfile();
+  const locations = useLocations();
+  const [signingOut, setSigningOut] = useState(false);
+
+  if (loading || (session && profile.isLoading)) {
+    return (
+      <Card>
+        <ActivityIndicator color={colors.primary} />
+      </Card>
+    );
+  }
+
+  if (!session) {
+    return (
+      <Card>
+        <AppText variant="title">Join Mojere Market</AppText>
+        <AppText muted>Create a free account to sell items, save favourites and message sellers.</AppText>
+        <Button label="Create an account" onPress={() => router.push('/auth/sign-up')} disabled={!supabase} />
+        <Button label="Log in" kind="outline" onPress={() => router.push('/auth/sign-in')} disabled={!supabase} />
+      </Card>
+    );
+  }
+
+  const p = profile.data;
+  const placeName = (id: string | null | undefined) => locations.data?.find((l) => l.id === id)?.name;
+  const area = [p?.neighbourhood, placeName(p?.town_id), placeName(p?.lga_id)].filter(Boolean).join(', ');
+  const emailVerified = !!session.user.email_confirmed_at;
+
+  async function signOut() {
+    if (!supabase) return;
+    setSigningOut(true);
+    await supabase.auth.signOut();
+    setSigningOut(false);
+  }
+
+  return (
+    <Card>
+      {profile.isError ? (
+        <Notice tone="danger" title="Could not load your profile. Check your connection." />
+      ) : null}
+      {p?.account_status === 'suspended' ? (
+        <Notice tone="danger" title="Your account is suspended">
+          <AppText variant="small">You cannot post listings or send messages. Contact Mojere Market support.</AppText>
+        </Notice>
+      ) : null}
+
+      <AppText variant="title">{p?.display_name ?? 'Your profile'}</AppText>
+      <AppText muted>{area || 'Location not set yet'}</AppText>
+      {p?.bio ? <AppText>{p.bio}</AppText> : null}
+      {p?.created_at ? <AppText variant="caption">Member since {formatJoined(p.created_at)}</AppText> : null}
+
+      <View style={{ gap: spacing.xs, marginTop: spacing.xs }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.xs }}>
+          <Ionicons
+            name={emailVerified ? 'checkmark-circle' : 'alert-circle-outline'}
+            size={18}
+            color={emailVerified ? colors.success : colors.warning}
+          />
+          <AppText variant="small">{emailVerified ? 'Email verified' : 'Email not verified yet'}</AppText>
+        </View>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.xs }}>
+          <Ionicons name="call-outline" size={18} color={colors.textMuted} />
+          <AppText variant="small" muted>
+            Phone verification is not available yet (needs an SMS provider).
+          </AppText>
+        </View>
+      </View>
+
+      {!p?.lga_id ? <Notice tone="warning" title="Add your location so buyers know where you are." /> : null}
+
+      <Button label="Edit profile" onPress={() => router.push('/edit-profile')} />
+      <Button label="Log out" kind="outline" onPress={signOut} loading={signingOut} />
+    </Card>
+  );
+}
 
 export default function ProfileScreen() {
   const [checking, setChecking] = useState(false);
@@ -27,12 +113,7 @@ export default function ProfileScreen() {
       <AppText variant="heading">Profile</AppText>
       <SetupNotice />
 
-      <Card>
-        <AppText variant="title">Your account</AppText>
-        <AppText muted>
-          Sign-up, login and your public seller profile arrive in Phase 3. Nobody is signed in yet.
-        </AppText>
-      </Card>
+      <AccountCard />
 
       <Card>
         <AppText variant="title">App setup check</AppText>

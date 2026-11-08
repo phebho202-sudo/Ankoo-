@@ -1,17 +1,14 @@
-import { fireEvent, render, screen } from '@testing-library/react-native';
+import { fireEvent, screen } from '@testing-library/react-native';
 import { router } from 'expo-router';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+
+import { renderScreen } from '../testing/render';
 
 import HomeScreen from '@/app/(tabs)/index';
 import ProfileScreen from '@/app/(tabs)/profile';
 
-jest.mock('expo-router', () => ({
-  router: { navigate: jest.fn(), setParams: jest.fn() },
-  useLocalSearchParams: () => ({}),
-}));
+jest.mock('expo-router', () => require('../testing/expo-router-mock').expoRouterMock);
 
-const metrics = { frame: { x: 0, y: 0, width: 390, height: 844 }, insets: { top: 0, left: 0, right: 0, bottom: 0 } };
-const wrap = (ui: React.ReactElement) => render(<SafeAreaProvider initialMetrics={metrics}>{ui}</SafeAreaProvider>);
+const wrap = renderScreen;
 
 describe('Home screen', () => {
   beforeEach(() => jest.clearAllMocks());
@@ -39,6 +36,12 @@ describe('Home screen', () => {
 });
 
 describe('Profile screen', () => {
+  it('shows sign-up options when nobody is signed in, disabled until Supabase is set up', async () => {
+    await wrap(<ProfileScreen />);
+    const create = screen.getByRole('button', { name: 'Create an account' });
+    expect(create.props.accessibilityState.disabled).toBe(true);
+  });
+
   it('disables the connection test until Supabase is configured', async () => {
     await wrap(<ProfileScreen />);
     const button = screen.getByRole('button', { name: 'Test Supabase connection' });
