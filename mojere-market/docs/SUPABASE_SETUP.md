@@ -66,16 +66,36 @@ changed. Share a screenshot.
 **If you see "must be owner of table objects"**, share a screenshot. It means your project needs the
 storage rules added through the dashboard instead; nothing was changed.
 
-## Part D — Email settings for sign-up codes
+## Part D — Email sending and sign-up codes
 
-Mojere Market confirms emails with a **code** the user types into the app (no links to tap).
+Mojere Market confirms emails with a **6-digit code** the user types into the app. Supabase only lets you
+change the email wording once the project sends email through its own email service (SMTP). We use a
+free Gmail **app password** for this.
 
-1. Left menu → **Authentication** → **Sign In / Providers** (or **Providers**) → **Email**.
-   - Make sure **Enable Email provider** is **on**.
-   - Make sure **Confirm email** is **on**.
-   - **Email OTP Length**: 6 (if shown). Click **Save**.
-2. Left menu → **Authentication** → **Emails** (or **Email Templates**).
-3. Click **Confirm signup**. Replace the message body with:
+**D1. Create a Gmail app password**
+1. Make sure **2-Step Verification** is on at **myaccount.google.com/security**.
+2. Go to **myaccount.google.com/apppasswords**, type `Mojere Market Supabase` as the app name, click **Create**.
+3. Keep the yellow box with the 16-letter password open. Never share it.
+
+**D2. Connect Gmail in Supabase**: **Authentication → Emails → SMTP Settings** (or the **Set up SMTP** button)
+- Enable Custom SMTP: **on**
+- Sender email and Username: your Gmail address (both the same)
+- Sender name: `Mojere Market`
+- Host: `smtp.gmail.com`, Port: `465`
+- Password: the 16 letters, **typed without spaces**. Then click **Save**.
+
+If sign-up says "Error sending confirmation email", open **Logs → Auth**. The message
+`535 Username and Password not accepted` means the app password is wrong: create a new one and type it again.
+
+**D3. Email provider settings**: **Authentication → Sign In / Providers → Email**
+- **Enable Email provider**: on. **Confirm email**: on.
+- **Email OTP Length**: 6. **Email OTP Expiration**: 3600. Click **Save**.
+
+**D4. Templates**: **Authentication → Emails**
+1. Click **Confirm sign up**. Above the body, switch from **Preview** to **Source**.
+2. Click inside the code box, press **Ctrl + A**, then **Delete**, so the box is completely empty
+   (otherwise the new text is added after the old link).
+3. Paste:
 
    ```html
    <h2>Welcome to Mojere Market</h2>
@@ -84,8 +104,8 @@ Mojere Market confirms emails with a **code** the user types into the app (no li
    <p>Type this code in the Mojere Market app. Never share it with anyone.</p>
    ```
 
-   Click **Save**.
-4. Click **Reset Password** (or **Reset password**). Replace the body with:
+   Click **Save changes**, then check **Preview** shows only this text.
+4. Do the same for **Reset password** with:
 
    ```html
    <h2>Reset your Mojere Market password</h2>
@@ -94,12 +114,8 @@ Mojere Market confirms emails with a **code** the user types into the app (no li
    <p>If you did not ask to reset your password, ignore this email.</p>
    ```
 
-   Click **Save**.
-
-**Important limitation:** Supabase's built-in email sender is for testing only. It sends just a few emails
-per hour, and only to email addresses of people on your Supabase team. **Test sign-up with the email you
-use for Supabase.** Before real users join, you'll connect an email service (several have free plans).
-We'll do that together, and nothing will be paid for without your approval.
+**Tip:** each time a new code is sent, the previous code stops working. Gmail groups these emails into one
+conversation, so always use the code in the **last** message.
 
 ## Part E — Put the two public settings into the app
 
@@ -107,23 +123,20 @@ We'll do that together, and nothing will be paid for without your approval.
 2. Find the **Project URL** (looks like `https://abcdefgh.supabase.co`).
 3. Find the **anon public** key, or the **publishable** key (starts with `eyJ...` or `sb_publishable_`).
    **Do not use** the `service_role` or `secret` key.
-4. On the laptop, in PowerShell inside `C:\dev\Ankoo-\mojere-market`, run:
+4. On the laptop, in PowerShell inside `C:\dev\Ankoo-\mojere-market`, copy the public key, then run
+   (replace the URL with your own Project URL):
 
    ```
-   copy .env.example .env
-   notepad .env
+   $key = Read-Host "Paste the public key"
+   Set-Content -Path .env -Encoding ascii -Value @("EXPO_PUBLIC_SUPABASE_URL=https://abcdefgh.supabase.co", "EXPO_PUBLIC_SUPABASE_ANON_KEY=$($key.Trim())")
+   Select-String -Path .env -Pattern "EXPO_PUBLIC"
    ```
 
-5. In Notepad, paste the values after the `=` signs, with no spaces or quotes:
+   The last command must show a value after both `=` signs. The `.env` file stays on your laptop and is
+   never uploaded to GitHub.
 
-   ```
-   EXPO_PUBLIC_SUPABASE_URL=https://abcdefgh.supabase.co
-   EXPO_PUBLIC_SUPABASE_ANON_KEY=eyJ...your-public-key...
-   ```
-
-   Save (**Ctrl + S**) and close Notepad. The `.env` file stays on your laptop and is never uploaded to GitHub.
-
-6. Restart the app: in PowerShell press **Ctrl + C**, then run `npx.cmd expo start --tunnel` and open it on your phone.
+5. Restart the app: in PowerShell press **Ctrl + C**, then run `npx.cmd expo start --tunnel --clear`.
+   Settings are only read when the app starts.
 
 **What you should see:** the yellow "Not connected to the database yet" box is gone. On the **Profile** tab,
 tap **Test Supabase connection** and you should see **Success**.
