@@ -29,6 +29,10 @@ export default function RootLayout() {
               headerTintColor: colors.primary,
               // Show only the back arrow, never internal route names like "(tabs)".
               headerBackButtonDisplayMode: "minimal",
+              // Solid header so screen content never slides underneath it.
+              headerTransparent: false,
+              headerStyle: { backgroundColor: colors.background },
+              headerShadowVisible: false,
               contentStyle: { backgroundColor: colors.background },
             }}
           >
