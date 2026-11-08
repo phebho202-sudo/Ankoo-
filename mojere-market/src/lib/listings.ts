@@ -190,3 +190,71 @@ export async function reportListing(listingId: string, reason: ReportReason, det
   });
   if (error) throw error;
 }
+
+export type FavouriteEntry = { listing_id: string; created_at: string; listing: ListingSummary | null };
+
+/** The signed-in user's saved items. Hidden or deleted items come back as `listing: null`. */
+export function useFavourites() {
+  const { session } = useAuth();
+  return useQuery({
+    queryKey: ['favourites', session?.user.id],
+    enabled: !!supabase && !!session,
+    queryFn: async () => {
+      const { data, error } = await requireClient()
+        .from('favorites')
+        .select(
+          'listing_id, created_at, listing:listings(id, title, price_kobo, is_negotiable, condition, status, published_at, neighbourhood, seller_id, category:categories(slug, name), lga:locations!listings_lga_id_fkey(name), town:locations!listings_town_id_fkey(name), listing_images(storage_path, position))',
+        )
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      type Row = {
+        listing_id: string;
+        created_at: string;
+        listing:
+          | (Omit<ListingSummary, 'category_slug' | 'category_name' | 'lga_name' | 'town_name' | 'cover_path' | 'seller_name' | 'is_featured'> & {
+              category: { slug: string; name: string } | null;
+              lga: { name: string } | null;
+              town: { name: string } | null;
+              listing_images: { storage_path: string; position: number }[];
+            })
+          | null;
+      };
+      return ((data ?? []) as unknown as Row[]).map((r): FavouriteEntry => {
+        const l = r.listing;
+        if (!l) return { listing_id: r.listing_id, created_at: r.created_at, listing: null };
+        const cover = [...l.listing_images].sort((a, b) => a.position - b.position)[0]?.storage_path ?? null;
+        return {
+          listing_id: r.listing_id,
+          created_at: r.created_at,
+          listing: {
+            id: l.id,
+            title: l.title,
+            price_kobo: l.price_kobo,
+            is_negotiable: l.is_negotiable,
+            condition: l.condition,
+            status: l.status,
+            published_at: l.published_at,
+            category_slug: l.category?.slug ?? '',
+            category_name: l.category?.name ?? '',
+            lga_name: l.lga?.name ?? '',
+            town_name: l.town?.name ?? null,
+            neighbourhood: l.neighbourhood,
+            cover_path: cover,
+            seller_id: l.seller_id,
+            seller_name: null,
+            is_featured: false,
+          },
+        };
+      });
+    },
+  });
+}
+
+export async function removeFavourite(listingId: string) {
+  const db = requireClient();
+  const { data } = await db.auth.getSession();
+  const me = data.session?.user.id;
+  if (!me) return;
+  const { error } = await db.from('favorites').delete().eq('user_id', me).eq('listing_id', listingId);
+  if (error) throw error;
+}

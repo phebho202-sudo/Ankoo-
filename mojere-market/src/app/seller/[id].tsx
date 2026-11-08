@@ -6,6 +6,7 @@ import { ActivityIndicator, View } from 'react-native';
 import { ListingGrid } from '@/components/listing-grid';
 import { AppText, Button, Card, Notice } from '@/components/ui';
 import { useListingSearch } from '@/lib/listings';
+import { useRatingSummary } from '@/lib/offers';
 import { supabase } from '@/lib/supabase';
 import { monthYear } from '@/lib/time';
 import { colors, spacing } from '@/theme';
@@ -46,6 +47,7 @@ export default function SellerScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const seller = useSellerProfile(id);
   const listings = useListingSearch({ sellerId: id });
+  const ratings = useRatingSummary(id);
   const items = listings.data?.pages.flat() ?? [];
   const p = seller.data?.profile;
 
@@ -67,7 +69,27 @@ export default function SellerScreen() {
             </View>
           ) : null}
           {p.bio ? <AppText>{p.bio}</AppText> : null}
-          <AppText variant="caption">Ratings and reviews appear here after confirmed sales.</AppText>
+          {ratings.data && ratings.data.count > 0 ? (
+            <View style={{ gap: spacing.xs }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                <Ionicons name="star" size={18} color={colors.accent} />
+                <AppText style={{ fontWeight: '700' }}>{ratings.data.average!.toFixed(1)}</AppText>
+                <AppText variant="small" muted>
+                  from {ratings.data.count} confirmed sale{ratings.data.count === 1 ? '' : 's'}
+                </AppText>
+              </View>
+              {ratings.data.recent
+                .filter((r) => r.comment)
+                .slice(0, 3)
+                .map((r) => (
+                  <AppText key={r.created_at} variant="small">
+                    {'★'.repeat(r.rating)} “{r.comment}”
+                  </AppText>
+                ))}
+            </View>
+          ) : (
+            <AppText variant="caption">No reviews yet. Reviews appear only after a sale both sides confirmed.</AppText>
+          )}
         </Card>
       ) : null}
       <AppText variant="title">Items from this seller</AppText>

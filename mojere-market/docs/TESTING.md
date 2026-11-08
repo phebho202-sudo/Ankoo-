@@ -32,6 +32,10 @@ What the app tests cover:
   failed photo save never publishes, removed photos are deleted, and Declutter only offers
   complete drafts for publishing.
 
+- Messaging and offers: inbox with unread markers, opening chats, sending messages, making,
+  countering, accepting and withdrawing offers, two-sided handover confirmation, reviews only
+  after both confirm, blocking, and product-page "Message seller" / "Make an offer".
+
 ## Database security tests
 
 `supabase/tests/run.sh` builds a throwaway practice PostgreSQL database, applies the Mojere Market
@@ -94,5 +98,21 @@ These need at least one real listing, which becomes possible in Phase 5 (selling
    one without a photo. The session shows "Needs at least one photo" for that one.
    Select the complete one → **Publish 1 selected**. Counts update (Drafts / Available).
 8. Try selling on mobile data instead of Wi-Fi: uploads should still work, just a little slower.
+
+## Manual checks for messaging and offers (Phase 6) — needs two accounts
+
+Use two phones (Android + iPhone), or one phone and log out/in between steps. Account A sells,
+account B buys. Remember: on Supabase's test email limits, both emails must belong to your Supabase team,
+or use the Gmail sender set up in Part D.
+1. A publishes an item. B opens it → **Message seller** → sends "Is it available?".
+2. A sees a badge on **Messages** and a bell count on **Home**. A opens the chat: the message is there.
+   A replies; with both chats open, the reply appears on B's phone within a few seconds.
+3. B → **Make offer** (e.g. ₦20,000 with a note). A gets a notification → opens it → lands in the chat.
+4. A → **Counter** ₦22,000. B → **Accept**. The item shows **Reserved**.
+5. B → **I received the item**; A → **I handed over the item and was paid**. The item shows **Sold**.
+6. Both → **Review the …** with stars and a comment. The seller page shows the rating.
+7. B saves another item (**Save item**) → Profile → **Saved items** shows it.
+8. A → ⋮ → **Block this person**. B can no longer send messages. A → ⋮ → **Unblock**.
+9. Profile → **Notification settings** → turn off Messages; new messages no longer create notifications.
 
 Record the phone model and result for each check.

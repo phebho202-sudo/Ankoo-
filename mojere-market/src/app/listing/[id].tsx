@@ -18,6 +18,7 @@ import { AppText, Button, Card, Notice, Screen } from '@/components/ui';
 import { useAuth } from '@/lib/auth';
 import { formatNaira } from '@/lib/format';
 import { recordListingView, useListing, useToggleFavourite } from '@/lib/listings';
+import { startConversation } from '@/lib/messaging';
 import { supabase } from '@/lib/supabase';
 import { monthYear, timeAgo } from '@/lib/time';
 import { colors, radius, spacing } from '@/theme';
@@ -89,6 +90,7 @@ export default function ListingScreen() {
   const favourite = useToggleFavourite(id ?? '');
   const [reportOpen, setReportOpen] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
+  const [opening, setOpening] = useState<'chat' | 'offer' | null>(null);
 
   useEffect(() => {
     if (id) void recordListingView(id);
@@ -127,6 +129,23 @@ export default function ListingScreen() {
   }
 
   const place = [l.neighbourhood, l.town_name, l.lga_name].filter(Boolean).join(', ');
+
+  async function openChat(withOffer: boolean) {
+    setActionError(null);
+    if (!session) {
+      router.push('/auth/sign-in');
+      return;
+    }
+    setOpening(withOffer ? 'offer' : 'chat');
+    try {
+      const conversationId = await startConversation(l!.id);
+      router.push({ pathname: '/chat/[id]', params: withOffer ? { id: conversationId, offer: '1' } : { id: conversationId } });
+    } catch (e) {
+      setActionError(e instanceof Error ? e.message : 'Could not open the chat. Please try again.');
+    } finally {
+      setOpening(null);
+    }
+  }
 
   async function toggleFavourite() {
     setActionError(null);
@@ -205,12 +224,26 @@ export default function ListingScreen() {
           )}
           {actionError ? <Notice tone="danger" title={actionError} /> : null}
 
-          {!l.is_own && l.status !== 'sold' ? (
-            <Notice title="Messaging and offers are coming in the next update">
-              <AppText variant="small">
-                Soon you will be able to chat with the seller and make an offer right here.
-              </AppText>
-            </Notice>
+          {!l.is_own && (l.status === 'active' || l.status === 'reserved') ? (
+            <View style={{ flexDirection: 'row', gap: spacing.sm }}>
+              <Button
+                label="Message seller"
+                onPress={() => void openChat(false)}
+                loading={opening === 'chat'}
+                disabled={!!opening}
+                style={{ flex: 1 }}
+              />
+              {l.status === 'active' ? (
+                <Button
+                  label="Make an offer"
+                  kind="accent"
+                  onPress={() => void openChat(true)}
+                  loading={opening === 'offer'}
+                  disabled={!!opening}
+                  style={{ flex: 1 }}
+                />
+              ) : null}
+            </View>
           ) : null}
 
           <Card>

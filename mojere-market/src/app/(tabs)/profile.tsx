@@ -93,6 +93,12 @@ function AccountCard() {
       {!p?.lga_id ? <Notice tone="warning" title="Add your location so buyers know where you are." /> : null}
 
       <Button label="Edit profile" onPress={() => router.push('/edit-profile')} />
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm }}>
+        <Button label="My listings" kind="outline" onPress={() => router.push('/my-listings')} style={{ flexGrow: 1 }} />
+        <Button label="Saved items" kind="outline" onPress={() => router.push('/favourites')} style={{ flexGrow: 1 }} />
+        <Button label="Notifications" kind="outline" onPress={() => router.push('/notifications')} style={{ flexGrow: 1 }} />
+        <Button label="Notification settings" kind="outline" onPress={() => router.push('/notification-settings')} style={{ flexGrow: 1 }} />
+      </View>
       <Button label="Log out" kind="outline" onPress={signOut} loading={signingOut} />
     </Card>
   );

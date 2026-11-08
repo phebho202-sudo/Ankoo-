@@ -184,6 +184,19 @@ Without it, deleted listings would leave their photos behind in storage.
 
 **What you should see:** `Success. No rows returned`.
 
+## Part I — Messaging inbox (Phase 6)
+
+Adds one function that builds each user's conversation list. It **only adds a function**.
+
+1. **SQL Editor** → **+** (new empty tab).
+2. In PowerShell: `notepad supabase\migrations\20261111000100_mojere_market_messaging.sql`,
+   then **Ctrl + A**, **Ctrl + C**.
+3. Paste into Supabase and click **Run** → `Success. No rows returned`.
+
+Live chat uses Supabase **Realtime**, which the core migration already switched on for messages.
+If new messages only appear after leaving and reopening a chat, open **Database → Publications**
+in Supabase and check that `supabase_realtime` includes `messages`.
+
 ## Undoing (only if ever needed)
 
 The `.down.sql` files in `supabase/migrations` reverse each step. Undoing the core migration

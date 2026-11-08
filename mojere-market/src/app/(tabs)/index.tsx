@@ -12,6 +12,8 @@ import { AppText, Button, Card } from '@/components/ui';
 import { BRAND } from '@/constants/brand';
 import { INITIAL_CATEGORIES } from '@/constants/catalog';
 import { useListingStrip, type ListingSummary } from '@/lib/listings';
+import { useAuth } from '@/lib/auth';
+import { useUnreadNotifications } from '@/lib/notifications';
 import { useLocations, useMyProfile } from '@/lib/profile';
 import { supabase } from '@/lib/supabase';
 import { colors, fontSize, MIN_TOUCH, radius, spacing } from '@/theme';
@@ -43,6 +45,8 @@ function Strip({ items }: { items: ListingSummary[] }) {
 
 export default function HomeScreen() {
   const queryClient = useQueryClient();
+  const { session } = useAuth();
+  const unreadNotes = useUnreadNotifications();
   const [search, setSearch] = useState('');
   const profile = useMyProfile();
   const locations = useLocations();
@@ -72,9 +76,28 @@ export default function HomeScreen() {
         refreshControl={
           supabase ? <RefreshControl refreshing={refreshing} onRefresh={refresh} tintColor={colors.primary} /> : undefined
         }>
-        <View style={{ gap: spacing.xs }}>
-          <Logo />
-          <AppText muted>{BRAND.tagline}</AppText>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm }}>
+          <View style={{ gap: spacing.xs, flex: 1 }}>
+            <Logo />
+            <AppText muted>{BRAND.tagline}</AppText>
+          </View>
+          {session ? (
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={`Notifications${unreadNotes ? `, ${unreadNotes} unread` : ''}`}
+              hitSlop={8}
+              onPress={() => router.push('/notifications')}
+              style={styles.bell}>
+              <Ionicons name="notifications-outline" size={24} color={colors.primary} />
+              {unreadNotes > 0 ? (
+                <View style={styles.bellBadge}>
+                  <AppText variant="caption" style={{ color: colors.textOnPrimary, fontWeight: '700' }}>
+                    {unreadNotes > 9 ? '9+' : unreadNotes}
+                  </AppText>
+                </View>
+              ) : null}
+            </Pressable>
+          ) : null}
         </View>
 
         <View style={styles.searchBox}>
@@ -221,4 +244,26 @@ const styles = StyleSheet.create({
   },
   tileLabel: { textAlign: 'center', color: colors.text },
   recentGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.md },
+  bell: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.border,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  bellBadge: {
+    position: 'absolute',
+    top: -2,
+    right: -2,
+    minWidth: 20,
+    height: 20,
+    borderRadius: 10,
+    paddingHorizontal: 4,
+    backgroundColor: colors.accent,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });

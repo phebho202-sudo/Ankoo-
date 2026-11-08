@@ -3,6 +3,7 @@ import { Tabs } from 'expo-router';
 import type { ComponentProps } from 'react';
 import type { ColorValue } from 'react-native';
 
+import { useUnreadConversations } from '@/lib/messaging';
 import { colors } from '@/theme';
 
 type IconName = ComponentProps<typeof Ionicons>['name'];
@@ -14,6 +15,7 @@ function icon(name: IconName, focusedName: IconName) {
 }
 
 export default function TabLayout() {
+  const unread = useUnreadConversations();
   return (
     <Tabs
       screenOptions={{
@@ -38,7 +40,12 @@ export default function TabLayout() {
       />
       <Tabs.Screen
         name="messages"
-        options={{ title: 'Messages', tabBarIcon: icon('chatbubbles-outline', 'chatbubbles') }}
+        options={{
+          title: 'Messages',
+          tabBarIcon: icon('chatbubbles-outline', 'chatbubbles'),
+          tabBarBadge: unread > 0 ? unread : undefined,
+          tabBarBadgeStyle: { backgroundColor: colors.accent },
+        }}
       />
       <Tabs.Screen
         name="profile"

@@ -63,6 +63,19 @@ export default function RootLayout() {
               name="my-listings"
               options={{ title: "My listings" }}
             />
+            <Stack.Screen name="chat/[id]" options={{ title: "Chat" }} />
+            <Stack.Screen
+              name="notifications"
+              options={{ title: "Notifications" }}
+            />
+            <Stack.Screen
+              name="notification-settings"
+              options={{ title: "Notification settings" }}
+            />
+            <Stack.Screen
+              name="favourites"
+              options={{ title: "Saved items" }}
+            />
             <Stack.Screen
               name="declutter/index"
               options={{ title: "Declutter My Home" }}
