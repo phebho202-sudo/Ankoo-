@@ -20,12 +20,12 @@ describe('Home screen', () => {
     expect(screen.getByText('Not connected to the database yet')).toBeTruthy();
   });
 
-  it('Sell and Declutter buttons go to the Sell tab', async () => {
+  it('Sell and Declutter buttons open selling and decluttering', async () => {
     await wrap(<HomeScreen />);
     await fireEvent.press(screen.getByText('Sell an Item'));
     await fireEvent.press(screen.getByText('Declutter My Home'));
-    expect(router.navigate).toHaveBeenCalledTimes(2);
-    expect(router.navigate).toHaveBeenCalledWith('/sell');
+    expect(router.push).toHaveBeenCalledWith('/listing-editor');
+    expect(router.push).toHaveBeenCalledWith('/declutter');
   });
 
   it('category tiles open Explore filtered by that category', async () => {

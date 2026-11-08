@@ -55,6 +55,22 @@ export default function RootLayout() {
               options={{ title: "Reset password" }}
             />
             <Stack.Screen name="listing/[id]" options={{ title: "Item" }} />
+            <Stack.Screen
+              name="listing-editor"
+              options={{ title: "Sell an item" }}
+            />
+            <Stack.Screen
+              name="my-listings"
+              options={{ title: "My listings" }}
+            />
+            <Stack.Screen
+              name="declutter/index"
+              options={{ title: "Declutter My Home" }}
+            />
+            <Stack.Screen
+              name="declutter/[id]"
+              options={{ title: "Declutter session" }}
+            />
             <Stack.Screen name="seller/[id]" options={{ title: "Seller" }} />
             <Stack.Screen
               name="edit-profile"

@@ -190,9 +190,17 @@ export default function ListingScreen() {
           ) : (
             <Notice title="This is your listing">
               <AppText variant="small">
-                Viewed {l.view_count ?? 0} time{l.view_count === 1 ? '' : 's'} by others. Editing arrives with
-                selling tools.
+                Viewed {l.view_count ?? 0} time{l.view_count === 1 ? '' : 's'} by others.
               </AppText>
+              <View style={{ flexDirection: 'row', gap: spacing.sm, marginTop: spacing.sm }}>
+                <Button
+                  label="Edit"
+                  kind="outline"
+                  onPress={() => router.push({ pathname: '/listing-editor', params: { id: l.id } })}
+                  style={{ flex: 1 }}
+                />
+                <Button label="My listings" kind="outline" onPress={() => router.push('/my-listings')} style={{ flex: 1 }} />
+              </View>
             </Notice>
           )}
           {actionError ? <Notice tone="danger" title={actionError} /> : null}

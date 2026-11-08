@@ -9,7 +9,8 @@ $P -d mojere_test -f tests/00_supabase_stub.sql -o /dev/null 2>&1 | grep -v -E "
 $P -d mojere_test -f migrations/20261108000100_mojere_market_core.sql -o /dev/null
 $P -d mojere_test -f migrations/20261108000200_mojere_market_storage.sql -o /dev/null
 $P -d mojere_test -f migrations/20261109000100_mojere_market_marketplace.sql -o /dev/null
-for t in tests/01_security_tests.sql tests/02_marketplace_tests.sql; do
+$P -d mojere_test -f migrations/20261110000100_mojere_market_selling.sql -o /dev/null
+for t in tests/01_security_tests.sql tests/02_marketplace_tests.sql tests/03_selling_tests.sql; do
   $P -d mojere_test -f "$t" -o /dev/null 2>&1 | sed -E 's/^psql:[^ ]+ //; s/^NOTICE:  //'
 done
 echo "Done."

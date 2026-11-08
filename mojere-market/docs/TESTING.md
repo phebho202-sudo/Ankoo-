@@ -27,6 +27,11 @@ What the app tests cover:
   category links, empty states, product page details, safety advice, and log-in prompts for
   saving and reporting.
 
+- Selling: the listing form rules (title, category, condition, price up to ₦100,000,000, free
+  items), publishing needs a photo (drafts do not), saving runs draft → photos → publish, a
+  failed photo save never publishes, removed photos are deleted, and Declutter only offers
+  complete drafts for publishing.
+
 ## Database security tests
 
 `supabase/tests/run.sh` builds a throwaway practice PostgreSQL database, applies the Mojere Market
@@ -72,5 +77,22 @@ These need at least one real listing, which becomes possible in Phase 5 (selling
 2. Explore: type a word in the search box; you should see "No matching items" and a **Clear** button.
 3. Explore: open the filter button, set a max price lower than the min price; you should see a clear message.
 4. Pull down on Home or Explore to refresh, with no errors.
+
+## Manual checks for selling (Phase 5)
+
+1. **Sell** tab → **Sell an item**. Tap **Preview and publish** with everything empty: clear messages appear.
+2. Add 2–3 photos (**Choose photos** and **Take photo**). The phone asks for permission the first time.
+   Tap the second photo: it becomes the **Cover**. Tap **✕** on one to remove it.
+3. Fill in title, category, condition, price (the ₦ amount appears under the box), description.
+   Location is already filled from your profile.
+4. **Preview and publish** → check the preview → **Publish now**. Watch "Uploading photo 1 of 3…".
+   You land on the product page with your photos.
+5. Home → **Recently added** and Explore both show the item. Search for a word from its title.
+6. **Sell → My listings**: try **Pause** (it disappears from Explore), **Show again**, **Edit**
+   (change the price), **Mark as sold**, and **Delete** on a test item.
+7. **Declutter My Home** → start a session → **Add an item** twice (use **Save and add another**),
+   one without a photo. The session shows "Needs at least one photo" for that one.
+   Select the complete one → **Publish 1 selected**. Counts update (Drafts / Available).
+8. Try selling on mobile data instead of Wi-Fi: uploads should still work, just a little slower.
 
 Record the phone model and result for each check.

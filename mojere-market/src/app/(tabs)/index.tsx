@@ -102,8 +102,8 @@ export default function HomeScreen() {
             Let’s turn unused items into useful money.
           </AppText>
           <View style={styles.heroButtons}>
-            <Button label="Sell an Item" kind="accent" onPress={() => router.navigate('/sell')} style={{ flex: 1 }} />
-            <Button label="Declutter My Home" kind="outline" onPress={() => router.navigate('/sell')} style={{ flex: 1 }} />
+            <Button label="Sell an Item" kind="accent" onPress={() => router.push('/listing-editor')} style={{ flex: 1 }} />
+            <Button label="Declutter My Home" kind="outline" onPress={() => router.push('/declutter')} style={{ flex: 1 }} />
           </View>
         </View>
 

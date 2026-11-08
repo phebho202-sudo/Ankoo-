@@ -172,6 +172,18 @@ functions**: no tables or data are changed.
 
 **What you should see:** `Success. No rows returned`.
 
+## Part H — Selling support (Phase 5)
+
+Adds one storage rule so users can look up (and therefore delete) **their own** photo files.
+Without it, deleted listings would leave their photos behind in storage.
+
+1. **SQL Editor** → **+** (new empty tab).
+2. In PowerShell: `notepad supabase\migrations\20261110000100_mojere_market_selling.sql`,
+   then **Ctrl + A**, **Ctrl + C**.
+3. Paste into Supabase and click **Run**.
+
+**What you should see:** `Success. No rows returned`.
+
 ## Undoing (only if ever needed)
 
 The `.down.sql` files in `supabase/migrations` reverse each step. Undoing the core migration
