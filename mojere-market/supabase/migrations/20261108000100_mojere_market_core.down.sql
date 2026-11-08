@@ -28,7 +28,7 @@ drop table if exists
   public.user_blocks, public.favorites, public.listing_images, public.listings,
   public.business_subscriptions, public.payment_records,
   public.business_profiles, public.business_plans,
-  public.profiles, public.categories, public.locations,
+  public.user_profiles, public.categories, public.locations,
   public.app_settings, public.user_roles;
 
 -- Mojere Market's functions all start with mm_.

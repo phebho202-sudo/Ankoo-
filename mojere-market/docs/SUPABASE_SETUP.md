@@ -52,7 +52,7 @@ This shows what already exists, so we can be sure Mojere Market won't clash with
 changed. Share a screenshot.
 
 4. Check it worked: in the left menu click **Table Editor**. You should see new tables such as
-   `listings`, `profiles`, `categories` and `locations`. Click **locations**: it should have 36 rows
+   `listings`, `user_profiles`, `categories` and `locations`. Click **locations**: it should have 36 rows
    (18 LGAs and their 18 main towns).
 
 ## Part C — Create the photo storage

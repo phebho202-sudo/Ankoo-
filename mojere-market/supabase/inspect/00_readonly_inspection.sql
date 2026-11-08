@@ -8,7 +8,7 @@
 -- =====================================================================
 with
 mojere_names(name) as (values
-  ('app_settings'),('user_roles'),('locations'),('categories'),('profiles'),
+  ('app_settings'),('user_roles'),('locations'),('categories'),('user_profiles'),
   ('business_plans'),('business_profiles'),('business_subscriptions'),
   ('listings'),('listing_images'),('favorites'),('user_blocks'),
   ('conversations'),('messages'),('offers'),('reviews'),('reports'),

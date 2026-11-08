@@ -13,6 +13,8 @@
 --   * Before creating anything it checks for name clashes with what already
 --     exists in your project and stops with a clear message if it finds one.
 --   * To undo it, run 20261108000100_mojere_market_core.down.sql.
+--   * Profiles live in `user_profiles` (not `profiles`) so that an older,
+--     unrelated `profiles` table in the project is left completely untouched.
 --
 -- Run supabase/inspect/00_readonly_inspection.sql FIRST and share the result.
 -- Photo storage is set up separately in 20261108000200_mojere_market_storage.sql.
@@ -26,7 +28,7 @@ begin;
 do $preflight$
 declare
   wanted_tables text[] := array[
-    'app_settings','user_roles','locations','categories','profiles',
+    'app_settings','user_roles','locations','categories','user_profiles',
     'business_plans','business_profiles','business_subscriptions',
     'listings','listing_images','favorites','user_blocks',
     'conversations','messages','offers','reviews','reports',
@@ -111,7 +113,7 @@ create table public.categories (
 -- ---------------------------------------------------------------------
 -- 3. Profiles
 -- ---------------------------------------------------------------------
-create table public.profiles (
+create table public.user_profiles (
   id uuid primary key references auth.users (id) on delete cascade,
   display_name text not null check (char_length(btrim(display_name)) between 2 and 60),
   avatar_path text,
@@ -124,12 +126,12 @@ create table public.profiles (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
-create trigger profiles_updated_at before update on public.profiles
+create trigger user_profiles_updated_at before update on public.user_profiles
   for each row execute function public.mm_set_updated_at();
 
 create function public.mm_is_active_user() returns boolean
 language sql stable security definer set search_path = '' as $$
-  select exists (select 1 from public.profiles p where p.id = auth.uid() and p.account_status = 'active');
+  select exists (select 1 from public.user_profiles p where p.id = auth.uid() and p.account_status = 'active');
 $$;
 
 -- Users may edit their own profile, but never their account status.
@@ -149,7 +151,7 @@ begin
   return new;
 end;
 $$;
-create trigger profiles_protect before insert or update on public.profiles
+create trigger user_profiles_protect before insert or update on public.user_profiles
   for each row execute function public.mm_protect_profile();
 
 -- Create a profile automatically when someone signs up.
@@ -161,7 +163,7 @@ begin
   if char_length(name) < 2 then
     name := 'Mojere user';
   end if;
-  insert into public.profiles (id, display_name, terms_accepted_at)
+  insert into public.user_profiles (id, display_name, terms_accepted_at)
   values (
     new.id,
     left(name, 60),
@@ -203,7 +205,7 @@ create trigger business_plans_updated_at before update on public.business_plans
 
 create table public.business_profiles (
   id uuid primary key default gen_random_uuid(),
-  owner_id uuid not null unique references public.profiles (id) on delete cascade,
+  owner_id uuid not null unique references public.user_profiles (id) on delete cascade,
   name text not null check (char_length(btrim(name)) between 2 and 80),
   slug text not null unique check (slug ~ '^[a-z0-9-]{3,60}$'),
   description text check (char_length(description) <= 1000),
@@ -241,7 +243,7 @@ create trigger business_profiles_protect before insert or update on public.busin
 -- ---------------------------------------------------------------------
 create table public.payment_records (
   id uuid primary key default gen_random_uuid(),
-  user_id uuid not null references public.profiles (id) on delete restrict,
+  user_id uuid not null references public.user_profiles (id) on delete restrict,
   purpose text not null check (purpose in ('promotion', 'business_subscription', 'assisted_listing')),
   provider text not null default 'paystack' check (provider in ('paystack')),
   reference text not null unique,  -- unique: the same payment can never be processed twice
@@ -276,7 +278,7 @@ create index business_subscriptions_business_idx on public.business_subscription
 -- ---------------------------------------------------------------------
 create table public.listings (
   id uuid primary key default gen_random_uuid(),
-  seller_id uuid not null references public.profiles (id) on delete cascade,
+  seller_id uuid not null references public.user_profiles (id) on delete cascade,
   business_id uuid references public.business_profiles (id) on delete set null,
   category_id uuid not null references public.categories (id),
   title text not null check (char_length(btrim(title)) between 3 and 80),
@@ -375,7 +377,7 @@ create table public.listing_images (
 );
 
 create table public.favorites (
-  user_id uuid not null references public.profiles (id) on delete cascade,
+  user_id uuid not null references public.user_profiles (id) on delete cascade,
   listing_id uuid not null references public.listings (id) on delete cascade,
   created_at timestamptz not null default now(),
   primary key (user_id, listing_id)
@@ -386,8 +388,8 @@ create index favorites_listing_idx on public.favorites (listing_id);
 -- 7. Blocking, conversations and messages
 -- ---------------------------------------------------------------------
 create table public.user_blocks (
-  blocker_id uuid not null references public.profiles (id) on delete cascade,
-  blocked_id uuid not null references public.profiles (id) on delete cascade,
+  blocker_id uuid not null references public.user_profiles (id) on delete cascade,
+  blocked_id uuid not null references public.user_profiles (id) on delete cascade,
   created_at timestamptz not null default now(),
   primary key (blocker_id, blocked_id),
   check (blocker_id <> blocked_id)
@@ -403,8 +405,8 @@ $$;
 create table public.conversations (
   id uuid primary key default gen_random_uuid(),
   listing_id uuid references public.listings (id) on delete set null,
-  buyer_id uuid not null references public.profiles (id) on delete cascade,
-  seller_id uuid not null references public.profiles (id) on delete cascade,
+  buyer_id uuid not null references public.user_profiles (id) on delete cascade,
+  seller_id uuid not null references public.user_profiles (id) on delete cascade,
   last_message_at timestamptz,
   buyer_last_read_at timestamptz,
   seller_last_read_at timestamptz,
@@ -418,7 +420,7 @@ create index conversations_seller_idx on public.conversations (seller_id, last_m
 create table public.messages (
   id uuid primary key default gen_random_uuid(),
   conversation_id uuid not null references public.conversations (id) on delete cascade,
-  sender_id uuid not null references public.profiles (id) on delete cascade,
+  sender_id uuid not null references public.user_profiles (id) on delete cascade,
   body text not null check (char_length(btrim(body)) between 1 and 2000),
   created_at timestamptz not null default now()
 );
@@ -437,8 +439,8 @@ $$;
 create table public.offers (
   id uuid primary key default gen_random_uuid(),
   listing_id uuid not null references public.listings (id) on delete cascade,
-  buyer_id uuid not null references public.profiles (id) on delete cascade,
-  seller_id uuid not null references public.profiles (id) on delete cascade,
+  buyer_id uuid not null references public.user_profiles (id) on delete cascade,
+  seller_id uuid not null references public.user_profiles (id) on delete cascade,
   made_by text not null check (made_by in ('buyer', 'seller')),
   parent_offer_id uuid references public.offers (id) on delete set null,
   amount_kobo bigint not null check (amount_kobo between 100 and 10000000000),
@@ -461,8 +463,8 @@ create unique index offers_one_open_per_buyer on public.offers (listing_id, buye
 create table public.reviews (
   id uuid primary key default gen_random_uuid(),
   offer_id uuid not null references public.offers (id) on delete cascade,
-  reviewer_id uuid not null references public.profiles (id) on delete cascade,
-  reviewee_id uuid not null references public.profiles (id) on delete cascade,
+  reviewer_id uuid not null references public.user_profiles (id) on delete cascade,
+  reviewee_id uuid not null references public.user_profiles (id) on delete cascade,
   rating smallint not null check (rating between 1 and 5),
   comment text check (char_length(comment) <= 500),
   created_at timestamptz not null default now(),
@@ -492,7 +494,7 @@ create table public.promotions (
   id uuid primary key default gen_random_uuid(),
   listing_id uuid not null references public.listings (id) on delete cascade,
   package_id uuid not null references public.promotion_packages (id),
-  purchaser_id uuid not null references public.profiles (id) on delete cascade,
+  purchaser_id uuid not null references public.user_profiles (id) on delete cascade,
   status text not null default 'pending_payment'
     check (status in ('pending_payment', 'active', 'expired', 'cancelled', 'refunded')),
   price_kobo bigint not null check (price_kobo >= 0),  -- price at the time of request
@@ -509,17 +511,17 @@ create index promotions_listing_idx on public.promotions (listing_id);
 -- ---------------------------------------------------------------------
 create table public.reports (
   id uuid primary key default gen_random_uuid(),
-  reporter_id uuid not null references public.profiles (id) on delete cascade,
+  reporter_id uuid not null references public.user_profiles (id) on delete cascade,
   target_type text not null check (target_type in ('listing', 'user', 'message')),
   listing_id uuid references public.listings (id) on delete set null,
-  reported_user_id uuid references public.profiles (id) on delete set null,
+  reported_user_id uuid references public.user_profiles (id) on delete set null,
   message_id uuid references public.messages (id) on delete set null,
   reason text not null check (reason in
     ('scam', 'prohibited_item', 'fake_or_misleading', 'offensive', 'harassment', 'spam', 'other')),
   details text check (char_length(details) <= 1000),
   status text not null default 'open' check (status in ('open', 'reviewing', 'resolved', 'dismissed')),
   resolution_note text,
-  resolved_by uuid references public.profiles (id),
+  resolved_by uuid references public.user_profiles (id),
   resolved_at timestamptz,
   created_at timestamptz not null default now(),
   check (
@@ -556,7 +558,7 @@ create table public.meetup_locations (
 -- ---------------------------------------------------------------------
 create table public.notifications (
   id uuid primary key default gen_random_uuid(),
-  user_id uuid not null references public.profiles (id) on delete cascade,
+  user_id uuid not null references public.user_profiles (id) on delete cascade,
   type text not null check (type in
     ('message', 'offer_new', 'offer_countered', 'offer_accepted', 'offer_rejected',
      'listing_status', 'favorite_sold', 'account', 'promotion')),
@@ -569,7 +571,7 @@ create table public.notifications (
 create index notifications_user_idx on public.notifications (user_id, created_at desc);
 
 create table public.notification_preferences (
-  user_id uuid primary key references public.profiles (id) on delete cascade,
+  user_id uuid primary key references public.user_profiles (id) on delete cascade,
   messages boolean not null default true,
   offers boolean not null default true,
   listing_updates boolean not null default true,
@@ -583,7 +585,7 @@ create trigger notification_preferences_updated_at before update on public.notif
 
 create table public.push_tokens (
   token text primary key,
-  user_id uuid not null references public.profiles (id) on delete cascade,
+  user_id uuid not null references public.user_profiles (id) on delete cascade,
   platform text not null check (platform in ('ios', 'android')),
   created_at timestamptz not null default now()
 );
@@ -631,7 +633,7 @@ create trigger notifications_protect before update on public.notifications
 -- ---------------------------------------------------------------------
 create table public.declutter_sessions (
   id uuid primary key default gen_random_uuid(),
-  user_id uuid not null references public.profiles (id) on delete cascade,
+  user_id uuid not null references public.user_profiles (id) on delete cascade,
   title text not null default 'My declutter session' check (char_length(title) between 1 and 80),
   status text not null default 'in_progress' check (status in ('in_progress', 'completed')),
   created_at timestamptz not null default now(),
@@ -656,7 +658,7 @@ alter table public.app_settings enable row level security;
 alter table public.user_roles enable row level security;
 alter table public.locations enable row level security;
 alter table public.categories enable row level security;
-alter table public.profiles enable row level security;
+alter table public.user_profiles enable row level security;
 alter table public.business_plans enable row level security;
 alter table public.business_profiles enable row level security;
 alter table public.business_subscriptions enable row level security;
@@ -681,7 +683,7 @@ alter table public.declutter_sessions enable row level security;
 alter table public.declutter_session_items enable row level security;
 
 -- Table-level access. RLS policies below decide which ROWS each user sees.
-grant select on public.app_settings, public.locations, public.categories, public.profiles,
+grant select on public.app_settings, public.locations, public.categories, public.user_profiles,
   public.business_plans, public.business_profiles, public.listings, public.listing_images,
   public.reviews, public.promotion_packages, public.promotions, public.meetup_locations
   to anon, authenticated;
@@ -690,7 +692,7 @@ grant select on public.user_roles, public.business_subscriptions, public.payment
   public.reports, public.admin_actions, public.notifications, public.notification_preferences,
   public.push_tokens, public.declutter_sessions, public.declutter_session_items
   to authenticated;
-grant insert, update, delete on public.profiles, public.business_profiles, public.listings,
+grant insert, update, delete on public.user_profiles, public.business_profiles, public.listings,
   public.listing_images, public.favorites, public.user_blocks, public.notification_preferences,
   public.push_tokens, public.declutter_sessions, public.declutter_session_items
   to authenticated;
@@ -701,7 +703,7 @@ grant update on public.reports to authenticated;
 grant insert, update, delete on public.app_settings, public.locations, public.categories,
   public.business_plans, public.promotion_packages, public.meetup_locations to authenticated;
 grant all on public.app_settings, public.user_roles, public.locations, public.categories,
-  public.profiles, public.business_plans, public.business_profiles, public.business_subscriptions,
+  public.user_profiles, public.business_plans, public.business_profiles, public.business_subscriptions,
   public.payment_records, public.listings, public.listing_images, public.favorites,
   public.user_blocks, public.conversations, public.messages, public.offers, public.reviews,
   public.promotion_packages, public.promotions, public.reports, public.admin_actions,
@@ -744,11 +746,11 @@ create policy "admins manage meetup spots" on public.meetup_locations for all
 create policy "see own role" on public.user_roles for select
   using (user_id = auth.uid() or public.mm_is_admin());
 
--- profiles: public information is readable; you edit only your own.
-create policy "read profiles" on public.profiles for select using (true);
-create policy "create own profile" on public.profiles for insert
+-- user_profiles: public information is readable; you edit only your own.
+create policy "read profiles" on public.user_profiles for select using (true);
+create policy "create own profile" on public.user_profiles for insert
   with check (id = auth.uid());
-create policy "update own profile" on public.profiles for update
+create policy "update own profile" on public.user_profiles for update
   using (id = auth.uid() or public.mm_is_admin())
   with check (id = auth.uid() or public.mm_is_admin());
 
@@ -893,7 +895,7 @@ begin
     seller_last_read_at = case when new.sender_id = conv.seller_id then new.created_at else seller_last_read_at end
   where id = conv.id;
   recipient := case when new.sender_id = conv.buyer_id then conv.seller_id else conv.buyer_id end;
-  select display_name into sender_name from public.profiles where id = new.sender_id;
+  select display_name into sender_name from public.user_profiles where id = new.sender_id;
   perform public.mm_notify(recipient, 'message', 'New message from ' || coalesce(sender_name, 'a user'),
     left(new.body, 120), jsonb_build_object('conversation_id', conv.id));
   return new;
@@ -1167,7 +1169,7 @@ begin
   if not public.mm_is_admin() then raise exception 'Not authorised.'; end if;
   if p_user_id = auth.uid() then raise exception 'You cannot change your own account status.'; end if;
   if coalesce(btrim(p_reason), '') = '' then raise exception 'A reason is required.'; end if;
-  update public.profiles set account_status = p_status where id = p_user_id;
+  update public.user_profiles set account_status = p_status where id = p_user_id;
   if not found then raise exception 'User not found.'; end if;
   perform public.mm_log_admin_action('account_' || p_status, 'user', p_user_id::text, p_reason);
   perform public.mm_notify(p_user_id, 'account', 'Your account status changed', p_reason, '{}'::jsonb);

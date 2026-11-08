@@ -42,8 +42,8 @@ insert into public.user_roles (user_id, role) values ('00000000-0000-0000-0000-0
 select set_config('t.cat', (select id::text from public.categories where slug = 'furniture'), false);
 select set_config('t.lga', (select id::text from public.locations where slug = 'akure-south'), false);
 
-select public.t_check((select count(*) = 4 from public.profiles), 'sign-up creates a profile automatically');
-select public.t_check((select terms_accepted_at is not null from public.profiles where display_name = 'Alice'),
+select public.t_check((select count(*) = 4 from public.user_profiles), 'sign-up creates a profile automatically');
+select public.t_check((select terms_accepted_at is not null from public.user_profiles where display_name = 'Alice'),
   'terms acceptance is recorded');
 
 -- ---------- Alice, the seller ----------
@@ -60,7 +60,7 @@ select set_config('t.draft', (select id::text from public.listings where title =
 
 select public.t_check((select published_at is not null and moderation_status = 'approved'
   from public.listings where id = current_setting('t.listing')::uuid), 'publishing sets the publish date');
-select public.t_blocked($q$update public.profiles set account_status = 'suspended' where id = auth.uid()$q$,
+select public.t_blocked($q$update public.user_profiles set account_status = 'suspended' where id = auth.uid()$q$,
   'user cannot change own account status');
 select public.t_blocked($q$insert into public.user_roles (user_id, role) values (auth.uid(), 'admin')$q$,
   'user cannot make themselves admin');
@@ -91,7 +91,7 @@ select public.t_check((select count(*) from public.listings where id = current_s
   'cannot see someone else''s draft');
 select public.t_check((select count(*) from public.listings where id = current_setting('t.listing')::uuid) = 1,
   'can see a published listing');
-select public.t_check(public.t_rows($q$update public.profiles set display_name = 'Hacked'
+select public.t_check(public.t_rows($q$update public.user_profiles set display_name = 'Hacked'
   where id = '00000000-0000-0000-0000-00000000000a'$q$) = 0, 'cannot edit someone else''s profile');
 select public.t_blocked($q$insert into storage.objects (bucket_id, name)
   values ('listing-images', '00000000-0000-0000-0000-00000000000a/evil.jpg')$q$, 'cannot upload into another user''s folder');

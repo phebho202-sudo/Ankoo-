@@ -54,7 +54,7 @@ export function useMyProfile() {
     enabled: !!supabase && !!userId,
     queryFn: async () => {
       const { data, error } = await requireClient()
-        .from('profiles')
+        .from('user_profiles')
         .select('id, display_name, avatar_path, bio, lga_id, town_id, neighbourhood, account_status, created_at')
         .eq('id', userId!)
         .maybeSingle();
@@ -81,7 +81,7 @@ export function useSaveProfile() {
       if (!userId) throw new Error('Please log in again.');
       // upsert: also covers people whose account existed before Mojere Market.
       const { error } = await requireClient()
-        .from('profiles')
+        .from('user_profiles')
         .upsert({ id: userId, ...values }, { onConflict: 'id' });
       if (error) throw error;
     },
