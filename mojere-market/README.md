@@ -40,6 +40,7 @@ of pretending to work.
 | [PUSH_NOTIFICATIONS](docs/PUSH_NOTIFICATIONS.md) | Lock-screen alerts for installed builds |
 | [ANDROID_BUILD](docs/ANDROID_BUILD.md) / [IOS_BUILD](docs/IOS_BUILD.md) | Making installable apps with EAS |
 | [DEPLOYMENT_CHECKLIST](docs/DEPLOYMENT_CHECKLIST.md) | Everything to tick before launching |
+| [LAUNCH_PLAN](docs/LAUNCH_PLAN.md) | Going public and growing in Ondo State |
 
 ## Run it
 

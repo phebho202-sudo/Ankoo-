@@ -42,7 +42,7 @@ Nothing here happens automatically. Tick each item yourself. Items marked 💳 c
 - [ ] Report a listing and a message; resolve them in the admin dashboard; check the audit log.
 - [ ] Turn on airplane mode: the offline banner appears; turn it off: screens refresh.
 
-## 7. Launch in Akure / FUTA
+## 7. Launch in Akure / FUTA (full plan: `docs/LAUNCH_PLAN.md`)
 - [ ] Seed real listings by inviting real sellers (never fake listings or reviews).
 - [ ] Watch Admin → Reports daily for the first weeks.
 - [ ] Keep `git pull` + migrations + `eas build` as the update routine; note each release in a simple log.
