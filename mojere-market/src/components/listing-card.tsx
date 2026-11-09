@@ -74,7 +74,7 @@ export function ListingCard({ item, width }: { item: ListingSummary; width?: num
           {item.title}
         </AppText>
         <AppText variant="caption" numberOfLines={1}>
-          {placeLabel(item)} · {timeAgo(item.published_at)}
+          {[placeLabel(item), timeAgo(item.published_at)].filter(Boolean).join(' · ')}
         </AppText>
       </View>
     </Pressable>

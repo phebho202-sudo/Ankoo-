@@ -207,6 +207,16 @@ functions and one rule**; no data is changed. Payments stay **switched off** (se
    then **Ctrl + A**, **Ctrl + C**.
 3. Paste into Supabase and click **Run** → `Success. No rows returned`.
 
+## Part K — Fix: listing publish dates
+
+Makes sure every listing records when it was published (listings by admin accounts were missing this),
+and fills in missing dates on existing listings using the date each was created.
+
+1. **SQL Editor** → **+** (new empty tab).
+2. In PowerShell: `notepad supabase\migrations\20261113000100_mojere_market_fix_listing_dates.sql`,
+   then **Ctrl + A**, **Ctrl + C**.
+3. Paste into Supabase and click **Run** → `Success. No rows returned`.
+
 ## Undoing (only if ever needed)
 
 The `.down.sql` files in `supabase/migrations` reverse each step. Undoing the core migration

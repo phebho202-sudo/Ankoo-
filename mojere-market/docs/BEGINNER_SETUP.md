@@ -144,3 +144,22 @@ npm run check
   Check with `npx.cmd expo whoami`.
 - **"The request timed out" on the phone**: the Wi-Fi is blocking phone ↔ laptop traffic. Start the app with
   `npx.cmd expo start --tunnel` instead of `npm.cmd start`.
+
+## Getting each new update (use this every time)
+
+In a PowerShell window that is **not** running the app:
+
+```
+cd C:\dev\Ankoo-\mojere-market
+git checkout -- package-lock.json
+git pull
+npm.cmd install
+```
+
+- `git checkout -- package-lock.json` undoes an automatic change npm makes on your laptop, which
+  otherwise blocks `git pull` with "Aborting". It never touches your `.env` settings.
+- Always `git pull` **before** opening a new file in Notepad. If Notepad asks "create a new file?",
+  click **No**: it means the update has not been downloaded yet.
+- Check you have the latest version with `git log --oneline -1`.
+- Then restart the app: **Ctrl + C** in the app window, then `npx.cmd expo start --tunnel --clear`.
+

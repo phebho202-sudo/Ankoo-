@@ -119,3 +119,17 @@ select public.t_check((select count(*) from public.admin_actions where action = 
 reset role;
 
 \echo 'ALL BUSINESS TESTS PASSED'
+
+-- ---------- Regression: staff listings get a publish date ----------
+set role authenticated;
+select set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000ad', false);
+insert into public.listings (seller_id, category_id, title, condition, price_kobo, lga_id, status)
+values (auth.uid(), current_setting('t.cat')::uuid, 'Admin draft radio', 'good', 500000, current_setting('t.lga')::uuid, 'draft');
+update public.listings set status = 'active' where title = 'Admin draft radio';
+select public.t_check((select published_at is not null from public.listings where title = 'Admin draft radio'),
+  'listings published by staff get a publish date');
+update public.listings set status = 'sold' where title = 'Admin draft radio';
+select public.t_check((select sold_at is not null from public.listings where title = 'Admin draft radio'),
+  'listings marked sold by staff get a sold date');
+reset role;
+\echo 'ALL REGRESSION TESTS PASSED'

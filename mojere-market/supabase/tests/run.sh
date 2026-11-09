@@ -12,6 +12,7 @@ $P -d mojere_test -f migrations/20261109000100_mojere_market_marketplace.sql -o 
 $P -d mojere_test -f migrations/20261110000100_mojere_market_selling.sql -o /dev/null
 $P -d mojere_test -f migrations/20261111000100_mojere_market_messaging.sql -o /dev/null
 $P -d mojere_test -f migrations/20261112000100_mojere_market_business.sql -o /dev/null
+$P -d mojere_test -f migrations/20261113000100_mojere_market_fix_listing_dates.sql -o /dev/null
 for t in tests/01_security_tests.sql tests/02_marketplace_tests.sql tests/03_selling_tests.sql tests/04_messaging_tests.sql tests/05_business_tests.sql; do
   $P -d mojere_test -f "$t" -o /dev/null 2>&1 | sed -E 's/^psql:[^ ]+ //; s/^NOTICE:  //'
 done
