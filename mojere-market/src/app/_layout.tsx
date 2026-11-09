@@ -65,6 +65,15 @@ export default function RootLayout() {
             />
             <Stack.Screen name="chat/[id]" options={{ title: "Chat" }} />
             <Stack.Screen
+              name="business/index"
+              options={{ title: "Mojere Market Business" }}
+            />
+            <Stack.Screen
+              name="business/[slug]"
+              options={{ title: "Business" }}
+            />
+            <Stack.Screen name="promote/[id]" options={{ title: "Promote" }} />
+            <Stack.Screen
               name="notifications"
               options={{ title: "Notifications" }}
             />

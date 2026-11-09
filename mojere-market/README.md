@@ -20,9 +20,9 @@ The app is built in phases. Each phase is checked before the next one starts.
 | 3 | Sign-up, login, password reset, profiles, location | **Done.** Tested on iPhone with the real project |
 | 4 | Home feed, categories, search, filters, product page | **Done.** Tested on iPhone |
 | 5 | Selling, photo uploads, Declutter My Home | **Built and tested.** Needs a full phone test with real photos |
-| 6 | Favourites, offers, realtime messages, notifications | **Built and tested** (automated + practice database). Needs the Part I database update, then a two-phone test |
-| 7 | Business storefronts, promotions, payment preparation | Next |
-| 8 | Reporting, blocking, moderation, admin dashboard | Not started |
+| 6 | Favourites, offers, realtime messages, notifications | **Built and tested.** Needs a two-account test on the phone |
+| 7 | Business storefronts, promotions, payment preparation | **Built and tested** (automated + practice database). Payments **switched off** until you decide ([docs/PAYMENTS.md](docs/PAYMENTS.md)). Needs the Part J database update |
+| 8 | Reporting, blocking, moderation, admin dashboard | Next |
 | 9 | Full testing and Android/iOS build preparation | Not started |
 
 Screens that need the database show a clear "not connected yet" notice instead
@@ -65,6 +65,9 @@ src/app/            Screens. Every file here is a screen (Expo Router).
   chat/[id].tsx     Live chat with item context, offers, handover, reviews, block/report
   notifications.tsx In-app notifications (plus notification-settings.tsx)
   favourites.tsx    Saved items
+  business/         Mojere Market Business: manage business and plan; public storefronts
+  promote/[id].tsx  Promote a listing (featured / homepage packages)
+supabase/functions  Server functions for Paystack (initialize + signed webhook)
   edit-profile.tsx  Edit name, LGA, town, area and bio
   terms.tsx         Terms and Privacy (draft, pending legal review)
 src/components/     Reusable pieces: logo, buttons, cards, notices
@@ -85,9 +88,10 @@ docs/               Guides
 - Only the **public** Supabase key ever goes in the app. The app refuses to
   start if a secret/service-role key is pasted in by mistake.
 - `.env` is never committed to Git.
-- Every database table has Row Level Security, checked by 112 automated database tests.
+- Every database table has Row Level Security, checked by 137 automated database tests.
 - Admin roles can only be granted from the Supabase dashboard, never from the app.
-- Payments are never marked as paid from the phone; they are verified on a server (Phase 7).
+- Payments are never marked as paid from the phone: only the server, after Paystack confirms with a
+  verified signature, and each payment is processed once. Prices come from the database.
 
 ## Note on this repository
 

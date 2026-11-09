@@ -92,6 +92,14 @@ function Row({ l }: { l: MyListing }) {
       {l.status !== 'removed' ? (
         <View style={styles.actions}>
           <Button label="Edit" kind="outline" onPress={() => router.push({ pathname: '/listing-editor', params: { id: l.id } })} style={styles.action} />
+          {l.status === 'active' && l.moderation_status === 'approved' ? (
+            <Button
+              label="Promote"
+              kind="accent"
+              onPress={() => router.push({ pathname: '/promote/[id]', params: { id: l.id } })}
+              style={styles.action}
+            />
+          ) : null}
           {l.status === 'active' ? (
             <Button label="Pause" kind="outline" onPress={() => void run('pause')} style={styles.action} disabled={action.isPending} />
           ) : null}

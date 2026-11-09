@@ -1,10 +1,11 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useQuery } from '@tanstack/react-query';
-import { useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { ActivityIndicator, View } from 'react-native';
 
 import { ListingGrid } from '@/components/listing-grid';
 import { AppText, Button, Card, Notice } from '@/components/ui';
+import { useBusinessOfUser } from '@/lib/business';
 import { useListingSearch } from '@/lib/listings';
 import { useRatingSummary } from '@/lib/offers';
 import { supabase } from '@/lib/supabase';
@@ -48,6 +49,7 @@ export default function SellerScreen() {
   const seller = useSellerProfile(id);
   const listings = useListingSearch({ sellerId: id });
   const ratings = useRatingSummary(id);
+  const storefront = useBusinessOfUser(id);
   const items = listings.data?.pages.flat() ?? [];
   const p = seller.data?.profile;
 
@@ -69,6 +71,13 @@ export default function SellerScreen() {
             </View>
           ) : null}
           {p.bio ? <AppText>{p.bio}</AppText> : null}
+          {storefront.data ? (
+            <Button
+              label={`Visit ${storefront.data.name}`}
+              kind="outline"
+              onPress={() => router.push({ pathname: '/business/[slug]', params: { slug: storefront.data!.slug } })}
+            />
+          ) : null}
           {ratings.data && ratings.data.count > 0 ? (
             <View style={{ gap: spacing.xs }}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>

@@ -18,10 +18,12 @@ export type ListingInput = {
   lgaId: string;
   townId: string | null;
   neighbourhood: string;
+  businessId?: string | null;
 };
 
 export type MyListing = {
   id: string;
+  business_id: string | null;
   title: string;
   description: string;
   category_id: string;
@@ -41,7 +43,7 @@ export type MyListing = {
 };
 
 const MY_LISTING_COLUMNS =
-  'id, title, description, category_id, condition, price_kobo, is_negotiable, lga_id, town_id, neighbourhood, status, moderation_status, moderation_note, view_count, created_at, published_at, listing_images(storage_path, position)';
+  'id, title, description, category_id, business_id, condition, price_kobo, is_negotiable, lga_id, town_id, neighbourhood, status, moderation_status, moderation_note, view_count, created_at, published_at, listing_images(storage_path, position)';
 
 function client() {
   if (!supabase) throw new Error('Supabase is not configured yet.');
@@ -59,6 +61,7 @@ function toRow(v: ListingInput) {
     lga_id: v.lgaId,
     town_id: v.townId,
     neighbourhood: v.neighbourhood.trim() || null,
+    business_id: v.businessId ?? null,
   };
 }
 

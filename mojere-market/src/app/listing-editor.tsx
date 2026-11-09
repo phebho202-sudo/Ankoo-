@@ -13,6 +13,7 @@ import { PhotoPicker } from '@/components/photo-picker';
 import { AppText, Button, Card, Notice, Screen } from '@/components/ui';
 import { CONDITIONS } from '@/constants/catalog';
 import { useAuth } from '@/lib/auth';
+import { useMyBusiness } from '@/lib/business';
 import { addToDeclutterSession } from '@/lib/declutter';
 import { formatNaira, parseNairaToKobo } from '@/lib/format';
 import type { PhotoItem } from '@/lib/photos';
@@ -104,6 +105,7 @@ export default function ListingEditorScreen() {
       status={l?.status ?? null}
       initial={initial}
       initialPhotos={initialPhotos}
+      initialBusinessId={l ? l.business_id : undefined}
     />
   );
 }
@@ -115,6 +117,7 @@ function EditorForm({
   status,
   initial,
   initialPhotos,
+  initialBusinessId,
 }: {
   userId: string;
   listingId?: string;
@@ -122,12 +125,20 @@ function EditorForm({
   status: string | null;
   initial: ListingFormValues;
   initialPhotos: PhotoItem[];
+  /** undefined = new listing (default to the business if the seller has one). */
+  initialBusinessId?: string | null;
 }) {
   const locations = useLocations();
   const categories = useCategories();
   const invalidate = useInvalidateListings();
 
   const [photos, setPhotos] = useState<PhotoItem[]>(initialPhotos);
+  const myBusiness = useMyBusiness();
+  const business = myBusiness.data?.business ?? null;
+  const [useBusiness, setUseBusiness] = useState<boolean | null>(
+    initialBusinessId === undefined ? null : !!initialBusinessId,
+  );
+  const listUnderBusiness = !!business && business.status === 'active' && (useBusiness ?? true);
   const [photoError, setPhotoError] = useState<string | undefined>();
   const [preview, setPreview] = useState<Parsed | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
@@ -175,6 +186,7 @@ function EditorForm({
           lgaId: values.lgaId,
           townId: values.townId,
           neighbourhood: values.neighbourhood,
+          businessId: listUnderBusiness ? business!.id : null,
         },
         photos,
         publish,
@@ -370,6 +382,21 @@ function EditorForm({
             />
           )}
         />
+
+        {business && business.status === 'active' ? (
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+            <View style={{ flex: 1 }}>
+              <AppText style={{ fontWeight: '600' }}>List under my business</AppText>
+              <AppText variant="caption">Shows on {business.name}’s storefront.</AppText>
+            </View>
+            <Switch
+              accessibilityLabel="List under my business"
+              value={listUnderBusiness}
+              onValueChange={setUseBusiness}
+              trackColor={{ true: colors.primary, false: colors.border }}
+            />
+          </View>
+        ) : null}
 
         {serverError ? <Notice tone="danger" title={serverError} /> : null}
         {busy ? (

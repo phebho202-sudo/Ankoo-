@@ -43,7 +43,8 @@
           "photosPermission": "Mojere Market needs access to your photos so you can add pictures of items you want to sell.",
           "cameraPermission": "Mojere Market needs your camera so you can take pictures of items you want to sell."
         }
-      ]
+      ],
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true

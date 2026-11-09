@@ -197,6 +197,16 @@ Live chat uses Supabase **Realtime**, which the core migration already switched 
 If new messages only appear after leaving and reopening a chat, open **Database → Publications**
 in Supabase and check that `supabase_realtime` includes `messages`.
 
+## Part J — Businesses, promotions and payments (Phase 7)
+
+Adds server functions for business plans, promotion payments and plan listing limits. It **only adds
+functions and one rule**; no data is changed. Payments stay **switched off** (see `docs/PAYMENTS.md`).
+
+1. **SQL Editor** → **+** (new empty tab).
+2. In PowerShell: `notepad supabase\migrations\20261112000100_mojere_market_business.sql`,
+   then **Ctrl + A**, **Ctrl + C**.
+3. Paste into Supabase and click **Run** → `Success. No rows returned`.
+
 ## Undoing (only if ever needed)
 
 The `.down.sql` files in `supabase/migrations` reverse each step. Undoing the core migration

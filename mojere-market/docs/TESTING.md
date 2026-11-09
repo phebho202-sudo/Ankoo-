@@ -36,6 +36,10 @@ What the app tests cover:
   countering, accepting and withdrawing offers, two-sided handover confirmation, reviews only
   after both confirm, blocking, and product-page "Message seller" / "Make an offer".
 
+- Payments: genuine Paystack signatures accepted, forged or tampered ones rejected, prices sent by
+  the app ignored, only `charge.success` events processed; Promote screen shows database prices and
+  is honest that payments are off; business form and WhatsApp number helpers.
+
 ## Database security tests
 
 `supabase/tests/run.sh` builds a throwaway practice PostgreSQL database, applies the Mojere Market
@@ -114,5 +118,16 @@ or use the Gmail sender set up in Part D.
 7. B saves another item (**Save item**) → Profile → **Saved items** shows it.
 8. A → ⋮ → **Block this person**. B can no longer send messages. A → ⋮ → **Unblock**.
 9. Profile → **Notification settings** → turn off Messages; new messages no longer create notifications.
+
+## Manual checks for businesses and promotions (Phase 7)
+
+1. Profile → **Mojere Market Business** → fill in the form (add a logo) → **Create my business**.
+   You are on **Business Free**.
+2. **View storefront**: logo, description, Call/WhatsApp buttons (only for details you entered).
+3. Sell a new item: the **List under my business** switch is on. Publish it; it appears on the storefront.
+4. **My listings** → **Promote** on a live item → choose a package → **Request promotion**: the app says
+   online payment is not switched on yet. The request appears as "Waiting for payment".
+5. Business → **Request this plan** on Business Basic: shows "Waiting for payment".
+6. Payments in Paystack **test mode** are tested later, following `docs/PAYMENTS.md` Part 1.
 
 Record the phone model and result for each check.

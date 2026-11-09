@@ -99,3 +99,27 @@ export const listingSchema = z.object({
   neighbourhood: z.string().trim().max(80, 'Keep this under 80 characters.'),
 });
 export type ListingFormValues = z.input<typeof listingSchema>;
+
+const optionalPhone = z
+  .string()
+  .trim()
+  .refine((v) => v === '' || /^\+?[0-9 ]{7,20}$/.test(v), 'Enter a phone number like 0803 123 4567.');
+
+export const businessSchema = z.object({
+  name: z.string().trim().min(2, 'Enter your business name.').max(80, 'Keep the name under 80 characters.'),
+  slug: z
+    .string()
+    .trim()
+    .regex(/^[a-z0-9-]{3,60}$/, 'Use 3–60 lowercase letters, numbers or dashes, e.g. akure-gadgets.'),
+  description: z.string().trim().max(1000, 'Keep the description under 1,000 characters.'),
+  categoryId: z.string().uuid().nullable(),
+  contactPhone: optionalPhone,
+  contactEmail: z
+    .string()
+    .trim()
+    .refine((v) => v === '' || z.string().email().safeParse(v).success, 'Enter a valid email address.'),
+  whatsapp: optionalPhone,
+  lgaId: z.string().uuid('Choose where the business is.').nullable(),
+  townId: z.string().uuid().nullable(),
+});
+export type BusinessFormValues = z.input<typeof businessSchema>;

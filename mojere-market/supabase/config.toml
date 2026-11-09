@@ -1,0 +1,8 @@
+# Settings for the Supabase CLI (optional; the dashboard can be used instead).
+# Paystack calls the webhook without a Supabase login, so JWT checks are off
+# for that function only. Its Paystack signature check protects it instead.
+[functions.paystack-webhook]
+verify_jwt = false
+
+[functions.paystack-initialize]
+verify_jwt = true
