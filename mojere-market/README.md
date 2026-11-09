@@ -23,10 +23,23 @@ The app is built in phases. Each phase is checked before the next one starts.
 | 6 | Favourites, offers, realtime messages, notifications | **Built and tested.** Needs a two-account test on the phone |
 | 7 | Business storefronts, promotions, payment preparation | **Done.** Tested on iPhone. Payments **switched off** until you decide ([docs/PAYMENTS.md](docs/PAYMENTS.md)) |
 | 8 | Reporting, blocking, moderation, admin dashboard | **Built and tested** (automated + practice database). Needs the Part L database update ([docs/ADMIN_SETUP.md](docs/ADMIN_SETUP.md)) |
-| 9 | Full testing and Android/iOS build preparation | Next |
+| 9 | Full testing and Android/iOS build preparation | **Built and checked.** EAS build settings, push notifications (installed builds), offline banner, build and launch guides. Real builds need your Expo/EAS setup |
 
 Screens that need the database show a clear "not connected yet" notice instead
 of pretending to work.
+
+## Guides
+
+| Guide | What it is for |
+|---|---|
+| [BEGINNER_SETUP](docs/BEGINNER_SETUP.md) | Install tools, run the app on your phone, get each update |
+| [SUPABASE_SETUP](docs/SUPABASE_SETUP.md) | Connect Supabase and run each database update (Parts A–L) |
+| [TESTING](docs/TESTING.md) | Automated checks and manual phone checks |
+| [ADMIN_SETUP](docs/ADMIN_SETUP.md) | Staff roles and the admin dashboard |
+| [PAYMENTS](docs/PAYMENTS.md) | Paystack: how it is protected, test mode, going live |
+| [PUSH_NOTIFICATIONS](docs/PUSH_NOTIFICATIONS.md) | Lock-screen alerts for installed builds |
+| [ANDROID_BUILD](docs/ANDROID_BUILD.md) / [IOS_BUILD](docs/IOS_BUILD.md) | Making installable apps with EAS |
+| [DEPLOYMENT_CHECKLIST](docs/DEPLOYMENT_CHECKLIST.md) | Everything to tick before launching |
 
 ## Run it
 
@@ -69,7 +82,8 @@ src/app/            Screens. Every file here is a screen (Expo Router).
   promote/[id].tsx  Promote a listing (featured / homepage packages)
   admin/            Staff dashboard: stats, reports, listings, users, money, catalog, audit log
   guidelines.tsx    Community guidelines
-supabase/functions  Server functions for Paystack (initialize + signed webhook)
+supabase/functions  Server functions: Paystack (initialize + signed webhook), send-push
+eas.json            Cloud build profiles (development, preview APK, production)
   edit-profile.tsx  Edit name, LGA, town, area and bio
   terms.tsx         Terms and Privacy (draft, pending legal review)
 src/components/     Reusable pieces: logo, buttons, cards, notices

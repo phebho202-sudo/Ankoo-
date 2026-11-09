@@ -4,7 +4,9 @@ import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
+import { OfflineBanner } from "@/components/offline-banner";
 import { AuthProvider } from "@/lib/auth";
+import { usePushNotifications } from "@/lib/push";
 import { colors } from "@/theme";
 
 export default function RootLayout() {
@@ -24,6 +26,8 @@ export default function RootLayout() {
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <StatusBar style="dark" />
+          <PushSetup />
+          <OfflineBanner />
           <Stack
             screenOptions={{
               headerTintColor: colors.primary,
@@ -130,4 +134,10 @@ export default function RootLayout() {
       </QueryClientProvider>
     </SafeAreaProvider>
   );
+}
+
+/** Registers for phone alerts in installed builds (does nothing in Expo Go). */
+function PushSetup() {
+  usePushNotifications();
+  return null;
 }

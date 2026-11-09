@@ -40,6 +40,11 @@ What the app tests cover:
   the app ignored, only `charge.success` events processed; Promote screen shows database prices and
   is honest that payments are off; business form and WhatsApp number helpers.
 
+- Admin: non-staff refused, statistics shown, moderators do not see admin-only sections, a reason is
+  required before removing a listing, community guidelines.
+- Push notifications: webhook payload parsing, one message per real device, removing uninstalled devices,
+  tapping an alert opens the right chat or item.
+
 ## Database security tests
 
 `supabase/tests/run.sh` builds a throwaway practice PostgreSQL database, applies the Mojere Market
@@ -129,5 +134,24 @@ or use the Gmail sender set up in Part D.
    online payment is not switched on yet. The request appears as "Waiting for payment".
 5. Business → **Request this plan** on Business Basic: shows "Waiting for payment".
 6. Payments in Paystack **test mode** are tested later, following `docs/PAYMENTS.md` Part 1.
+
+## Manual checks for the admin dashboard (Phase 8)
+
+1. Profile → **Admin dashboard** (only visible to staff). Statistics load.
+2. From a second account, report a listing. As admin: **Reports** → **Investigate** → **Remove listing**
+   (a reason is required) → **Resolve**. The listing disappears from Explore.
+3. **Listings** → **Removed** → **Restore (as paused)**.
+4. **Users** → search your second account → **Suspend** → that account cannot post or message → **Reactivate**.
+5. **Promotions, plans and payments** → activate your "Waiting for payment" promotion (only after confirming
+   payment) → the item shows **Featured** on Home.
+6. **Categories, places and settings** → add a safe meetup spot in Akure South → it appears on items there.
+7. **Audit log** shows every step above with your reasons.
+
+## Final checks (Phase 9)
+
+- Turn on airplane mode: an "You are offline" banner appears; turn it off: screens refresh by themselves.
+- Run through every section above on **mobile data**, on both an Android phone and an iPhone if possible.
+- Installed builds only: allow notifications and confirm a lock-screen alert for a new message
+  (`docs/PUSH_NOTIFICATIONS.md`).
 
 Record the phone model and result for each check.

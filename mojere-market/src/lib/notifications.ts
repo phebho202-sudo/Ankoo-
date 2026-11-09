@@ -19,6 +19,7 @@ export type NotificationPrefs = {
   listing_updates: boolean;
   account: boolean;
   promotions: boolean;
+  push_enabled: boolean;
 };
 
 export const DEFAULT_PREFS: NotificationPrefs = {
@@ -27,6 +28,7 @@ export const DEFAULT_PREFS: NotificationPrefs = {
   listing_updates: true,
   account: true,
   promotions: true,
+  push_enabled: true,
 };
 
 function client() {
@@ -98,7 +100,7 @@ export function useNotificationPrefs() {
     queryFn: async () => {
       const { data, error } = await client()
         .from('notification_preferences')
-        .select('messages, offers, listing_updates, account, promotions')
+        .select('messages, offers, listing_updates, account, promotions, push_enabled')
         .maybeSingle();
       if (error) throw error;
       return (data as NotificationPrefs | null) ?? DEFAULT_PREFS;

@@ -6,3 +6,7 @@ verify_jwt = false
 
 [functions.paystack-initialize]
 verify_jwt = true
+
+# Called by a Database Webhook with a shared secret header, not a user login.
+[functions.send-push]
+verify_jwt = false

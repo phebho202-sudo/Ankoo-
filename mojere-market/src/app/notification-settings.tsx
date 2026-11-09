@@ -8,9 +8,10 @@ import {
   useSaveNotificationPrefs,
   type NotificationPrefs,
 } from '@/lib/notifications';
+import { canUsePush } from '@/lib/push';
 import { colors, spacing } from '@/theme';
 
-const OPTIONS: { key: keyof NotificationPrefs; label: string; help: string }[] = [
+const OPTIONS: { key: Exclude<keyof NotificationPrefs, 'push_enabled'>; label: string; help: string }[] = [
   { key: 'messages', label: 'Messages', help: 'When someone sends you a message.' },
   { key: 'offers', label: 'Offers', help: 'New offers, counteroffers and accepted offers.' },
   { key: 'listing_updates', label: 'Listing updates', help: 'Review results, and saved items that sell.' },
@@ -62,12 +63,30 @@ export default function NotificationSettingsScreen() {
         ))}
       </Card>
       {error ? <Notice tone="danger" title={error} /> : null}
-      <Notice title="Phone push notifications are not set up yet">
-        <AppText variant="small">
-          Alerts on your lock screen need the installable Mojere Market app, which is prepared in a later step. Until then,
-          notifications appear inside the app.
-        </AppText>
-      </Notice>
+      {canUsePush() ? (
+        <Card>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
+            <View style={{ flex: 1 }}>
+              <AppText style={{ fontWeight: '600' }}>Phone alerts</AppText>
+              <AppText variant="caption">Show these notifications on your lock screen too.</AppText>
+            </View>
+            <Switch
+              accessibilityLabel="Phone alerts"
+              value={current.push_enabled}
+              onValueChange={(v) => void toggle('push_enabled', v)}
+              disabled={save.isPending}
+              trackColor={{ true: colors.primary, false: colors.border }}
+            />
+          </View>
+        </Card>
+      ) : (
+        <Notice title="Phone alerts need the installed app">
+          <AppText variant="small">
+            Lock-screen alerts work in the installable Mojere Market app, not in the Expo Go test app. Notifications always appear inside
+            the app.
+          </AppText>
+        </Notice>
+      )}
     </Screen>
   );
 }
