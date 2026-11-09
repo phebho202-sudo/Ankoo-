@@ -17,7 +17,7 @@ const mockState = { signedIn: false };
 jest.mock('@/lib/supabase', () => {
   const rows: Record<string, unknown> = {
     user_profiles: { id: 'u1', display_name: 'Demola', lga_id: '6f1c1f0e-3b7a-4c1e-9d55-2f6f0b6c9a11', town_id: null, neighbourhood: null, account_status: 'active', created_at: '2026-11-08' },
-    categories: [{ id: '6f1c1f0e-3b7a-4c1e-9d55-2f6f0b6c9a10', slug: 'furniture', name: 'Furniture' }],
+    categories: [{ id: '6f1c1f0e-3b7a-4c1e-9d55-2f6f0b6c9a10', slug: 'furniture', name: 'Furniture', icon: 'bed-outline', is_active: true }],
     locations: [{ id: '6f1c1f0e-3b7a-4c1e-9d55-2f6f0b6c9a11', slug: 'akure-south', name: 'Akure South', kind: 'lga', parent_id: null }],
   };
   const from = jest.fn((name: string) => {

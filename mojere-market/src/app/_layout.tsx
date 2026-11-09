@@ -65,6 +65,29 @@ export default function RootLayout() {
             />
             <Stack.Screen name="chat/[id]" options={{ title: "Chat" }} />
             <Stack.Screen
+              name="admin/index"
+              options={{ title: "Admin dashboard" }}
+            />
+            <Stack.Screen
+              name="admin/listings"
+              options={{ title: "Moderate listings" }}
+            />
+            <Stack.Screen name="admin/reports" options={{ title: "Reports" }} />
+            <Stack.Screen name="admin/users" options={{ title: "Users" }} />
+            <Stack.Screen
+              name="admin/money"
+              options={{ title: "Promotions and payments" }}
+            />
+            <Stack.Screen
+              name="admin/catalog"
+              options={{ title: "Categories and settings" }}
+            />
+            <Stack.Screen name="admin/audit" options={{ title: "Audit log" }} />
+            <Stack.Screen
+              name="guidelines"
+              options={{ title: "Community guidelines" }}
+            />
+            <Stack.Screen
               name="business/index"
               options={{ title: "Mojere Market Business" }}
             />

@@ -22,8 +22,8 @@ import {
 import { ListingGrid } from "@/components/listing-grid";
 import { SetupNotice } from "@/components/setup-notice";
 import { AppText, Button, Card } from "@/components/ui";
-import { INITIAL_CATEGORIES } from "@/constants/catalog";
 import { useListingSearch } from "@/lib/listings";
+import { useBrowseCategories } from '@/lib/selling';
 import { colors, fontSize, MIN_TOUCH, radius, spacing } from "@/theme";
 
 function useDebounced<T>(value: T, ms: number) {
@@ -36,6 +36,7 @@ function useDebounced<T>(value: T, ms: number) {
 }
 
 export default function ExploreScreen() {
+  const browseCategories = useBrowseCategories();
   const params = useLocalSearchParams<{
     category?: string;
     q?: string;
@@ -148,7 +149,7 @@ export default function ExploreScreen() {
           selected={!category}
           onPress={() => setCategory(null)}
         />
-        {INITIAL_CATEGORIES.map((c) => (
+        {browseCategories.map((c) => (
           <Chip
             key={c.slug}
             label={c.name}

@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import type { Condition } from '@/constants/catalog';
+import { INITIAL_CATEGORIES, type Condition } from '@/constants/catalog';
 
 import { useAuth } from './auth';
 import { removeListingPhotos, uploadListingPhoto, type PhotoItem } from './photos';
@@ -197,17 +197,18 @@ export function useMyListing(id: string | undefined) {
   });
 }
 
-export type Category = { id: string; slug: string; name: string };
+export type Category = { id: string; slug: string; name: string; icon: string | null; is_active: boolean };
 
 export function useCategories() {
   return useQuery({
-    queryKey: ['categories'],
+    queryKey: ['categories', 'active'],
     enabled: !!supabase,
-    staleTime: 60 * 60 * 1000,
+    staleTime: 10 * 60 * 1000,
     queryFn: async () => {
-      const { data, error } = await client().from('categories').select('id, slug, name').order('sort_order');
+      const { data, error } = await client().from('categories').select('id, slug, name, icon, is_active').order('sort_order');
       if (error) throw error;
-      return (data ?? []) as Category[];
+      // Admins can see hidden categories; nobody should be offered them.
+      return ((data ?? []) as Category[]).filter((c) => c.is_active);
     },
   });
 }
@@ -234,4 +235,17 @@ export function useListingAction() {
     },
     onSuccess: () => invalidate(),
   });
+}
+
+/** Categories for browsing: the live list from the database, or the built-in list until it loads. */
+export function useBrowseCategories() {
+  const live = useCategories();
+  if (live.data && live.data.length) {
+    return live.data.map((c) => ({
+      slug: c.slug,
+      name: c.name,
+      icon: (c.icon ?? 'pricetag-outline') as (typeof INITIAL_CATEGORIES)[number]['icon'],
+    }));
+  }
+  return INITIAL_CATEGORIES;
 }

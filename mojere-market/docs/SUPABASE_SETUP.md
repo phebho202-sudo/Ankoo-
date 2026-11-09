@@ -217,6 +217,16 @@ and fills in missing dates on existing listings using the date each was created.
    then **Ctrl + A**, **Ctrl + C**.
 3. Paste into Supabase and click **Run** → `Success. No rows returned`.
 
+## Part L — Admin dashboard (Phase 8)
+
+Adds staff-only functions for the admin dashboard (statistics, user list, report details, promotion
+status). It **only adds functions**. See `docs/ADMIN_SETUP.md` for how to use the dashboard.
+
+1. **SQL Editor** → **+** (new empty tab).
+2. In PowerShell: `notepad supabase\migrations\20261114000100_mojere_market_admin.sql`,
+   then **Ctrl + A**, **Ctrl + C**.
+3. Paste into Supabase and click **Run** → `Success. No rows returned`.
+
 ## Undoing (only if ever needed)
 
 The `.down.sql` files in `supabase/migrations` reverse each step. Undoing the core migration

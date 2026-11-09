@@ -10,12 +10,12 @@ import { Logo } from '@/components/logo';
 import { SetupNotice } from '@/components/setup-notice';
 import { AppText, Button, Card } from '@/components/ui';
 import { BRAND } from '@/constants/brand';
-import { INITIAL_CATEGORIES } from '@/constants/catalog';
 import { useListingStrip, type ListingSummary } from '@/lib/listings';
 import { useAuth } from '@/lib/auth';
 import { useUnreadNotifications } from '@/lib/notifications';
 import { useLocations, useMyProfile } from '@/lib/profile';
 import { supabase } from '@/lib/supabase';
+import { useBrowseCategories } from '@/lib/selling';
 import { colors, fontSize, MIN_TOUCH, radius, spacing } from '@/theme';
 
 function SectionHeader({ title, onSeeAll }: { title: string; onSeeAll?: () => void }) {
@@ -44,6 +44,7 @@ function Strip({ items }: { items: ListingSummary[] }) {
 }
 
 export default function HomeScreen() {
+  const browseCategories = useBrowseCategories();
   const queryClient = useQueryClient();
   const { session } = useAuth();
   const unreadNotes = useUnreadNotifications();
@@ -140,7 +141,7 @@ export default function HomeScreen() {
         <View style={{ gap: spacing.md }}>
           <AppText variant="title">Browse categories</AppText>
           <View style={styles.grid}>
-            {INITIAL_CATEGORIES.map((c) => (
+            {browseCategories.map((c) => (
               <Pressable
                 key={c.slug}
                 accessibilityRole="button"

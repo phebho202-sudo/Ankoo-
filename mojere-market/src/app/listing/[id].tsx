@@ -19,6 +19,8 @@ import { useAuth } from '@/lib/auth';
 import { formatNaira } from '@/lib/format';
 import { recordListingView, useListing, useToggleFavourite } from '@/lib/listings';
 import { startConversation } from '@/lib/messaging';
+import { useMeetupSpots } from '@/lib/admin';
+import { useLocations } from '@/lib/profile';
 import { supabase } from '@/lib/supabase';
 import { monthYear, timeAgo } from '@/lib/time';
 import { colors, radius, spacing } from '@/theme';
@@ -87,6 +89,9 @@ export default function ListingScreen() {
   const listing = useListing(id);
   const l = listing.data;
   const verification = useSellerVerification(l?.seller.id);
+  const locations = useLocations();
+  const lgaId = locations.data?.find((x) => x.kind === 'lga' && x.name === l?.lga_name)?.id;
+  const spots = useMeetupSpots(lgaId, false);
   const favourite = useToggleFavourite(id ?? '');
   const [reportOpen, setReportOpen] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
@@ -290,7 +295,25 @@ export default function ListingScreen() {
             </Card>
           </Pressable>
 
+          {spots.data && spots.data.length ? (
+            <Card>
+              <AppText variant="title">Suggested safe meetup spots in {l.lga_name}</AppText>
+              {spots.data.slice(0, 5).map((m) => (
+                <View key={m.id} style={{ flexDirection: 'row', gap: spacing.xs }}>
+                  <Ionicons name="location-outline" size={18} color={colors.primary} />
+                  <View style={{ flex: 1 }}>
+                    <AppText variant="small" style={{ fontWeight: '600' }}>
+                      {m.name}
+                    </AppText>
+                    {m.description ? <AppText variant="caption">{m.description}</AppText> : null}
+                  </View>
+                </View>
+              ))}
+            </Card>
+          ) : null}
+
           <SafetyTips />
+          <Button label="Community guidelines" kind="outline" onPress={() => router.push('/guidelines')} />
 
           {!l.is_own ? (
             <Pressable

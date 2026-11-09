@@ -10,6 +10,7 @@ import { AppText, Button, Card, Notice, Screen } from '@/components/ui';
 import { BRAND } from '@/constants/brand';
 import { INITIAL_CATEGORIES } from '@/constants/catalog';
 import { ONDO_LGAS } from '@/constants/ondo';
+import { useStaffRole } from '@/lib/admin';
 import { useAuth } from '@/lib/auth';
 import { useLocations, useMyProfile } from '@/lib/profile';
 import { checkSupabaseConnection, supabase, type ConnectionCheck } from '@/lib/supabase';
@@ -25,6 +26,7 @@ function AccountCard() {
   const profile = useMyProfile();
   const locations = useLocations();
   const [signingOut, setSigningOut] = useState(false);
+  const role = useStaffRole();
 
   if (loading || (session && profile.isLoading)) {
     return (
@@ -100,6 +102,10 @@ function AccountCard() {
         <Button label="Notifications" kind="outline" onPress={() => router.push('/notifications')} style={{ flexGrow: 1 }} />
         <Button label="Notification settings" kind="outline" onPress={() => router.push('/notification-settings')} style={{ flexGrow: 1 }} />
       </View>
+      {role.data?.isStaff ? (
+        <Button label="Admin dashboard" kind="accent" onPress={() => router.push('/admin')} />
+      ) : null}
+      <Button label="Community guidelines" kind="outline" onPress={() => router.push('/guidelines')} />
       <Button label="Log out" kind="outline" onPress={signOut} loading={signingOut} />
     </Card>
   );
