@@ -1,0 +1,23 @@
+# Raw footage, audio and large media live in production storage (3-2-1 backup), not in Git.
+# Logos, fonts and documents may be committed.
+*.mov
+*.mp4
+*.m4v
+*.mxf
+*.r3d
+*.braw
+*.ari
+*.crm
+*.mts
+*.avi
+*.wav
+*.aif
+*.aiff
+*.mp3
+*.drp
+*.dra
+*.prproj
+*.fcpbundle/
+**/03_PROXIES/
+**/02_SOURCE_READ_ONLY/**
+!**/02_SOURCE_READ_ONLY/README.md
