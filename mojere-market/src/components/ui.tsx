@@ -1,4 +1,5 @@
-import type { ReactNode } from 'react';
+import { HeaderHeightContext } from 'expo-router/react-navigation';
+import { useContext, type ReactNode } from 'react';
 import {
   ActivityIndicator,
   Pressable,
@@ -44,8 +45,11 @@ const textStyles = StyleSheet.create({
 /* ---------- Screen wrapper ---------- */
 
 export function Screen({ children, scroll = true }: { children: ReactNode; scroll?: boolean }) {
+  // Screens under a top bar already sit below the status bar; only add the
+  // top safe-area spacing when there is no top bar (e.g. the tab screens).
+  const headerHeight = useContext(HeaderHeightContext) ?? 0;
   return (
-    <SafeAreaView style={styles.screen} edges={['top', 'left', 'right']}>
+    <SafeAreaView style={styles.screen} edges={headerHeight > 0 ? ['left', 'right'] : ['top', 'left', 'right']}>
       {scroll ? (
         <ScrollView contentContainerStyle={styles.screenContent} keyboardShouldPersistTaps="handled">
           {children}
