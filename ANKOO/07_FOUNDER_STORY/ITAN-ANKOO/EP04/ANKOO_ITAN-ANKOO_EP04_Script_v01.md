@@ -1,6 +1,7 @@
 # ÌTÀN ÀNKÓÒ — ÌPÍN KẸRIN
 
-**Status:** Script v01, for Bolu Felix's approval. **Do not record, edit or publish until approved.**
+**Status:** Script v01. Storyline and direction APPROVED 10 Nov 2026. Title updated. Narration superseded by `ANKOO_ITAN-ANKOO_EP04_Narration_YO-EN_v02.md` (awaiting approval); §4 and §6 will be regenerated from the approved narration.
+**Previous status:** for Bolu Felix's approval. **Do not record, edit or publish until approved.**
 **Series:** ÌTÀN ÀNKÓÒ (founder story, Pillar B, DOC-07)
 **Follows:** Episode 3, *Ìgbà tí mo rí àǹfààní náà* (Instagram, 6 Nov 2026), which ended: *"But what exactly did I see? And what inspired the vision?"*
 **Format:** Instagram Reel / Facebook Reel, 9:16, about 90 seconds
@@ -13,8 +14,8 @@
 
 | | |
 |---|---|
-| **Yoruba (as you supplied)** | ÌTÀN ÀNKÓÒ — ÌPÍN KẸRIN: ÌRÒYÌN ÌLÀNÀ ÀTI ÌBẸ̀RẸ̀ ANKOO |
-| **English** | The Story of ANKOO — Episode 4: The Vision and Birth of ANKOO |
+| **Yoruba (official, approved)** | ÌTÀN ÀNKÓÒ — ÌPÍN KẸRIN: ÌRAN NÁÀ ÀTI ÌBẸ̀RẸ̀ ÀNKÓÒ |
+| **English (official, approved)** | THE STORY OF ANKOO — EPISODE 4: THE VISION AND THE BEGINNING OF ANKOO |
 
 > **Title note for your decision.** In everyday Yoruba, *ìròyìn* usually means "news/report" and *ìlànà* usually means "principles/guidelines", so the Yoruba title may read as "The Report of Principles and the Beginning of ANKOO". If you want it to say "The Vision and the Birth of ANKOO", one option is:
 > **ÌRAN NÁÀ ÀTI ÌBẸ̀RẸ̀ ÀNKÓÒ** (*ìran* = vision; *ìbẹ̀rẹ̀* = beginning).
@@ -206,3 +207,4 @@ Name: Bolu Felix      Date:
 | Version | Date | Change |
 |---|---|---|
 | v01 | 2026-11-10 | First draft for approval |
+| v01a | 2026-11-10 | Storyline approved; official title set; narration moved to Narration v02 |
