@@ -1,6 +1,6 @@
 # Empire Studio AI
 
-Production dashboard for the YouTube channel **Behind the Fortune**. Phase 1 built the foundation; Phase 2 added the production tools.
+Production dashboard for the YouTube channel **Behind the Fortune**. Phase 1 built the foundation, Phase 2 added the production tools, and Phase 3 added the free AI prompt workflow.
 It runs entirely on your own computer. It does not connect to YouTube, does not use any paid service, and publishes nothing.
 
 It lives in its own folder (`empire-studio/`) so it does not touch the Ankoo app in the rest of this repository.
@@ -62,6 +62,16 @@ This runs the automated checks against a temporary database. Your real data is n
 | YouTube Analytics | Monthly numbers you type in from YouTube Studio, with charts |
 | Monetization Tracker | Progress toward your subscriber and watch-hour goals, and revenue |
 | Settings | Channel settings, demo data controls, backup download |
+
+## The free AI workflow
+
+The studio never calls an AI service and needs no account or key. It writes the prompts; you carry them to a free AI chat (ChatGPT, Claude or Gemini) and bring the answers back.
+
+- **Topic Research → AI topic ideas:** copy the prompt, paste the AI's answer back, and the ideas are imported as topics.
+- **Script Studio → AI assistant:** work through the steps in order: research brief, outline, each section of the script, fact-check, titles and thumbnails, Shorts. Each prompt is built from your channel settings, the topic, your research notes and the script so far.
+- Research briefs and fact-checks are saved to the Research Library as **unverified**. Facts the AI is unsure of are marked `[VERIFY]`, and Script Studio counts how many are left.
+
+AI drafts contain mistakes. Check the facts against real sources and rewrite in your own words before recording.
 
 ## Writing a script that the tools understand
 

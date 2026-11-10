@@ -313,7 +313,7 @@ VIEWS.topics = async () => {
         </div></td></tr>`).join('')}</tbody></table></div>` : '<div class="empty">No topics match. Add one with "New topic".</div>';
   };
   return {
-    buttons: '<button class="btn primary" data-act="add">+ New topic</button>',
+    buttons: '<button class="btn" data-act="ideas">AI topic ideas</button><button class="btn primary" data-act="add">+ New topic</button>',
     html: `<div class="toolbar"><input id="topicSearch" type="search" placeholder="Search topics" aria-label="Search topics">
       <select id="topicStatus" aria-label="Filter by status"><option value="">All statuses</option>${ENUMS.topicStatus.map((s) => `<option value="${s}">${nice(s)}</option>`).join('')}</select>
       <span class="spacer"></span><span class="muted">${topics.length} topics</span></div>
@@ -321,6 +321,42 @@ VIEWS.topics = async () => {
     mount() { draw(); $('#topicSearch').oninput = draw; $('#topicStatus').onchange = draw; },
     actions: {
       add: () => recordForm('topics', 'topic', fields),
+      ideas: () => openForm({
+        title: 'AI topic ideas',
+        message: 'Free, copy and paste. 1) Copy the prompt. 2) Paste it into a free AI chat (ChatGPT, Claude or Gemini). 3) Paste its answer below and press Import.',
+        fields: [
+          { name: 'prompt', label: 'Prompt (made for you)', type: 'textarea', rows: 7, value: `Act as a YouTube strategist for a business documentary channel.
+
+${channelBrief()}
+
+Suggest 15 documentary topics that could each carry a full ${settings.video_duration_minutes}-minute video and stay relevant for years. Prefer real, well-documented stories with conflict, money and a clear lesson.
+${topics.length ? `\nI already have these, so do not repeat them:\n${topics.map((t) => `- ${t.title}`).join('\n')}\n` : ''}
+Answer with exactly 15 lines and nothing else. Each line must use this format:
+Title | Category | One-sentence angle | Score
+
+Category must be one of: ${ENUMS.category.join(', ')}.
+Score is your estimate of audience interest from 0 to 100.` },
+          { name: 'answer', label: "Paste the AI's answer here", type: 'textarea', rows: 7 },
+        ],
+        tools: [{ label: 'Copy prompt', run: (f) => copyText(f.elements.prompt.value, 'Prompt') }],
+        submitLabel: 'Import topics',
+        onSubmit: async (v) => {
+          const have = new Set(topics.map((t) => t.title.toLowerCase()));
+          const rows = v.answer.split('\n').map((line) => line.replace(/^\s*\|?\s*(\d+[.)]\s*)?/, '').replace(/\|\s*$/, '').split('|').map((x) => x.replace(/\*\*/g, '').trim()))
+            .filter((x) => x.length >= 3 && x[0] && !/^-+$/.test(x[0]) && x[0].toLowerCase() !== 'title' && !have.has(x[0].toLowerCase()));
+          if (!rows.length) throw new Error('No new topics found. Each line should look like: Title | Category | Angle | Score');
+          for (const [title, category, angle, score] of rows) {
+            await api('POST', 'topics', {
+              title: title.slice(0, 200), angle: (angle || '').slice(0, 1000), status: 'idea',
+              category: ENUMS.category.find((c) => c.toLowerCase() === category.toLowerCase()) || 'Corporate Empires',
+              potential_score: Math.max(0, Math.min(100, parseInt(score, 10) || 50)),
+              notes: 'Suggested by an AI assistant. Check that the story is real and well documented before approving.',
+            });
+          }
+          toast(`Imported ${rows.length} topic ideas`);
+          refresh();
+        },
+      }),
       edit: (d) => recordForm('topics', 'topic', fields, map[d.id]),
       del: (d) => confirmDelete('topics', map[d.id], 'topic'),
       approve: async (d) => { await api('PUT', `topics/${d.id}`, { status: 'approved' }); toast('Topic approved'); refresh(); },
@@ -476,9 +512,32 @@ async function copyText(text, what) {
   try { await navigator.clipboard.writeText(text); toast(`${what} copied`); } catch { toast('Could not copy. Select the text and press Ctrl+C instead.', true); }
 }
 
+// ---------- AI prompt workflow (Phase 3) ----------
+// The studio does not call any AI service. It writes the prompt; you paste it into a free chat
+// assistant and paste the answer back. Nothing leaves this computer unless you copy it out yourself.
+const channelBrief = () => `CHANNEL: "${settings.channel_name}" on YouTube.
+NICHE: ${settings.niche}.
+FORMAT: ${settings.video_duration_minutes}-minute documentary. Visual style: ${settings.visual_style}.
+NARRATION: ${settings.narration}, in ${settings.language}, about ${settings.words_per_minute} words per minute.`;
+const WRITING_RULES = () => `RULES:
+- Use only well-documented public facts and my research notes. Never invent quotes, numbers, dates or events.
+- Put [VERIFY] straight after any fact you are not fully certain of.
+- Write for the ear: short, clear sentences. No bullet points, no stage directions, no extra headings.
+- Plain ${settings.language}. Calm documentary tone. No hype and no cliches.`;
+// Puts AI-written narration under its heading in the script (after any [notes] already there).
+function insertUnder(text, heading, body) {
+  const lines = text.split('\n');
+  const at = lines.findIndex((l) => l.trim() === heading);
+  if (at < 0) return (text.trim() ? text.trimEnd() + '\n\n' : '') + `${heading}\n${body}\n`;
+  let j = at + 1;
+  while (j < lines.length && /^\[.*\]$/.test(lines[j].trim())) j++;
+  lines.splice(j, 0, '', body, '');
+  return lines.join('\n').replace(/\n{3,}/g, '\n\n');
+}
+
 let scriptId = null;
 VIEWS.scripts = async () => {
-  const [scripts, topics, jobs, assets] = await load('scripts', 'topics', 'jobs', 'assets');
+  const [scripts, topics, jobs, assets, research] = await load('scripts', 'topics', 'jobs', 'assets', 'research');
   const map = byId(scripts);
   if (!map[scriptId]) scriptId = scripts[0]?.id ?? null;
   const s = map[scriptId];
@@ -489,6 +548,8 @@ VIEWS.scripts = async () => {
     const text = $('#scriptText').value, list = chapters(text, wpm), words = list.reduce((n, x) => n + x.words, 0);
     $('#scriptCount').innerHTML = `<b>${num(words)}</b> narrated words &middot; about <b>${Math.round(words / wpm)}</b> min &middot; target ${num(target)} words (${esc(settings.video_duration_minutes)} min)`;
     $('#scriptBar').style.width = pct(words, target) + '%';
+    const unsure = (text.match(/\[VERIFY/gi) || []).length;
+    if (unsure) $('#scriptCount').innerHTML += ` &middot; <span class="badge warn">${unsure} fact${unsure > 1 ? 's' : ''} marked [VERIFY]</span>`;
     $('#scriptSections').innerHTML = list.length ? `<div class="table-wrap"><table><thead><tr><th>Starts at</th><th>Section</th><th class="num">Words</th><th class="num">Length</th></tr></thead><tbody>
       ${list.map((x) => `<tr><td>${x.at}</td><td>${esc(titleCase(x.heading))}</td><td class="num">${num(x.words)}</td><td class="num">${clock(x.words / wpm)}</td></tr>`).join('')}</tbody></table></div>`
       : '<div class="empty">No sections yet. Put each section heading on its own line in CAPITALS, or press "Insert documentary structure".</div>';
@@ -534,6 +595,110 @@ VIEWS.scripts = async () => {
       },
     });
   };
+  // --- AI assistant: builds each prompt from this script, its topic and your research notes ---
+  const topic = s && topics.find((t) => t.id === s.topic_id);
+  const notes = s ? research.filter((r) => r.topic_id && r.topic_id === s.topic_id && r.summary && !/^Demo placeholder/.test(r.summary) && !/^AI fact-check/.test(r.title)) : [];
+  const subject = () => `TOPIC: ${$('#scriptTitle').value}${topic?.angle ? `\nANGLE: ${topic.angle}` : ''}`;
+  const researchBlock = () => (notes.length
+    ? 'MY RESEARCH NOTES (each has a credibility rating; rely on high and medium, and mark anything taken from an unverified note with [VERIFY]):\n' + notes.map((r) => `- ${r.title} (${r.source_type}, credibility ${r.credibility}): ${r.summary}`).join('\n')
+    : 'MY RESEARCH NOTES: none yet.');
+  const narration = () => parseScript($('#scriptText').value).filter((x) => x.body).map((x) => `${x.heading}\n${x.body}`).join('\n\n');
+  const needScript = (p) => (narration() ? p : null);
+  const AI_STEPS = [
+    { id: 'research', label: '1. Research brief', save: 'research', prompt: () => `Act as a senior researcher for a business documentary channel.
+
+${channelBrief()}
+${subject()}
+
+Write a research brief I can script from, with these parts:
+1. Timeline of the key dates.
+2. The key people and their roles.
+3. The money: revenue, profits, valuations and ownership, each with its year.
+4. The turning points and conflicts.
+5. Five surprising, lesser-known facts.
+6. Claims that are disputed or commonly repeated but wrong.
+7. The best primary sources for me to check (annual reports, court filings, books, interviews).
+
+Put [VERIFY] straight after anything you are not fully certain of. Do not invent quotes or numbers.` },
+    { id: 'outline', label: '2. Outline', save: 'outline', prompt: () => `Act as a documentary story editor.
+
+${channelBrief()}
+${subject()}
+${researchBlock()}
+
+Write the outline for this documentary. Use exactly these section headings, each on its own line in CAPITALS:
+${STRUCTURE.map(([h, share]) => `${h} (about ${num(Math.round((target * share) / 10) * 10)} words when written)`).join('\n')}
+
+Under each heading write 4 to 6 story beats. Put every beat on its own line inside square brackets, like this:
+[Beat: one sentence describing what happens and why it matters.]
+
+Output only the headings and the bracketed beats. Do not write the word counts in the headings.` },
+    ...STRUCTURE.map(([h, share], i) => ({ id: 'act' + i, label: `3.${i + 1} Write: ${titleCase(h)}`, save: 'section', heading: h, prompt: () => {
+      const before = parseScript($('#scriptText').value).filter((x) => x.body && STRUCTURE.findIndex(([n]) => n === x.heading) < i && STRUCTURE.some(([n]) => n === x.heading)).pop();
+      return `Act as a documentary scriptwriter.
+
+${channelBrief()}
+${subject()}
+${researchBlock()}
+
+Here is my outline and the script so far (lines in [square brackets] are my notes, not narration):
+---
+${$('#scriptText').value.trim() || '(no outline yet)'}
+---
+
+Write the narration for the section "${h}" only. Length: about ${num(Math.round((target * share) / 10) * 10)} words.${before ? `\nThe previous section ended with: "...${before.body.split(/\s+/).slice(-60).join(' ')}"\nContinue smoothly from there.` : ''}
+
+${WRITING_RULES()}
+
+Output only the narration text for this section. Do not repeat the heading.`;
+    } })),
+    { id: 'factcheck', label: '4. Fact-check the script', save: 'research', prompt: () => needScript(`Act as a strict fact-checker for a business documentary.
+
+${subject()}
+
+Below is my narration script. List every factual claim in it: names, dates, numbers, quotes, and cause-and-effect claims. For each one give:
+- the claim, quoted from the script
+- your confidence that it is correct (high, medium or low)
+- the best source for me to check it against
+Then list separately anything that is likely wrong, exaggerated or impossible to verify. Be critical; do not reassure me.
+
+SCRIPT:
+${narration()}`) },
+    { id: 'package', label: '5. Titles, thumbnails, description, tags', prompt: () => needScript(`Act as a YouTube packaging strategist for a business documentary channel.
+
+${channelBrief()}
+${subject()}
+
+Based on the script below, give me:
+1. Ten title options, each under 70 characters. Curiosity is good; anything the video does not deliver is not allowed.
+2. Five thumbnail concepts: a headline of 2 to 4 words, plus a one-sentence description of the image.
+3. The first two sentences of the YouTube description.
+4. Fifteen tags, separated by commas, under 500 characters in total.
+
+SCRIPT:
+${narration()}`) },
+    { id: 'shorts', label: '6. Shorts from this documentary', prompt: () => needScript(`Act as a short-form video editor.
+
+${channelBrief()}
+${subject()}
+
+From the script below, pick the five moments that work best as standalone YouTube Shorts under 60 seconds. For each give:
+- a hook line for the first two seconds
+- the narration, 120 to 140 words, using only facts from the script
+- the on-screen title text (max 5 words)
+
+SCRIPT:
+${narration()}`) },
+  ];
+  const aiStep = () => AI_STEPS.find((x) => x.id === $('#aiStep').value);
+  const aiDraw = () => {
+    const step = aiStep(), prompt = step.prompt();
+    $('#aiPrompt').value = prompt || 'This step needs narration in the script first. Write or generate at least one section, then come back.';
+    $('#aiAnswerBox').hidden = !step.save;
+    $('#aiNoSave').hidden = !!step.save;
+    if (step.save) $('#aiApply').textContent = { research: 'Save to Research Library', outline: 'Put outline into the script', section: `Add to script under ${titleCase(step.heading || '')}` }[step.save];
+  };
+
   return {
     buttons: '<button class="btn primary" data-act="add">+ New script</button>',
     html: `<div class="split">
@@ -556,13 +721,24 @@ VIEWS.scripts = async () => {
       </div>
       ${s ? `<div class="panel" style="margin-top:16px"><h2>Sections and timing</h2><div id="scriptSections"></div>
         <div class="script-foot"><button class="btn" data-act="toVoice">Create narration segments &rarr;</button><button class="btn" data-act="toVisuals">Create scene list &rarr;</button></div>
-        <p class="hint">"Starts at" is the estimated timestamp of each section at ${wpm} words per minute. The same times are used for YouTube chapters in Upload Manager.</p></div>` : ''}
+        <p class="hint">"Starts at" is the estimated timestamp of each section at ${wpm} words per minute. The same times are used for YouTube chapters in Upload Manager.</p></div>
+      <div class="panel" style="margin-top:16px"><h2>AI assistant <span class="badge good">Free &middot; copy and paste</span></h2>
+        <p class="muted" style="margin-top:0">The studio writes the prompt for you from this script, its topic and your research notes${notes.length ? ` (${notes.length} found)` : ' (none found for this topic yet)'}. Copy it, paste it into a free AI chat such as <a href="https://chatgpt.com" target="_blank" rel="noopener noreferrer">ChatGPT</a>, <a href="https://claude.ai" target="_blank" rel="noopener noreferrer">Claude</a> or <a href="https://gemini.google.com" target="_blank" rel="noopener noreferrer">Gemini</a>, then paste its answer back here. Work through the steps in order.</p>
+        <div class="field"><label for="aiStep">Step</label><select id="aiStep">${AI_STEPS.map((x) => `<option value="${x.id}">${esc(x.label)}</option>`).join('')}</select></div>
+        <div class="field"><label for="aiPrompt">Prompt (made for you)</label><textarea id="aiPrompt" rows="9" readonly></textarea></div>
+        <div class="script-foot" style="margin-top:0"><button class="btn primary" data-act="aiCopy">Copy prompt</button><button class="btn" data-act="aiRefresh">Refresh prompt</button><span class="muted" style="font-size:13px">Refresh after you change the script, so the prompt includes your latest text.</span></div>
+        <div id="aiAnswerBox" style="margin-top:14px"><div class="field"><label for="aiAnswer">Paste the AI's answer here</label><textarea id="aiAnswer" rows="7"></textarea></div>
+          <button class="btn" data-act="aiApply" id="aiApply">Save</button></div>
+        <p class="hint" id="aiNoSave" hidden>Nothing to paste back for this step. Use the ideas in Thumbnail Studio, the Upload Manager publishing pack, or as new Short entries on the calendar.</p>
+        <p class="hint">AI drafts contain mistakes and can read as generic. Check every fact marked [VERIFY], run the fact-check step, and rewrite in your own words before recording.</p></div>` : ''}
       </div></div>`,
     mount() {
       if (!s) return;
       count();
       $('#scriptText').oninput = () => { count(); mark(); };
       ['scriptTitle', 'scriptTopic', 'scriptStatus'].forEach((id) => { $('#' + id).oninput = mark; });
+      aiDraw();
+      $('#aiStep').onchange = () => { $('#aiAnswer').value = ''; aiDraw(); };
       $('#scriptText').onkeydown = (e) => { if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') { e.preventDefault(); save().catch((err) => toast(err.message, true)); } };
     },
     leave: () => !dirty || confirm('You have unsaved changes in this script. Leave without saving?'),
@@ -586,6 +762,31 @@ VIEWS.scripts = async () => {
       },
       export: () => download(`${$('#scriptTitle').value.replace(/[^\w -]+/g, '').trim() || 'script'}.txt`, $('#scriptText').value),
       toVoice: () => sendTo('voice'),
+      aiRefresh: () => { aiDraw(); toast('Prompt refreshed'); },
+      aiCopy: () => { aiDraw(); const p = aiStep().prompt(); return p ? copyText(p, 'Prompt') : toast('This step needs narration in the script first.', true); },
+      aiApply: async () => {
+        const step = aiStep(), answer = $('#aiAnswer').value.trim();
+        if (!answer) return toast("Paste the AI's answer into the box first.", true);
+        if (step.save === 'research') {
+          notes.push(await api('POST', 'research', {
+            topic_id: s.topic_id, source_type: 'other', credibility: 'unverified', summary: answer.slice(0, 20000),
+            title: `${step.id === 'factcheck' ? 'AI fact-check' : 'AI research brief'}: ${$('#scriptTitle').value}`.slice(0, 200),
+          }));
+          $('#aiAnswer').value = '';
+          return toast('Saved to Research Library as unverified. Check it against real sources.');
+        }
+        const box = $('#scriptText');
+        if (step.save === 'outline') {
+          if (narrationWords(box.value) && !confirm('This script already has narration. Add the outline at the end instead of replacing it?')) return;
+          box.value = narrationWords(box.value) ? box.value.trimEnd() + '\n\n' + answer + '\n' : answer + '\n';
+        } else {
+          const body = answer.split('\n').filter((l, i) => !(i === 0 && l.replace(/[#*:]/g, '').trim().toUpperCase() === step.heading)).join('\n').trim();
+          box.value = insertUnder(box.value, step.heading, body);
+        }
+        $('#aiAnswer').value = '';
+        count(); mark(); aiDraw();
+        toast('Added to the script. Review it, then press Save script.');
+      },
       toVisuals: () => sendTo('visual'),
     },
   };
