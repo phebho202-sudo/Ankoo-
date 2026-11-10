@@ -6,7 +6,7 @@
 | **Version** | v1.0 — Issued for founder approval |
 | **Governed by** | DOC-01 |
 | **Logo usage** | YES — the official ANKOO logo must be included |
-| **Logo file status** | **NOT FOUND — required from the founder (see §2)** |
+| **Logo file status** | **RECEIVED 10 Nov 2026** as a white-on-green JPG (logo about 680 px wide). Stored read-only in `06_BRAND_ASSETS/LOGO/00_ORIGINALS_READ_ONLY/`. Transparent white and black exports (derived from it, not redrawn) are in `01_EXPORTS/`. **Vector master still requested** for print and large formats. |
 
 ---
 

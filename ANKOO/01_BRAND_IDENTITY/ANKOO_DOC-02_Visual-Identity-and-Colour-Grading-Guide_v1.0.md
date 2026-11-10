@@ -19,11 +19,13 @@ The colour world is built **in front of the camera** (locations, walls, props, w
 
 ## 2. The ANKOO palette
 
+> **Update 10 Nov 2026:** ANKOO Forest is now taken from the official logo file (`#034915`). The other values remain proposed.
+>
 > **Status: proposed working values.** No official ANKOO colour codes were found in the asset audit. These values are a starting reference for graphics, typography and set design. If ANKOO already has brand colours (for example, from the logo file or packaging), those override this table. Confirm before printing or building templates.
 
 | Role | Name | HEX | RGB | Use |
 |---|---|---|---|---|
-| Primary | **ANKOO Forest** | `#1F3A2E` | 31 58 46 | Brand colour fields, end-card backgrounds, set accents |
+| Primary | **ANKOO Forest** | `#034915` | 3 73 21 | **Sampled from the official logo (10 Nov 2026).** Brand colour fields, end-card backgrounds, set accents |
 | Primary | **ANKOO Black** | `#0E0E0C` | 14 14 12 | Backgrounds, typography on light images |
 | Primary | **ANKOO Ivory** | `#F2EBDD` | 242 235 221 | Typography on dark images, logo reversal, end cards |
 | Support | **Soft Cream** | `#E6DCC8` | 230 220 200 | Secondary fields, packaging backgrounds |
