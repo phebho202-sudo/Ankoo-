@@ -166,3 +166,49 @@ test('requests from other websites cannot change data', async () => {
   const res = await fetch(base + '/api/topics', { method: 'POST', headers: { 'Content-Type': 'application/json', Origin: 'https://evil.example' }, body: '{"title":"x"}' });
   assert.equal(res.status, 403);
 });
+
+// ---------- Phase 2 ----------
+test('voice segments store narration text; publishing stores a description and tags', async () => {
+  const job = (await call('POST', '/api/jobs', { title: 'Phase 2 job' })).data;
+  const seg = (await call('POST', '/api/assets', { job_id: job.id, kind: 'voice', name: 'Act 1', content: 'Words to be spoken.' })).data;
+  assert.equal(seg.content, 'Words to be spoken.');
+  const pub = (await call('POST', '/api/publishing', { title: 'P2', publish_date: '2099-02-01', publish_time: '19:00' })).data;
+  const saved = (await call('PUT', `/api/publishing/${pub.id}`, { description: '0:00 Intro', tags: 'business, luxury' })).data;
+  assert.equal(saved.description, '0:00 Intro');
+  assert.equal(saved.tags, 'business, luxury');
+  assert.equal((await call('PUT', `/api/publishing/${pub.id}`, { tags: 'x'.repeat(501) })).status, 400);
+});
+
+test('backup export contains settings and every table', async () => {
+  const res = await fetch(base + '/api/export');
+  assert.equal(res.status, 200);
+  assert.match(res.headers.get('content-disposition'), /attachment; filename="empire-studio-backup-\d{4}-\d{2}-\d{2}\.json"/);
+  const backup = await res.json();
+  assert.equal(backup.settings.channel_name, 'Behind the Fortune');
+  for (const table of ['topics', 'research', 'scripts', 'jobs', 'assets', 'publishing', 'metrics']) assert.ok(Array.isArray(backup.tables[table]), table);
+  assert.ok(backup.tables.topics.some((t) => t.title === 'Persisted topic'));
+});
+
+test('a Phase 1 database is upgraded in place without losing data', async () => {
+  const { DatabaseSync } = require('node:sqlite');
+  const { openDatabase } = require('../src/db');
+  const old = path.join(path.dirname(dbPath), 'phase1.db');
+  const raw = new DatabaseSync(old);
+  // The Phase 1 shape of these two tables (no content / description / tags columns).
+  raw.exec(`CREATE TABLE settings (key TEXT PRIMARY KEY, value TEXT NOT NULL);
+    INSERT INTO settings VALUES ('channel_name', 'My Renamed Channel');
+    CREATE TABLE jobs (id INTEGER PRIMARY KEY AUTOINCREMENT, topic_id INTEGER, title TEXT NOT NULL, format TEXT, script_status TEXT, voice_status TEXT, visuals_status TEXT, edit_status TEXT, thumbnail_status TEXT, notes TEXT, is_demo INTEGER DEFAULT 0, created_at TEXT, updated_at TEXT);
+    CREATE TABLE assets (id INTEGER PRIMARY KEY AUTOINCREMENT, job_id INTEGER, kind TEXT NOT NULL, name TEXT NOT NULL, details TEXT, status TEXT, is_demo INTEGER DEFAULT 0, created_at TEXT, updated_at TEXT);
+    CREATE TABLE publishing (id INTEGER PRIMARY KEY AUTOINCREMENT, job_id INTEGER, title TEXT NOT NULL, format TEXT, publish_date TEXT NOT NULL, publish_time TEXT NOT NULL, status TEXT, youtube_url TEXT, notes TEXT, is_demo INTEGER DEFAULT 0, created_at TEXT, updated_at TEXT);
+    INSERT INTO publishing (title, publish_date, publish_time, status) VALUES ('Old record', '2026-12-01', '19:00', 'scheduled');`);
+  raw.close();
+  const db = openDatabase(old);
+  assert.equal(db.firstRun, false, 'not treated as a fresh install, so demo data is not re-added');
+  assert.equal(db.getSettings().channel_name, 'My Renamed Channel');
+  const [record] = db.list('publishing');
+  assert.equal(record.title, 'Old record');
+  assert.equal(db.update('publishing', record.id, { description: 'now works' }).description, 'now works');
+  assert.equal(db.insert('assets', { kind: 'voice', name: 'Seg', content: 'text' }).content, 'text');
+  db.close();
+  openDatabase(old).close(); // opening again must not fail
+});

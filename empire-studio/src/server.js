@@ -98,6 +98,18 @@ async function handleApi(db, req, res, parts) {
   if (resource === 'health' && method === 'GET') return send(res, 200, { ok: true });
   if (resource === 'overview' && method === 'GET') return send(res, 200, overview(db));
 
+  if (resource === 'export' && method === 'GET' && !idPart) {
+    // A full copy of the studio as one file, for backups.
+    const backup = { app: 'empire-studio-ai', exported_at: new Date().toISOString(), settings: db.getSettings(), tables: {} };
+    for (const table of Object.keys(TABLES)) backup.tables[table] = db.list(table);
+    res.writeHead(200, {
+      'Content-Type': 'application/json; charset=utf-8',
+      'Content-Disposition': `attachment; filename="empire-studio-backup-${todayIn(backup.settings.timezone)}.json"`,
+      'Cache-Control': 'no-store',
+    });
+    return res.end(JSON.stringify(backup, null, 2));
+  }
+
   if (resource === 'settings' && !idPart) {
     if (method === 'GET') return send(res, 200, db.getSettings());
     if (method === 'PUT') return send(res, 200, db.saveSettings(await readBody(req)));

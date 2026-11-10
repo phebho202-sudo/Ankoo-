@@ -161,6 +161,10 @@ td .sub { color: var(--muted); font-size: 13px; }
 .card .meta { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0; }
 .card p { margin: 6px 0 12px; color: #bdbac2; font-size: 14px; white-space: pre-wrap; overflow-wrap: anywhere; }
 .card .row-actions { justify-content: flex-start; }
+.card p.clamp { display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; font-family: var(--serif); font-size: 15px; }
+.group-title .btn { font-family: var(--sans); margin-left: auto; }
+.group-title { flex-wrap: wrap; }
+.modal-actions { flex-wrap: wrap; }
 .stages { display: grid; grid-template-columns: repeat(auto-fit, minmax(118px, 1fr)); gap: 8px; margin: 12px 0; }
 .stages select { padding: 6px 8px; font-size: 13px; }
 .stages select.done { border-color: rgba(111, 191, 139, .5); color: var(--green); }

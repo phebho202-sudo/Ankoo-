@@ -75,7 +75,7 @@ function seedDemo(db, today, settings) {
     [j.lvmh, 'thumbnail', 'THE LUXURY EMPIRE', 'Concept A: founder silhouette against a wall of brand logos, gold text.', 'in_progress'],
     [j.lvmh, 'thumbnail', 'ONE MAN. 75 BRANDS.', 'Concept B: bold number, dark background.', 'planned'],
     [j.costco, 'thumbnail', 'THE $60 SECRET', 'Membership card close-up, high contrast.', 'approved'],
-  ]) add('assets', { job_id: job, kind, name, details, status });
+  ]) add('assets', { job_id: job, kind, name, details, status, content: kind === 'voice' ? 'This is demo narration text. Replace it with the real words for this part of the script, then press Preview to hear a rough read-through.' : '' });
 
   for (const [job, title, format, days, status, url] of [
     [j.rockefeller, 'The Rise and Breakup of Standard Oil', 'documentary', -14, 'published', ''],

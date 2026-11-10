@@ -64,6 +64,7 @@ const TABLES = {
       kind: { type: 'enum', values: ['voice', 'visual', 'thumbnail'], required: true },
       name: { type: 'text', required: true, max: 200 },
       details: { type: 'text', max: 5000 },
+      content: { type: 'text', max: 100000 }, // narration text for voice segments
       status: { type: 'enum', values: ['planned', 'in_progress', 'ready', 'approved'], default: 'planned' },
     },
   },
@@ -78,6 +79,8 @@ const TABLES = {
       status: { type: 'enum', values: ['awaiting_approval', 'scheduled', 'published'], default: 'awaiting_approval' },
       youtube_url: { type: 'text', max: 500 },
       notes: { type: 'text', max: 5000 },
+      description: { type: 'text', max: 5000 }, // YouTube's own limit
+      tags: { type: 'text', max: 500 }, // YouTube's own limit
     },
   },
   metrics: {
@@ -194,6 +197,15 @@ function openDatabase(dbPath) {
   const db = new DatabaseSync(dbPath);
   db.exec('PRAGMA journal_mode = WAL; PRAGMA foreign_keys = ON;');
   db.exec(SCHEMA);
+  // Upgrades: add columns introduced after Phase 1 to databases created by an older version.
+  const ensureColumn = (table, column) => {
+    if (!db.prepare(`PRAGMA table_info(${table})`).all().some((c) => c.name === column)) {
+      db.exec(`ALTER TABLE ${table} ADD COLUMN ${column} TEXT DEFAULT ''`);
+    }
+  };
+  ensureColumn('assets', 'content');
+  ensureColumn('publishing', 'description');
+  ensureColumn('publishing', 'tags');
 
   const firstRun = db.prepare('SELECT COUNT(*) AS n FROM settings').get().n === 0;
   const putSetting = db.prepare('INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value');

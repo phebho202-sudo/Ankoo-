@@ -67,7 +67,7 @@ function addDays(date, days) {
 
 // ---------- pop-up form ----------
 // fields: [{ name, label, type: text|textarea|number|date|time|month|select|url, options, value, required, hint }]
-function openForm({ title, fields = [], message, submitLabel = 'Save', danger, onSubmit, onChange }) {
+function openForm({ title, fields = [], message, submitLabel = 'Save', danger, onSubmit, onChange, tools = [] }) {
   const modal = $('#modal');
   const form = $('#modalForm');
   form.innerHTML = `<h2>${esc(title)}</h2>${message ? `<p class="muted">${esc(message)}</p>` : ''}` + fields.map((f) => {
@@ -88,11 +88,13 @@ function openForm({ title, fields = [], message, submitLabel = 'Save', danger, o
     return `<div class="field"><label for="${id}">${esc(f.label)}${f.required ? ' *' : ''}</label>${input}${f.hint ? `<div class="hint">${esc(f.hint)}</div>` : ''}</div>`;
   }).join('') + `<div class="form-error" id="formError"></div>
     <div class="modal-actions">
+      ${tools.map((t, i) => `<button type="button" class="btn small" data-tool="${i}">${esc(t.label)}</button>`).join('')}<span style="flex:1"></span>
       <button type="button" class="btn" id="formCancel">Cancel</button>
       <button type="submit" class="btn ${danger ? 'danger' : 'primary'}">${esc(submitLabel)}</button>
     </div>`;
   $('#formCancel').onclick = () => modal.close();
   form.onchange = onChange ? (e) => onChange(e.target, form) : null;
+  form.onclick = (e) => { const b = e.target.closest('[data-tool]'); if (b) tools[b.dataset.tool].run(form); };
   form.onsubmit = async (e) => {
     e.preventDefault();
     const values = Object.fromEntries(new FormData(form));
@@ -425,9 +427,58 @@ VIEWS.research = async () => {
   };
 };
 
+// ---------- script tools (Phase 2) ----------
+// A script is split into sections by its headings. A heading is a short line in CAPITALS
+// (e.g. "ACT 1 - THE ORIGIN") or a line starting with "#". Lines wholly inside [square brackets]
+// are notes to yourself: they are never narrated and never counted.
+function parseScript(text) {
+  const sections = [];
+  let cur = null;
+  for (const raw of String(text || '').split(/\r?\n/)) {
+    const line = raw.trim();
+    if (/^\[.*\]$/.test(line)) continue;
+    const hash = /^#{1,3}\s+\S/.test(line);
+    const caps = line.length >= 3 && line.length <= 80 && /[A-Z]{3}/.test(line) && line === line.toUpperCase() && !/[.!?,;]$/.test(line);
+    if (hash || caps) { cur = { heading: line.replace(/^#+\s*/, ''), lines: [] }; sections.push(cur); continue; }
+    if (!cur) { if (!line) continue; cur = { heading: 'Opening', lines: [] }; sections.push(cur); }
+    cur.lines.push(line);
+  }
+  return sections.map((s) => {
+    const body = s.lines.join('\n').replace(/\n{3,}/g, '\n\n').trim();
+    return { heading: s.heading, body, words: wordCount(body) };
+  });
+}
+const narrationWords = (text) => parseScript(text).reduce((n, s) => n + s.words, 0);
+const titleCase = (s) => (s === s.toUpperCase() ? s.toLowerCase().replace(/(^|[\s-])([a-z])/g, (m, a, b) => a + b.toUpperCase()) : s);
+const clock = (minutes) => { const t = Math.round(minutes * 60); return `${Math.floor(t / 60)}:${String(t % 60).padStart(2, '0')}`; };
+// Start time of each section, from the words narrated before it.
+function chapters(text, wpm) {
+  let words = 0;
+  return parseScript(text).map((s) => { const at = clock(words / wpm); words += s.words; return { ...s, at }; });
+}
+const STRUCTURE = [
+  ['COLD OPEN', 0.02, 'Open on the most surprising moment or question in the story. No introductions yet.'],
+  ['INTRODUCTION', 0.05, 'Who and what this documentary is about, and the promise of what the viewer will learn.'],
+  ['ACT 1 - THE ORIGIN', 0.2, 'Where it began: the founder, the first idea, the world at the time.'],
+  ['ACT 2 - THE RISE', 0.22, 'The key decisions and turning points that built the empire.'],
+  ['ACT 3 - THE CRISIS', 0.22, 'Rivals, mistakes and the moments it nearly fell apart.'],
+  ['ACT 4 - THE EMPIRE TODAY', 0.2, 'What it looks like now, how the money really works, and what is at stake.'],
+  ['CLOSING', 0.09, 'The lesson of the story, and a reason to watch the next documentary.'],
+];
+function download(filename, text) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([text], { type: 'text/plain;charset=utf-8' }));
+  a.download = filename;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+async function copyText(text, what) {
+  try { await navigator.clipboard.writeText(text); toast(`${what} copied`); } catch { toast('Could not copy. Select the text and press Ctrl+C instead.', true); }
+}
+
 let scriptId = null;
 VIEWS.scripts = async () => {
-  const [scripts, topics] = await load('scripts', 'topics');
+  const [scripts, topics, jobs, assets] = await load('scripts', 'topics', 'jobs', 'assets');
   const map = byId(scripts);
   if (!map[scriptId]) scriptId = scripts[0]?.id ?? null;
   const s = map[scriptId];
@@ -435,22 +486,61 @@ VIEWS.scripts = async () => {
   const target = wpm * (Number(settings.video_duration_minutes) || 45);
   let dirty = false;
   const count = () => {
-    const words = wordCount($('#scriptText').value);
-    $('#scriptCount').innerHTML = `<b>${num(words)}</b> words &middot; about <b>${Math.round(words / wpm)}</b> min narrated &middot; target ${num(target)} words (${esc(settings.video_duration_minutes)} min)`;
+    const text = $('#scriptText').value, list = chapters(text, wpm), words = list.reduce((n, x) => n + x.words, 0);
+    $('#scriptCount').innerHTML = `<b>${num(words)}</b> narrated words &middot; about <b>${Math.round(words / wpm)}</b> min &middot; target ${num(target)} words (${esc(settings.video_duration_minutes)} min)`;
     $('#scriptBar').style.width = pct(words, target) + '%';
+    $('#scriptSections').innerHTML = list.length ? `<div class="table-wrap"><table><thead><tr><th>Starts at</th><th>Section</th><th class="num">Words</th><th class="num">Length</th></tr></thead><tbody>
+      ${list.map((x) => `<tr><td>${x.at}</td><td>${esc(titleCase(x.heading))}</td><td class="num">${num(x.words)}</td><td class="num">${clock(x.words / wpm)}</td></tr>`).join('')}</tbody></table></div>`
+      : '<div class="empty">No sections yet. Put each section heading on its own line in CAPITALS, or press "Insert documentary structure".</div>';
   };
+  const mark = () => { dirty = true; $('#scriptDirty').textContent = 'Unsaved changes'; };
   const save = async () => {
     await api('PUT', `scripts/${s.id}`, { title: $('#scriptTitle').value, topic_id: $('#scriptTopic').value, status: $('#scriptStatus').value, content: $('#scriptText').value });
     dirty = false;
     toast('Script saved');
     refresh();
   };
+  // Turn the script's sections into Voice Studio segments or Visual Studio scenes.
+  const sendTo = (kind) => {
+    const sections = parseScript($('#scriptText').value).filter((x) => x.body);
+    if (!sections.length) return toast('Write some narration under at least one heading first.', true);
+    if (!jobs.length) return toast('Create a production job first (Video Production), then try again.', true);
+    const voice = kind === 'voice', noun = voice ? 'narration segments' : 'scenes';
+    openForm({
+      title: voice ? 'Create narration segments' : 'Create scene list',
+      message: voice
+        ? `Each of the ${sections.length} script sections becomes one narration segment in Voice Studio, with its text.`
+        : `Each of the ${sections.length} script sections becomes one scene in Visual Studio, with a starter prompt built from your visual style. The prompts are templates for you to refine, not AI-written.`,
+      submitLabel: `Create ${sections.length} ${noun}`,
+      fields: [
+        { name: 'job_id', label: 'For which production job?', type: 'select', required: true, options: jobs.map((j) => [j.id, j.title]), value: jobs.find((j) => s.topic_id && j.topic_id === s.topic_id)?.id },
+        { name: 'existing', label: `If that job already has ${noun}`, type: 'select', options: [['keep', 'Keep them and add these'], ['replace', 'Replace them with these']] },
+      ],
+      onSubmit: async (v) => {
+        const jobId = Number(v.job_id);
+        if (v.existing === 'replace') {
+          for (const a of assets.filter((x) => x.kind === kind && x.job_id === jobId)) await api('DELETE', `assets/${a.id}`);
+        }
+        for (const [i, x] of sections.entries()) {
+          const title = titleCase(x.heading);
+          const first = x.body.split(/(?<=[.!?])\s+/)[0].slice(0, 220);
+          await api('POST', 'assets', voice
+            ? { job_id: jobId, kind, name: title, content: x.body, details: '' }
+            : { job_id: jobId, kind, name: `Scene ${i + 1} - ${title}`, details: `${settings.visual_style}. ${title}: ${first} Cinematic lighting, shallow depth of field, 16:9, photorealistic documentary look, no text or logos.` });
+        }
+        dirty = false;
+        toast(`Created ${sections.length} ${noun}`);
+        location.hash = voice ? '#/voice' : '#/visuals';
+      },
+    });
+  };
   return {
     buttons: '<button class="btn primary" data-act="add">+ New script</button>',
     html: `<div class="split">
       <div class="panel script-list"><h2>Scripts</h2>
-        ${scripts.length ? scripts.map((x) => `<button data-act="open" data-id="${x.id}" class="${x.id === scriptId ? 'active' : ''}"><span class="t">${esc(x.title)}</span>${badge(x.status)}${demo(x)} <span class="muted" style="font-size:12.5px">${num(wordCount(x.content))} words</span></button>`).join('') : '<div class="empty">No scripts yet.</div>'}
+        ${scripts.length ? scripts.map((x) => `<button data-act="open" data-id="${x.id}" class="${x.id === scriptId ? 'active' : ''}"><span class="t">${esc(x.title)}</span>${badge(x.status)}${demo(x)} <span class="muted" style="font-size:12.5px">${num(narrationWords(x.content))} words</span></button>`).join('') : '<div class="empty">No scripts yet.</div>'}
       </div>
+      <div>
       <div class="panel">${s ? `
         <div class="script-meta">
           <div><label for="scriptTitle">Title</label><input id="scriptTitle" value="${esc(s.title)}"></div>
@@ -460,13 +550,17 @@ VIEWS.scripts = async () => {
         <label for="scriptText">Narration script ${demo(s)}</label>
         <textarea id="scriptText" spellcheck="true">${esc(s.content)}</textarea>
         <div class="script-foot"><span id="scriptCount" class="muted"></span><div class="bar"><i id="scriptBar"></i></div></div>
-        <div class="script-foot"><button class="btn primary" data-act="save">Save script</button><span id="scriptDirty" class="muted">All changes saved</span><span class="spacer" style="flex:1"></span><button class="btn danger" data-act="del">Delete script</button></div>
-        <p class="hint">Narration: ${esc(settings.narration)}. Tip: press Ctrl+S (or Cmd+S on Mac) to save.</p>` : '<div class="empty">Create your first script with "New script".</div>'}
+        <div class="script-foot"><button class="btn primary" data-act="save">Save script</button><span id="scriptDirty" class="muted">All changes saved</span><span class="spacer" style="flex:1"></span>
+          <button class="btn" data-act="structure">Insert documentary structure</button><button class="btn" data-act="export">Download .txt</button><button class="btn danger" data-act="del">Delete script</button></div>
+        <p class="hint">Put each section heading on its own line in CAPITALS. Lines inside [square brackets] are notes to yourself and are not narrated or counted. Press Ctrl+S (Cmd+S on Mac) to save.</p>` : '<div class="empty">Create your first script with "New script".</div>'}
+      </div>
+      ${s ? `<div class="panel" style="margin-top:16px"><h2>Sections and timing</h2><div id="scriptSections"></div>
+        <div class="script-foot"><button class="btn" data-act="toVoice">Create narration segments &rarr;</button><button class="btn" data-act="toVisuals">Create scene list &rarr;</button></div>
+        <p class="hint">"Starts at" is the estimated timestamp of each section at ${wpm} words per minute. The same times are used for YouTube chapters in Upload Manager.</p></div>` : ''}
       </div></div>`,
     mount() {
       if (!s) return;
       count();
-      const mark = () => { dirty = true; $('#scriptDirty').textContent = 'Unsaved changes'; };
       $('#scriptText').oninput = () => { count(); mark(); };
       ['scriptTitle', 'scriptTopic', 'scriptStatus'].forEach((id) => { $('#' + id).oninput = mark; });
       $('#scriptText').onkeydown = (e) => { if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') { e.preventDefault(); save().catch((err) => toast(err.message, true)); } };
@@ -483,34 +577,70 @@ VIEWS.scripts = async () => {
       },
       save,
       del: () => { dirty = false; confirmDelete('scripts', s, 'script'); },
+      structure: () => {
+        const box = $('#scriptText');
+        const outline = STRUCTURE.map(([h, share, tip]) => `${h}\n[About ${num(Math.round((target * share) / 10) * 10)} words. ${tip}]\n`).join('\n');
+        box.value = (box.value.trim() ? box.value.trimEnd() + '\n\n' : '') + outline;
+        count(); mark();
+        toast('Structure added. Write under each heading, then save.');
+      },
+      export: () => download(`${$('#scriptTitle').value.replace(/[^\w -]+/g, '').trim() || 'script'}.txt`, $('#scriptText').value),
+      toVoice: () => sendTo('voice'),
+      toVisuals: () => sendTo('visual'),
     },
   };
 };
+
+// Rough read-through using the voice built into your browser. Free and offline; not the final narrator.
+function speak(text) {
+  if (!('speechSynthesis' in window)) return toast('This browser has no built-in voice. Try Chrome or Edge.', true);
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  const voices = speechSynthesis.getVoices().filter((v) => /^en/i.test(v.lang));
+  u.voice = voices.find((v) => /david|mark|george|daniel|guy|ryan|male/i.test(v.name) && !/female/i.test(v.name)) || voices[0] || null;
+  u.lang = u.voice?.lang || 'en-GB';
+  u.rate = 0.95;
+  speechSynthesis.speak(u);
+}
+if ('speechSynthesis' in window) speechSynthesis.getVoices(); // ask the browser to load its voice list early
 
 // Voice Studio, Visual Studio and Thumbnail Studio share one layout: assets grouped by production job.
 function assetView(kind, copy) {
   return async () => {
     const [assets, jobs] = await load('assets', 'jobs');
-    const mine = assets.filter((a) => a.kind === kind), map = byId(mine), jmap = byId(jobs);
+    const mine = assets.filter((a) => a.kind === kind), map = byId(mine);
+    const wpm = Number(settings.words_per_minute) || 150;
     const fields = [
       { name: 'job_id', label: 'Production job', type: 'select', options: jobs.map((j) => [j.id, j.title]), required: true },
       { name: 'name', label: copy.nameLabel, required: true },
+      ...(kind === 'voice' ? [{ name: 'content', label: 'Narration text (the words to be spoken)', type: 'textarea', rows: 7 }] : []),
       { name: 'details', label: copy.detailsLabel, type: 'textarea', rows: 4 },
       { name: 'status', label: 'Status', type: 'select', options: ENUMS.assetStatus },
     ];
     const groups = jobs.map((j) => [j, mine.filter((a) => a.job_id === j.id)]).filter(([, list]) => list.length);
     const add = () => (jobs.length ? recordForm('assets', copy.what, fields, null, { fixed: { kind } }) : toast('Create a production job first (Video Production).', true));
+    const groupNote = (list) => {
+      if (kind !== 'voice') return '';
+      const words = list.reduce((n, a) => n + wordCount(a.content), 0);
+      return words ? `<span class="muted" style="font:13px var(--sans)">${num(words)} words &middot; about ${clock(words / wpm)} of narration</span>` : '';
+    };
     return {
       buttons: `<button class="btn primary" data-act="add">+ New ${copy.what}</button>`,
       html: `<div class="panel" style="margin-bottom:16px"><span class="muted">${copy.intro(settings)}</span></div>` +
-        (groups.length ? groups.map(([j, list]) => `<h2 class="group-title">${esc(j.title)} <span class="badge">${list.filter((a) => ['ready', 'approved'].includes(a.status)).length} / ${list.length} ready</span></h2>
+        (groups.length ? groups.map(([j, list]) => `<h2 class="group-title">${esc(j.title)} <span class="badge">${list.filter((a) => ['ready', 'approved'].includes(a.status)).length} / ${list.length} ready</span>${groupNote(list)}
+            ${kind !== 'thumbnail' ? `<button class="btn small" data-act="exportJob" data-id="${j.id}">Download all (.txt)</button>` : ''}</h2>
           <div class="grid cards">${list.map((a) => `<article class="panel card">
             ${kind === 'thumbnail' ? `<div class="thumb" aria-hidden="true">${esc(a.name)}</div>` : ''}
-            <h3>${esc(a.name)}${demo(a)}</h3><div class="meta">${badge(a.status)}</div><p>${esc(a.details)}</p>
+            <h3>${esc(a.name)}${demo(a)}</h3><div class="meta">${badge(a.status)}${kind === 'voice' && a.content ? `<span class="badge">${num(wordCount(a.content))} words &middot; ${clock(wordCount(a.content) / wpm)}</span>` : ''}</div>
+            ${kind === 'voice' && a.content ? `<p class="clamp">${esc(a.content)}</p>` : ''}
+            ${a.details ? `<p${kind === 'voice' ? ' class="muted"' : ''}>${kind === 'voice' ? 'Direction: ' : ''}${esc(a.details)}</p>` : ''}
             <div class="row-actions">
+              ${kind === 'voice' && a.content ? `<button class="btn small" data-act="speak" data-id="${a.id}">&#9654; Preview</button><button class="btn small" data-act="quiet">Stop</button><button class="btn small" data-act="copy" data-id="${a.id}">Copy text</button>` : ''}
+              ${kind === 'visual' && a.details ? `<button class="btn small" data-act="copy" data-id="${a.id}">Copy prompt</button>` : ''}
               ${a.status !== 'approved' ? `<button class="btn small" data-act="advance" data-id="${a.id}">Mark ${nice(ENUMS.assetStatus[ENUMS.assetStatus.indexOf(a.status) + 1]).toLowerCase()}</button>` : ''}
               <button class="btn small" data-act="edit" data-id="${a.id}">Edit</button><button class="btn small danger" data-act="del" data-id="${a.id}">Delete</button>
-            </div></article>`).join('')}</div>`).join('') : `<div class="panel empty">Nothing here yet. Add your first ${copy.what}.</div>`),
+            </div></article>`).join('')}</div>`).join('') : `<div class="panel empty">Nothing here yet. Add your first ${copy.what}${kind === 'thumbnail' ? '' : ', or create them all at once from a script in Script Studio'}.</div>`),
+      leave: () => { if ('speechSynthesis' in window) speechSynthesis.cancel(); return true; },
       actions: {
         add,
         edit: (d) => recordForm('assets', copy.what, fields, map[d.id], { fixed: { kind } }),
@@ -521,17 +651,28 @@ function assetView(kind, copy) {
           toast(`Marked ${nice(next).toLowerCase()}`);
           refresh();
         },
+        speak: (d) => speak(map[d.id].content),
+        quiet: () => 'speechSynthesis' in window && speechSynthesis.cancel(),
+        copy: (d) => (kind === 'voice' ? copyText(map[d.id].content, 'Narration text') : copyText(map[d.id].details, 'Prompt')),
+        exportJob: (d) => {
+          const job = jobs.find((j) => j.id === Number(d.id));
+          const list = mine.filter((a) => a.job_id === job.id);
+          const body = list.map((a) => (kind === 'voice'
+            ? `${a.name.toUpperCase()}\n${a.details ? `[Direction: ${a.details}]\n` : ''}\n${a.content || ''}`
+            : `${a.name}\n${a.details || ''}`)).join('\n\n\n');
+          download(`${job.title.replace(/[^\w -]+/g, '').trim()} - ${kind === 'voice' ? 'narration' : 'scene prompts'}.txt`, body);
+        },
       },
     };
   };
 }
 VIEWS.voice = assetView('voice', {
   what: 'narration segment', nameLabel: 'Segment name (e.g. Act 1 narration)', detailsLabel: 'Direction notes (tone, pace, pronunciation)',
-  intro: (s) => `Channel voice: <b>${esc(s.narration)}</b>, in ${esc(s.language)}. Break each script into segments and track them here. No voice service is connected yet, so nothing is generated or charged.`,
+  intro: (s) => `Channel voice: <b>${esc(s.narration)}</b>, in ${esc(s.language)}. "Preview" reads a segment aloud with the free voice built into your browser, so you can check pacing and wording. It is a rough robot read-through, not your final narrator. No paid voice service is connected.`,
 });
 VIEWS.visuals = assetView('visual', {
   what: 'scene', nameLabel: 'Scene name', detailsLabel: 'Visual description or image/video prompt',
-  intro: (s) => `Visual style: <b>${esc(s.visual_style)}</b>. Plan each scene and its prompt here. No image or video generator is connected yet, so nothing is generated or charged.`,
+  intro: (s) => `Visual style: <b>${esc(s.visual_style)}</b>. Each scene holds a prompt you can copy into the image or video tool of your choice. No generator is connected, so nothing is created or charged here.`,
 });
 VIEWS.thumbnails = assetView('thumbnail', {
   what: 'thumbnail concept', nameLabel: 'Headline text on the thumbnail', detailsLabel: 'Concept description',
@@ -586,27 +727,63 @@ VIEWS.production = async (ov) => {
 };
 
 VIEWS.uploads = async () => {
-  const [publishing, jobs] = await load('publishing', 'jobs');
-  const map = byId(publishing);
+  const [publishing, jobs, scripts] = await load('publishing', 'jobs', 'scripts');
+  const map = byId(publishing), jmap = byId(jobs);
+  const wpm = Number(settings.words_per_minute) || 150;
+  // The script for a video is the one that shares its production job's topic.
+  const scriptFor = (p) => { const topic = jmap[p.job_id]?.topic_id; return topic ? scripts.find((x) => x.topic_id === topic) : null; };
+  const chapterLines = (p) => {
+    const list = scriptFor(p) ? chapters(scriptFor(p).content, wpm).filter((x) => x.words) : [];
+    return list.length >= 3 ? list.map((x) => `${x.at} ${titleCase(x.heading)}`).join('\n') : '';
+  };
+  const draftDescription = (p) => [
+    '[Write 2-3 sentences here that sell the story. The first line is what viewers see in search results.]', '',
+    ...(chapterLines(p) ? ['CHAPTERS', chapterLines(p), ''] : []),
+    `${settings.channel_name} tells the stories behind the world's great fortunes: ${settings.niche.toLowerCase()}.`, '',
+    'New documentaries every week. Subscribe so you do not miss the next one.',
+  ].join('\n');
+  const pack = (p) => openForm({
+    title: 'Publishing pack',
+    message: `Everything you paste into YouTube for "${p.title}". Nothing is sent anywhere; you copy it across yourself.`,
+    fields: [
+      { name: 'title', label: 'Title (YouTube allows up to 100 characters)', required: true, value: p.title },
+      { name: 'description', label: 'Description', type: 'textarea', rows: 11, value: p.description || draftDescription(p), hint: chapterLines(p) ? 'Chapter times are estimated from the linked script. Adjust them to the final edit before publishing.' : 'No chapters: this video has no linked script with at least three sections.' },
+      { name: 'tags', label: 'Tags, separated by commas (up to 500 characters)', value: p.tags || '' },
+    ],
+    tools: [
+      { label: 'Copy title', run: (f) => copyText(f.elements.title.value, 'Title') },
+      { label: 'Copy description', run: (f) => copyText(f.elements.description.value, 'Description') },
+      { label: 'Copy tags', run: (f) => copyText(f.elements.tags.value, 'Tags') },
+    ],
+    onSubmit: async (v) => {
+      if (v.title.length > 100) throw new Error(`The title is ${v.title.length} characters. YouTube allows 100.`);
+      if (/\[Write 2-3 sentences/.test(v.description)) throw new Error('Replace the [Write 2-3 sentences...] placeholder in the description first.');
+      await api('PUT', `publishing/${p.id}`, v);
+      toast('Publishing pack saved');
+      refresh();
+    },
+  });
   const set = async (id, status, message) => { await api('PUT', `publishing/${id}`, { status }); toast(message); refresh(); };
   const table = (title, rows, emptyText) => `<section class="panel" style="margin-bottom:16px"><h2>${title} <span class="badge">${rows.length}</span></h2>
     ${rows.length ? `<div class="table-wrap"><table><thead><tr><th>Video</th><th>Format</th><th>Publish time</th><th>Status</th><th></th></tr></thead><tbody>
-    ${rows.map((p) => `<tr><td>${esc(p.title)}${demo(p)}${/^https?:\/\//i.test(p.youtube_url) ? `<div class="sub"><a href="${esc(p.youtube_url)}" target="_blank" rel="noopener noreferrer">View on YouTube</a></div>` : ''}</td>
+    ${rows.map((p) => `<tr><td>${esc(p.title)}${demo(p)}${p.description ? ' <span class="badge good">Pack ready</span>' : ''}${/^https?:\/\//i.test(p.youtube_url) ? `<div class="sub"><a href="${esc(p.youtube_url)}" target="_blank" rel="noopener noreferrer">View on YouTube</a></div>` : ''}</td>
       <td>${badge(p.format)}</td><td style="white-space:nowrap">${fmtDate(p.publish_date, { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })}<div class="sub">${esc(p.publish_time)}</div></td><td>${badge(p.status)}</td>
       <td><div class="row-actions">
         ${p.status === 'awaiting_approval' ? `<button class="btn small primary" data-act="approve" data-id="${p.id}">Approve &amp; schedule</button>` : ''}
         ${p.status === 'scheduled' ? `<button class="btn small" data-act="published" data-id="${p.id}">Mark as published</button><button class="btn small" data-act="unapprove" data-id="${p.id}">Back to approval</button>` : ''}
+        <button class="btn small" data-act="pack" data-id="${p.id}">Publishing pack</button>
         <button class="btn small" data-act="edit" data-id="${p.id}">Edit</button><button class="btn small danger" data-act="del" data-id="${p.id}">Delete</button>
       </div></td></tr>`).join('')}</tbody></table></div>` : `<div class="empty">${emptyText}</div>`}</section>`;
   const of = (s) => publishing.filter((p) => p.status === s);
   return {
     buttons: '<button class="btn primary" data-act="add">+ New upload record</button>',
-    html: `<div class="panel" style="margin-bottom:16px"><b>YouTube is not connected.</b> <span class="muted">Nothing here uploads or publishes anything. This page is your approval queue and publishing record: approve a video, upload it to YouTube yourself, then press "Mark as published".</span></div>` +
+    html: `<div class="panel" style="margin-bottom:16px"><b>YouTube is not connected.</b> <span class="muted">Nothing here uploads or publishes anything. This page is your approval queue and publishing record: approve a video, prepare its publishing pack (title, description, chapters, tags), upload it to YouTube yourself, then press "Mark as published".</span></div>` +
       table('Awaiting your approval', of('awaiting_approval'), 'Nothing is waiting for approval.') +
       table('Scheduled', of('scheduled'), 'No scheduled videos.') +
       table('Published', of('published').reverse(), 'No published videos recorded yet.'),
     actions: {
       add: () => pubForm(jobs, null, {}),
+      pack: (d) => pack(map[d.id]),
       edit: (d) => pubForm(jobs, map[d.id]),
       del: (d) => confirmDelete('publishing', map[d.id], 'upload record'),
       approve: (d) => set(d.id, 'scheduled', 'Approved and scheduled'),
@@ -696,7 +873,10 @@ VIEWS.settings = async (ov) => {
         <p class="muted" style="margin-top:0">${ov.has_demo ? 'The studio currently contains sample records marked <span class="badge demo">DEMO</span>. Removing them does not touch anything you created yourself.' : 'There is no demo data in the studio right now.'}</p>
         <div class="row-actions" style="justify-content:flex-start">${ov.has_demo ? '<button class="btn danger" data-act="clearDemo">Remove demo data</button>' : ''}<button class="btn" data-act="restoreDemo">${ov.has_demo ? 'Reset demo data' : 'Load demo data'}</button></div></section>
       <section class="panel" style="margin-top:16px"><h2>Connections</h2>
-        <p class="muted" style="margin:0">YouTube: <b>not connected</b>. Paid AI services: <b>none</b>. Everything is stored on this computer in the file <code>empire-studio/data/empire.db</code>. Copy that file somewhere safe to back up your studio.</p></section>`,
+        <p class="muted" style="margin:0">YouTube: <b>not connected</b>. Paid AI services: <b>none</b>. Everything is stored on this computer in the file <code>empire-studio/data/empire.db</code>. Copy that file somewhere safe to back up your studio.</p></section>
+      <section class="panel" style="margin-top:16px"><h2>Backup</h2>
+        <p class="muted" style="margin-top:0">Download a copy of everything in the studio (settings, topics, research, scripts, jobs, publishing records and analytics) as one file. Keep it somewhere safe, such as a USB stick or cloud drive.</p>
+        <a class="btn" href="/api/export" download>Download backup file</a></section>`,
     mount() {
       $('#settingsForm').onsubmit = async (e) => {
         e.preventDefault();
