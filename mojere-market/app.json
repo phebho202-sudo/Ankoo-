@@ -61,6 +61,12 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "owner": "mojeremarket",
+    "extra": {
+      "eas": {
+        "projectId": "2ddd564c-ed98-4348-bb7a-981914ae759a"
+      }
     }
   }
 }
