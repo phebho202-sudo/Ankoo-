@@ -1,0 +1,13 @@
+{
+  "name": "empire-studio-ai",
+  "version": "0.1.0",
+  "description": "Empire Studio AI - production dashboard for the Behind the Fortune YouTube channel",
+  "main": "src/server.js",
+  "private": true,
+  "engines": { "node": ">=22.5" },
+  "scripts": {
+    "start": "node --no-warnings=ExperimentalWarning src/server.js",
+    "test": "node --no-warnings=ExperimentalWarning --test test/*.test.js"
+  },
+  "license": "UNLICENSED"
+}
