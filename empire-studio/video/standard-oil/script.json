@@ -1,0 +1,101 @@
+{
+  "title": "How One Man Controlled 90% of America's Oil",
+  "channel": "Behind the Fortune",
+  "note": "Narration lines use {shown|spoken} where the caption and the spoken form differ, e.g. {1870|eighteen seventy}.",
+  "chapters": [
+    {
+      "title": "Cold Open",
+      "card": false,
+      "shots": [
+        { "type": "year", "year": 1911, "label": "Washington, D.C.", "say": ["In {1911|nineteen eleven}, the Supreme Court of the United States ordered one of the most powerful companies on earth to be broken into pieces."] },
+        { "type": "words", "lines": ["It was meant to be", "a *punishment.*"], "say": ["It was meant to be a punishment."] },
+        { "type": "words", "lines": ["Instead, it made its founder", "the *richest American*", "who has ever lived."], "say": ["Instead, by most estimates, it made its founder the richest American who has ever lived."] },
+        { "type": "title", "kicker": "Behind the Fortune", "title": "Standard Oil", "sub": "The rise and breakup of an empire", "say": ["This is the story of Standard Oil."] },
+        { "type": "share", "from": 0, "to": 90, "label": "of America's oil refining", "say": ["How a quiet bookkeeper from Cleveland took control of nearly {90%|ninety percent} of America's oil."] },
+        { "type": "words", "lines": ["How he did it.", "And why he walked away", "*richer than ever.*"], "say": ["How he did it.", "And why, when the government finally tore his empire apart, he walked away richer than ever."] }
+      ]
+    },
+    {
+      "title": "The Bookkeeper",
+      "shots": [
+        { "type": "year", "year": 1839, "label": "Richford, New York", "say": ["John Davison Rockefeller was born in {1839|eighteen thirty-nine}, in a small town in upstate New York."] },
+        { "type": "duo", "left": ["His father", "A travelling salesman", "of doubtful medicines"], "right": ["His mother", "Strict, religious,", "careful with every cent"], "say": ["His father was a travelling salesman who sold doubtful medicines, and who was often gone for months at a time.", "His mother was strict, religious, and careful with every cent.", "The boy took after his mother."] },
+        { "type": "art", "art": "ledger", "caption": "Assistant bookkeeper, age 16", "say": ["At sixteen, he found his first job, as an assistant bookkeeper at a small trading firm in Cleveland, Ohio.", "He loved it. He loved the columns of figures, and the way a ledger showed exactly where every dollar went."] },
+        { "type": "words", "lines": ["*26 September*", "His personal holiday,", "every year, for life."], "say": ["For the rest of his life he celebrated the day he was hired, the twenty-sixth of September, as a personal holiday."] },
+        { "type": "words", "lines": ["Every cent *earned.*", "Every cent *spent.*", "Every cent *given.*"], "say": ["He kept his own ledger too. Every cent earned, every cent spent, every cent given to his church.", "It was a habit he never dropped."] },
+        { "type": "words", "lines": ["Careful. Patient.", "Almost never *surprised.*"], "say": ["At nineteen, he went into business for himself, trading grain, hay and meat.", "He was careful, patient, and almost never surprised."] },
+        { "type": "year", "year": 1859, "label": "About a hundred miles away", "say": ["And later that same year, {1859|eighteen fifty-nine}, something happened about a hundred miles away that would change his life."] }
+      ]
+    },
+    {
+      "title": "Black Gold",
+      "shots": [
+        { "type": "art", "art": "derrick", "caption": "Titusville, Pennsylvania · August 1859", "say": ["In August {1859|eighteen fifty-nine}, near the village of Titusville, Pennsylvania, a man named Edwin Drake drilled into the ground and struck oil.", "It was the start of the first oil rush in America."] },
+        { "type": "art", "art": "lamp", "caption": "Oil meant light", "say": ["At the time, oil was not about cars. There were no cars. Oil meant light.", "Refined into kerosene, it burned brighter and cheaper than whale oil or candles, and it let ordinary families light their homes after dark."] },
+        { "type": "words", "lines": ["Fortunes made *in a week.*", "Lost *in a day.*"], "say": ["Thousands of people rushed to Pennsylvania to drill.", "Fortunes were made in a week and lost in a day. Prices swung wildly."] },
+        { "type": "duo", "left": ["Drilling", "A gamble"], "right": ["Refining", "A business"], "say": ["Rockefeller looked at the chaos and saw that drilling was a gamble.", "Refining was a business."] },
+        { "type": "year", "year": 1863, "label": "His first refinery, Cleveland", "say": ["In {1863|eighteen sixty-three}, he invested in a refinery in Cleveland."] },
+        { "type": "stat", "prefix": "$", "value": 72500, "label": "to buy out his partners, at auction, in 1865", "say": ["Two years later, he bought out his partners at auction, for {$72,500|seventy-two thousand five hundred dollars}.", "He was twenty-five years old, and he now controlled one of the largest refineries in the city."] }
+      ]
+    },
+    {
+      "title": "The Standard",
+      "shots": [
+        { "type": "year", "year": 1870, "label": "Standard Oil is founded", "say": ["In January {1870|eighteen seventy}, Rockefeller and his partners, among them Henry Flagler, created a new company.", "They called it Standard Oil."] },
+        { "type": "words", "lines": ["The name was a *promise.*", "Kerosene of a standard quality", "that customers could trust."], "say": ["The name was a promise: kerosene of a standard quality, that customers could trust."] },
+        { "type": "share", "from": 0, "to": 10, "label": "of America's refining, in 1870", "say": ["At its birth, Standard Oil handled about a tenth of America's oil refining.", "Rockefeller wanted the rest."] },
+        { "type": "art", "art": "barrel", "caption": "Efficiency, taken to an extreme", "say": ["His method was efficiency, taken to an extreme.", "Standard made its own barrels. It bought its own forests for the wood.", "It found uses for the leftovers that other refiners poured away. It counted costs to a fraction of a cent."] },
+        { "type": "art", "art": "train", "caption": "Secret discounts: the rebates", "say": ["And then there were the railroads.", "Oil had to travel by rail, and Standard shipped more of it than anyone.", "So Rockefeller went to the railroads and demanded secret discounts, known as rebates.", "The railroads agreed. Standard could now move oil more cheaply than any rival."] },
+        { "type": "words", "lines": ["*Sell* to Standard Oil.", "Or try to *compete* with it."], "say": ["In {1872|eighteen seventy-two}, he turned that advantage into a weapon.", "He visited his competitors in Cleveland, one by one, and made them an offer.", "Sell to Standard Oil, for cash or for shares.", "Or try to compete against a company that can ship for less than you ever will."] },
+        { "type": "grid", "total": 26, "taken": 22, "label": "Cleveland refiners sold to Standard Oil", "say": ["Within a few months, twenty-two of his twenty-six Cleveland competitors had sold.", "It became known as the Cleveland Massacre."] }
+      ]
+    },
+    {
+      "title": "The Empire",
+      "shots": [
+        { "type": "names", "rows": ["Cleveland", "Pittsburgh", "Philadelphia", "New York"], "say": ["From Cleveland, Standard moved outward. Pittsburgh. Philadelphia. New York.", "Refinery after refinery was bought, absorbed, or closed."] },
+        { "type": "art", "art": "pipeline", "caption": "Then came the pipelines", "say": ["When rivals built pipelines to escape the railroads, Standard built and bought pipelines of its own."] },
+        { "type": "share", "from": 10, "to": 90, "label": "of America's refining, by about 1880", "say": ["By about {1880|eighteen eighty}, Standard Oil refined roughly {90%|ninety percent} of America's oil."] },
+        { "type": "year", "year": 1882, "label": "The Standard Oil Trust · nine trustees", "say": ["To hold it all together, Rockefeller's lawyers invented a new kind of structure.", "In {1882|eighteen eighty-two}, the shareholders of dozens of companies handed their shares to nine trustees, led by Rockefeller.", "It was called the Standard Oil Trust."] },
+        { "type": "words", "lines": ["Here is the part", "that *complicates* the story."], "say": ["Here is the part that complicates the story."] },
+        { "type": "art", "art": "lamp", "caption": "The price of kerosene fell sharply", "say": ["In these years, the price of kerosene fell sharply. Light became cheaper for millions of people."] },
+        { "type": "duo", "left": ["His defenders", "Order and low prices", "in a wasteful industry"], "right": ["His critics", "Every rival crushed,", "in secret"], "say": ["Rockefeller's defenders said he had brought order and low prices to a wasteful industry.", "His critics said he had done it by crushing every rival, in secret, and that no single man should hold that much power."] },
+        { "type": "words", "lines": ["Both were telling", "the *truth.*"], "say": ["Both were telling the truth."] }
+      ]
+    },
+    {
+      "title": "The Reckoning",
+      "shots": [
+        { "type": "year", "year": 1890, "label": "The Sherman Antitrust Act", "say": ["In {1890|eighteen ninety}, Congress passed the Sherman Antitrust Act, a law aimed squarely at combinations like Standard.", "For years, it changed very little. The trust was reorganised as a holding company in New Jersey, and carried on."] },
+        { "type": "art", "art": "pen", "caption": "Ida Tarbell, journalist", "say": ["Then came a journalist. Her name was Ida Tarbell.", "She had grown up in the oil region of Pennsylvania, where her father was one of the independent oil men squeezed by Standard's deals with the railroads."] },
+        { "type": "stat", "value": 19, "label": "parts, in McClure's Magazine, from 1902", "say": ["Beginning in {1902|nineteen oh two}, she published her investigation in McClure's Magazine, in nineteen parts.", "Using court records, documents and interviews, she laid out exactly how Standard had been built.", "The public was gripped. And angry."] },
+        { "type": "art", "art": "court", "caption": "United States v. Standard Oil", "say": ["In {1906|nineteen oh six}, the federal government sued Standard Oil under the Sherman Act. The case took five years."] },
+        { "type": "words", "lines": ["15 May 1911", "An *illegal monopoly.*", "Six months to break apart."], "say": ["On the fifteenth of May, {1911|nineteen eleven}, the Supreme Court gave its ruling.", "Standard Oil was an illegal monopoly. It had six months to break itself apart."] },
+        { "type": "split", "count": 34, "label": "separate companies", "say": ["It was split into thirty-four separate companies."] }
+      ]
+    },
+    {
+      "title": "The Twist",
+      "shots": [
+        { "type": "words", "lines": ["And here", "is the *twist.*"], "say": ["And here is the twist."] },
+        { "type": "split", "count": 34, "quarter": true, "label": "About a quarter of every piece", "say": ["Rockefeller owned about a quarter of Standard Oil.", "After the breakup, he owned about a quarter of each of the thirty-four pieces."] },
+        { "type": "art", "art": "car", "caption": "A new demand: gasoline", "say": ["The timing could not have been better for him.", "The automobile was arriving, and with it a huge new demand for a product that refiners had once treated as waste. Gasoline.", "Freed from one another, the new companies grew fast, and their share prices soared."] },
+        { "type": "stat", "prefix": "$", "value": 900, "suffix": " million", "label": "his estimated fortune, around 1913", "say": ["Within a couple of years, Rockefeller's fortune was estimated at around {$900 million|nine hundred million dollars}.", "That was roughly two percent of the entire American economy."] },
+        { "type": "names", "arrows": true, "rows": ["Standard Oil of New Jersey → Exxon", "Standard Oil of New York → Mobil", "Standard Oil of California → Chevron"], "say": ["The pieces are still with us.", "Standard Oil of New Jersey became Exxon.", "Standard Oil of New York became Mobil.", "Standard Oil of California became Chevron."] },
+        { "type": "year", "year": 1999, "label": "Exxon and Mobil merge", "say": ["In {1999|nineteen ninety-nine}, Exxon and Mobil merged back together."] }
+      ]
+    },
+    {
+      "title": "The Lesson",
+      "shots": [
+        { "type": "words", "lines": ["He gave money away", "with the *same method*", "he had used to make it."], "say": ["Rockefeller had stepped back from running the company years before the breakup.", "He spent the second half of his life giving money away, with the same method he had used to make it."] },
+        { "type": "names", "rows": ["The University of Chicago", "A medical research institute", "The Rockefeller Foundation"], "say": ["He funded the University of Chicago, a medical research institute in New York, and the Rockefeller Foundation."] },
+        { "type": "stat", "prefix": "$", "value": 500, "suffix": " million +", "label": "given away in his lifetime", "say": ["In all, he gave away more than {$500 million|five hundred million dollars}.", "He died in {1937|nineteen thirty-seven}, at the age of ninety-seven."] },
+        { "type": "words", "lines": ["So what is the *lesson*", "of Standard Oil?"], "say": ["So what is the lesson of Standard Oil?", "Rockefeller did not win because he found oil. He never cared much for drilling."] },
+        { "type": "art", "art": "bottleneck", "caption": "The narrow point everyone must pass through", "say": ["He won because he controlled the narrow point that everyone else had to pass through.", "The refineries. The railroads. The pipelines."] },
+        { "type": "words", "lines": ["Control the *bottleneck,*", "and you control", "the industry."], "say": ["Control the bottleneck, and you control the industry.", "It was true of oil in {1880|eighteen eighty}. It is worth asking where it is true today."] },
+        { "type": "title", "kicker": "Thank you for watching", "title": "Behind the Fortune", "sub": "The stories behind the world's great fortunes", "say": ["This has been Behind the Fortune."] }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Empire Studio video stage</title>
+<!--
+  The "stage" draws one frame of the video for any moment in time.
+  render.js opens this page, calls seek(t) for every frame (24 per second) and photographs it.
+  Everything on screen is a pure function of t, so the result is identical every time.
+-->
+<style>
+  :root { --gold: #c9a35a; --gold-hi: #e6c98a; --text: #f1eee6; --muted: #9a97a0; --bg: #08080a;
+    --serif: "Bitstream Charter", Caladea, "Liberation Serif", Georgia, serif; --sans: Inter, "Liberation Sans", Arial, sans-serif; }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: var(--bg); }
+  #stage { position: relative; width: 1920px; height: 1080px; overflow: hidden; color: var(--text); font-family: var(--sans); }
+  #bg, #vignette, #dust { position: absolute; inset: 0; }
+  #vignette { background: radial-gradient(ellipse at center, transparent 45%, rgba(0, 0, 0, .72) 100%); }
+  #dust i { position: absolute; width: 4px; height: 4px; border-radius: 50%; background: var(--gold-hi); }
+  #frame { position: absolute; inset: 34px; border: 1px solid rgba(201, 163, 90, .16); }
+  #top { position: absolute; left: 80px; right: 80px; top: 62px; display: flex; justify-content: space-between; font-size: 21px; letter-spacing: .28em; text-transform: uppercase; color: var(--muted); }
+  #top b { color: var(--gold); font-weight: 600; }
+  #shot { position: absolute; left: 0; right: 0; top: 120px; height: 760px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; transform-origin: 50% 50%; }
+  #caption { position: absolute; left: 180px; right: 180px; bottom: 96px; text-align: center; font-size: 39px; line-height: 1.3; font-weight: 500; color: #fff; text-shadow: 0 2px 14px #000, 0 0 3px #000; }
+  #bar { position: absolute; left: 0; bottom: 0; height: 5px; background: var(--gold); }
+
+  .kicker { font-size: 27px; letter-spacing: .42em; text-transform: uppercase; color: var(--gold); }
+  .rule { width: 340px; height: 2px; background: var(--gold); margin: 34px auto; transform-origin: 50% 50%; }
+  h1 { font: 600 168px/1.02 var(--serif); letter-spacing: -.01em; }
+  h2 { font: 600 118px/1.08 var(--serif); }
+  .sub { font-size: 35px; color: #c9c5cf; margin-top: 30px; }
+  .big { font: 600 330px/1 var(--serif); color: var(--gold-hi); font-variant-numeric: tabular-nums; letter-spacing: -.02em; text-shadow: 0 0 80px rgba(201, 163, 90, .28); }
+  .big.stat { font-size: 230px; }
+  .label { font-size: 37px; color: #d6d2dc; margin-top: 26px; letter-spacing: .04em; }
+  .line { font: 600 96px/1.22 var(--serif); }
+  .line em, .row em { font-style: normal; color: var(--gold-hi); }
+  .duo { display: grid; grid-template-columns: 1fr 2px 1fr; gap: 70px; width: 1500px; align-items: center; }
+  .duo .div { background: linear-gradient(transparent, var(--gold), transparent); height: 380px; }
+  .duo .k { font-size: 26px; letter-spacing: .34em; text-transform: uppercase; color: var(--gold); margin-bottom: 26px; }
+  .duo .v { font: 600 62px/1.2 var(--serif); }
+  svg.art { width: 900px; height: 560px; overflow: visible; }
+  svg.art * { fill: none; stroke: var(--gold-hi); stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; }
+  svg.art .dim { stroke: rgba(201, 163, 90, .5); stroke-width: 2.5; }
+  svg.art .fill { fill: var(--gold-hi); stroke: none; }
+  .ring { position: relative; width: 500px; height: 500px; }
+  .ring svg { width: 500px; height: 500px; transform: rotate(-90deg); }
+  .ring circle { fill: none; stroke-width: 26; }
+  .ring .n { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font: 600 150px/1 var(--serif); color: var(--gold-hi); font-variant-numeric: tabular-nums; }
+  .grid { display: grid; grid-template-columns: repeat(13, 84px); gap: 18px; }
+  .grid i { width: 84px; height: 84px; border: 2px solid rgba(201, 163, 90, .55); border-radius: 8px; }
+  .counter { font: 600 92px/1 var(--serif); margin-top: 50px; font-variant-numeric: tabular-nums; }
+  .counter span { color: var(--gold-hi); }
+  .split { display: grid; grid-template-columns: repeat(17, 70px); justify-content: center; }
+  .split i { position: relative; width: 70px; height: 110px; background: #2a2620; border: 1px solid rgba(201, 163, 90, .7); overflow: hidden; }
+  .split i b { position: absolute; left: 0; bottom: 0; width: 100%; background: var(--gold); }
+  .row { font: 600 78px/1.34 var(--serif); }
+  .row .from { color: #cfcbd4; font-size: 58px; }
+  .row .arrow { color: var(--gold); margin: 0 26px; font-family: var(--sans); font-weight: 400; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="bg"></div><div id="dust"></div><div id="vignette"></div><div id="frame"></div>
+  <div id="top"><b id="brand"></b><span id="chap"></span></div>
+  <div id="shot"></div>
+  <div id="caption"></div>
+  <div id="bar"></div>
+</div>
+<script>
+'use strict';
+const $ = (s, r = document) => r.querySelector(s);
+const clamp = (x) => Math.max(0, Math.min(1, x));
+const ease = (x) => 1 - Math.pow(1 - clamp(x), 3);
+const prog = (t, start, dur) => ease((t - start) / dur);
+const esc = (s) => String(s).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+const mark = (s) => esc(s).replace(/\*([^*]+)\*/g, '<em>$1</em>');
+const fmt = (n) => Math.round(n).toLocaleString('en-US');
+const NUMBERS = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
+// Every drawn shape gets pathLength=1 so "draw-on" animation is just a dash offset from 1 to 0.
+const d = (tag, attrs, cls = '') => `<${tag} ${attrs} pathLength="1" class="d ${cls}"/>`;
+
+const ART = {
+  derrick: [
+    d('line', 'x1="110" y1="390" x2="490" y2="390"'),
+    d('line', 'x1="215" y1="390" x2="282" y2="90"'), d('line', 'x1="385" y1="390" x2="318" y2="90"'), d('line', 'x1="282" y1="90" x2="318" y2="90"'),
+    d('polyline', 'points="226,340 374,340 240,280 362,280 254,215 348,215 268,150 334,150"', 'dim'),
+    d('rect', 'x="410" y="320" width="80" height="70"'), d('line', 'x1="400" y1="320" x2="450" y2="290"'), d('line', 'x1="500" y1="320" x2="450" y2="290"'),
+    d('line', 'x1="300" y1="90" x2="300" y2="14"'), d('path', 'd="M300 60 C300 20 270 10 246 40"'), d('path', 'd="M300 60 C300 20 330 10 354 40"'),
+    d('path', 'd="M300 40 C292 14 268 0 250 6"', 'dim'), d('path', 'd="M300 40 C308 14 332 0 350 6"', 'dim'),
+  ],
+  lamp: [
+    d('path', 'd="M236 392 L364 392 L346 340 L254 340 Z"'), d('ellipse', 'cx="300" cy="306" rx="78" ry="40"'),
+    d('rect', 'x="278" y="240" width="44" height="28"'), d('line', 'x1="322" y1="254" x2="352" y2="254"'), d('circle', 'cx="362" cy="254" r="10"'),
+    d('path', 'd="M274 240 C246 180 268 120 286 60 L314 60 C332 120 354 180 326 240"'),
+    '<path class="fill flame" d="M300 228 C280 200 292 176 300 150 C308 176 320 200 300 228 Z"/>',
+    d('line', 'x1="190" y1="150" x2="150" y2="130"', 'dim'), d('line', 'x1="410" y1="150" x2="450" y2="130"', 'dim'),
+    d('line', 'x1="178" y1="200" x2="134" y2="200"', 'dim'), d('line', 'x1="422" y1="200" x2="466" y2="200"', 'dim'),
+    d('line', 'x1="216" y1="106" x2="186" y2="76"', 'dim'), d('line', 'x1="384" y1="106" x2="414" y2="76"', 'dim'),
+  ],
+  ledger: [
+    d('path', 'd="M300 110 C250 86 170 86 110 110 L110 350 C170 326 250 326 300 350 Z"'), d('path', 'd="M300 110 C350 86 430 86 490 110 L490 350 C430 326 350 326 300 350 Z"'),
+    ...[150, 185, 220, 255, 290].flatMap((y) => [d('path', `d="M140 ${y} C190 ${y - 14} 240 ${y - 14} 276 ${y}"`, 'dim'), d('path', `d="M324 ${y} C360 ${y - 14} 410 ${y - 14} 460 ${y}"`, 'dim')]),
+    d('line', 'x1="236" y1="120" x2="236" y2="318"', 'dim'), d('line', 'x1="420" y1="120" x2="420" y2="318"', 'dim'),
+    d('line', 'x1="520" y1="60" x2="400" y2="250"'), d('path', 'd="M400 250 L392 274 L412 258 Z"'),
+  ],
+  barrel: [
+    d('ellipse', 'cx="300" cy="100" rx="96" ry="26"'), d('path', 'd="M204 100 C180 190 180 280 204 360"'), d('path', 'd="M396 100 C420 190 420 280 396 360"'),
+    d('path', 'd="M204 360 C240 392 360 392 396 360"'), d('path', 'd="M190 170 C240 198 360 198 410 170"'), d('path', 'd="M188 290 C240 320 360 320 412 290"'),
+    d('line', 'x1="260" y1="124" x2="250" y2="378"', 'dim'), d('line', 'x1="340" y1="124" x2="350" y2="378"', 'dim'),
+    d('ellipse', 'cx="110" cy="250" rx="54" ry="15"', 'dim'), d('path', 'd="M56 250 C44 300 44 340 56 386 C80 404 140 404 164 386"', 'dim'),
+    d('ellipse', 'cx="490" cy="250" rx="54" ry="15"', 'dim'), d('path', 'd="M544 250 C556 300 556 340 544 386 C520 404 460 404 436 386"', 'dim'),
+  ],
+  train: [
+    d('line', 'x1="40" y1="356" x2="560" y2="356"'), ...[70, 130, 190, 250, 310, 370, 430, 490, 530].map((x) => d('line', `x1="${x}" y1="356" x2="${x - 8}" y2="372"`, 'dim')),
+    d('rect', 'x="120" y="160" width="360" height="116" rx="58"'), d('rect', 'x="270" y="128" width="60" height="32"'),
+    d('line', 'x1="100" y1="290" x2="500" y2="290"'), d('line', 'x1="100" y1="290" x2="64" y2="290"', 'dim'), d('line', 'x1="500" y1="290" x2="536" y2="290"', 'dim'),
+    d('circle', 'cx="186" cy="324" r="30"'), d('circle', 'cx="414" cy="324" r="30"'), d('circle', 'cx="186" cy="324" r="6"', 'dim'), d('circle', 'cx="414" cy="324" r="6"', 'dim'),
+    d('line', 'x1="210" y1="160" x2="210" y2="276"', 'dim'), d('line', 'x1="390" y1="160" x2="390" y2="276"', 'dim'),
+  ],
+  pipeline: [
+    d('path', 'd="M40 310 L210 310 L210 150 L400 150 L400 270 L560 270"', 'tube'),
+    d('path', 'd="M40 336 L236 336 L236 176 L374 176 L374 296 L560 296"', 'tube'),
+    d('line', 'x1="120" y1="298" x2="120" y2="348"'), d('line', 'x1="300" y1="138" x2="300" y2="188"'), d('line', 'x1="480" y1="258" x2="480" y2="308"'),
+    d('circle', 'cx="300" cy="100" r="26"'), d('line', 'x1="300" y1="126" x2="300" y2="150"'), d('line', 'x1="274" y1="100" x2="326" y2="100"', 'dim'), d('line', 'x1="300" y1="74" x2="300" y2="126"', 'dim'),
+    d('line', 'x1="40" y1="390" x2="560" y2="390"', 'dim'),
+  ],
+  pen: [
+    d('rect', 'x="150" y="70" width="250" height="320" rx="4"'), d('line', 'x1="185" y1="118" x2="365" y2="118"'),
+    ...[160, 190, 220, 250, 280, 310, 340].map((y, i) => d('line', `x1="185" y1="${y}" x2="${i % 3 === 2 ? 300 : 365}" y2="${y}"`, 'dim')),
+    d('line', 'x1="520" y1="110" x2="390" y2="330"'), d('line', 'x1="540" y1="122" x2="410" y2="342"'), d('path', 'd="M390 330 L376 372 L410 342 Z"'), d('line', 'x1="520" y1="110" x2="540" y2="122"'),
+  ],
+  court: [
+    d('path', 'd="M110 150 L300 54 L490 150 Z"'), d('rect', 'x="124" y="150" width="352" height="26"'),
+    ...[150, 222, 294, 366, 438].map((x) => d('rect', `x="${x - 13}" y="176" width="26" height="164"`)),
+    d('rect', 'x="104" y="340" width="392" height="18"'), d('rect', 'x="82" y="358" width="436" height="18"'), d('rect', 'x="60" y="376" width="480" height="18"'),
+    d('circle', 'cx="300" cy="112" r="16"', 'dim'),
+  ],
+  car: [
+    d('line', 'x1="50" y1="350" x2="550" y2="350"', 'dim'),
+    d('path', 'd="M120 300 L120 230 L236 230 L262 164 L392 164 L410 230 L480 244 L480 300"'),
+    d('line', 'x1="262" y1="164" x2="262" y2="230"', 'dim'), d('line', 'x1="236" y1="230" x2="410" y2="230"', 'dim'), d('line', 'x1="246" y1="150" x2="408" y2="150"'),
+    d('circle', 'cx="196" cy="306" r="44"'), d('circle', 'cx="410" cy="306" r="44"'), d('circle', 'cx="196" cy="306" r="8"', 'dim'), d('circle', 'cx="410" cy="306" r="8"', 'dim'),
+    ...[0, 60, 120].flatMap((a) => [196, 410].map((cx) => { const r = (a * Math.PI) / 180, x = 44 * Math.cos(r), y = 44 * Math.sin(r); return d('line', `x1="${cx - x}" y1="${306 - y}" x2="${cx + x}" y2="${306 + y}"`, 'dim'); })),
+    d('circle', 'cx="494" cy="232" r="12"'), d('line', 'x1="150" y1="230" x2="170" y2="190"'),
+  ],
+  bottleneck: [
+    ...[70, 116, 162, 210, 258, 304, 350].flatMap((y) => [d('path', `d="M40 ${y} C150 ${y} 190 210 262 210"`, 'dim'), d('path', `d="M338 210 C410 210 450 ${y} 560 ${y}"`, 'dim')]),
+    d('line', 'x1="250" y1="188" x2="350" y2="188"'), d('line', 'x1="250" y1="232" x2="350" y2="232"'),
+    d('rect', 'x="262" y="176" width="76" height="68" rx="6"'),
+  ],
+};
+
+// ---------- what each kind of shot looks like ----------
+const BUILD = {
+  title: (s) => `<div class="kicker" data-at="0.2">${esc(s.kicker)}</div><div class="rule" data-grow="0.4"></div><h1 data-at="0.5">${esc(s.title)}</h1><div class="sub" data-at="1.3">${esc(s.sub)}</div>`,
+  chapter: (s) => `<div class="kicker" data-at="0.15">Chapter ${NUMBERS[s.num]}</div><div class="rule" data-grow="0.3"></div><h2 data-at="0.45">${esc(s.title)}</h2>`,
+  year: (s) => `<div class="big" data-count data-from="${s.year - 16}" data-to="${s.year}" data-plain="1">${s.year}</div><div class="rule" data-grow="1.0"></div><div class="label" data-at="1.2" style="margin-top:0">${esc(s.label)}</div>`,
+  stat: (s) => `<div class="big stat">${esc(s.prefix || '')}<span data-count data-from="0" data-to="${s.value}"></span>${esc(s.suffix || '')}</div><div class="label" data-at="1.5">${esc(s.label)}</div>`,
+  words: (s, dur) => s.lines.map((l, i) => `<div class="line" data-at="${(0.25 + i * Math.min(1.9, (dur * 0.5) / s.lines.length)).toFixed(2)}">${mark(l)}</div>`).join(''),
+  duo: (s, dur) => {
+    const col = (lines, at) => `<div data-at="${at.toFixed(2)}"><div class="k">${esc(lines[0])}</div>${lines.slice(1).map((l) => `<div class="v">${esc(l)}</div>`).join('')}</div>`;
+    return `<div class="duo">${col(s.left, 0.3)}<div class="div" data-at="0.2"></div>${col(s.right, Math.max(1.2, dur * 0.45))}</div>`;
+  },
+  art: (s) => `<svg class="art" viewBox="0 0 600 420">${ART[s.art].join('')}</svg><div class="label" data-at="1.4">${esc(s.caption)}</div>`,
+  share: (s) => `<div class="ring"><svg viewBox="0 0 500 500"><circle cx="250" cy="250" r="220" stroke="rgba(201,163,90,.16)"/><circle id="arc" cx="250" cy="250" r="220" stroke="#e6c98a" pathLength="100" stroke-dasharray="0 100"/></svg><div class="n"><span id="pct">0</span>%</div></div><div class="label" data-at="1.0">${esc(s.label)}</div>`,
+  grid: (s) => `<div class="grid">${'<i></i>'.repeat(s.total)}</div><div class="counter"><span id="cnt">0</span> of ${s.total}</div><div class="label" data-at="0.6">${esc(s.label)}</div>`,
+  split: (s) => `<div class="split">${'<i><b></b></i>'.repeat(s.count)}</div><div class="counter" data-at="${s.quarter ? 0.3 : 1.6}"><span>${s.quarter ? '25%' : s.count}</span>${s.quarter ? '' : ' companies'}</div><div class="label" data-at="${s.quarter ? 0.8 : 2.2}">${esc(s.quarter ? s.label : 'Each one separate, each one independent')}</div>`,
+  names: (s, dur) => s.rows.map((r, i) => {
+    const at = (0.3 + i * ((dur * 0.62) / s.rows.length)).toFixed(2);
+    if (!s.arrows) return `<div class="row" data-at="${at}">${esc(r)}</div>`;
+    const [a, b] = r.split('→').map((x) => x.trim());
+    return `<div class="row" data-at="${at}"><span class="from">${esc(a)}</span><span class="arrow">→</span><em>${esc(b)}</em></div>`;
+  }).join(''),
+};
+
+// Extra per-frame animation for the shots that need more than fade-ins.
+const UPDATE = {
+  art: (el, s, t) => {
+    el.querySelectorAll('.d').forEach((p, i, all) => { p.style.strokeDasharray = 1; p.style.strokeDashoffset = 1 - prog(t, 0.15 + i * Math.min(0.14, 2.2 / all.length), 1.5); });
+    const flame = el.querySelector('.flame');
+    if (flame) { flame.style.opacity = prog(t, 2.2, 0.8) * (0.82 + 0.18 * Math.sin(t * 9)); flame.style.transformOrigin = '300px 228px'; flame.style.transform = `scale(${1 + 0.05 * Math.sin(t * 7)}, ${1 + 0.09 * Math.sin(t * 11)})`; }
+  },
+  share: (el, s, t) => { const v = s.from + (s.to - s.from) * prog(t, 0.5, 2.6); $('#arc', el).setAttribute('stroke-dasharray', `${v} 100`); $('#pct', el).textContent = Math.round(v); },
+  grid: (el, s, t, dur) => {
+    const step = Math.min(dur - 3.2, 5.5) / s.taken; let n = 0;
+    el.querySelectorAll('.grid i').forEach((c, i) => { const k = i < s.taken ? prog(t, 1.0 + i * step, 0.45) : 0; if (k > 0.5) n++; c.style.background = `rgba(230,201,138,${k})`; c.style.transform = `scale(${1 - 0.1 * Math.sin(Math.PI * k)})`; });
+    $('#cnt', el).textContent = n;
+  },
+  split: (el, s, t) => {
+    const g = s.quarter ? 1 : prog(t, 0.7, 1.8);
+    $('.split', el).style.gap = `${g * 16}px ${g * 16}px`;
+    el.querySelectorAll('.split i').forEach((c, i) => {
+      c.style.borderColor = `rgba(201,163,90,${0.25 + 0.5 * g})`; c.style.background = s.quarter ? '#2a2620' : `rgb(${42 + 60 * (1 - g)},${38 + 48 * (1 - g)},${32 + 20 * (1 - g)})`;
+      c.firstChild.style.height = s.quarter ? `${25 * prog(t, 1.2 + i * 0.07, 0.6)}%` : '0';
+    });
+  },
+};
+
+const TL = window.TIMELINE;
+const DUST = Array.from({ length: 34 }, (_, i) => ({ x: (i * 733.7) % 1920, y: (i * 419.3) % 1080, v: 4 + (i % 7) * 2.2, a: 0.05 + (i % 5) * 0.035, ph: i * 1.7 }));
+$('#dust').innerHTML = DUST.map(() => '<i></i>').join('');
+$('#brand').textContent = TL.channel;
+let shown = -1;
+
+window.seek = (t) => {
+  // background: a slow drifting glow plus floating dust, so the frame is never completely still
+  const gx = 50 + 26 * Math.sin(t / 19), gy = 34 + 12 * Math.cos(t / 13);
+  $('#bg').style.background = `radial-gradient(900px 620px at ${gx}% ${gy}%, rgba(201,163,90,.17), transparent 70%), radial-gradient(700px 500px at ${100 - gx}% 92%, rgba(120,90,40,.10), transparent 70%), #08080a`;
+  document.querySelectorAll('#dust i').forEach((el, i) => { const p = DUST[i]; el.style.transform = `translate(${(p.x + t * p.v) % 1920}px, ${(p.y - t * p.v * 0.35 + 21600) % 1080}px)`; el.style.opacity = p.a * (0.6 + 0.4 * Math.sin(t * 0.7 + p.ph)); });
+
+  let i = TL.shots.findIndex((s) => t >= s.start && t < s.end);
+  if (i < 0) i = t < TL.shots[0].start ? 0 : TL.shots.length - 1;
+  const s = TL.shots[i], dur = s.end - s.start, lt = Math.max(0, t - s.start), el = $('#shot');
+  if (i !== shown) { el.innerHTML = BUILD[s.type](s, dur); shown = i; }
+  el.querySelectorAll('[data-at]').forEach((n) => { const k = prog(lt, +n.dataset.at, 0.75); n.style.opacity = k; n.style.transform = `translateY(${(1 - k) * 34}px)`; });
+  el.querySelectorAll('[data-grow]').forEach((n) => { n.style.transform = `scaleX(${prog(lt, +n.dataset.grow, 0.9)})`; });
+  el.querySelectorAll('[data-count]').forEach((n) => { const v = +n.dataset.from + (+n.dataset.to - +n.dataset.from) * prog(lt, 0.25, 1.7); n.textContent = n.dataset.plain ? Math.round(v) : fmt(v); });
+  if (UPDATE[s.type]) UPDATE[s.type](el, s, lt, dur);
+  const last = i === TL.shots.length - 1;
+  el.style.opacity = Math.min(prog(lt, 0, 0.45), last ? 1 - prog(t, TL.duration - 1.2, 1.1) : clamp((dur - lt) / 0.3));
+  el.style.transform = `scale(${1 + 0.035 * (lt / dur)})`;
+
+  const cap = TL.captions.find((c) => t >= c.start && t < c.end + 0.12);
+  $('#caption').textContent = cap ? cap.text : '';
+  $('#caption').style.opacity = cap ? Math.min(clamp((t - cap.start) / 0.12 + 0.35), 1) : 0;
+  const card = s.type === 'chapter' || s.type === 'title';
+  $('#chap').textContent = card ? '' : s.chapter;
+  $('#top').style.opacity = t < 1 ? t : 1;
+  $('#bar').style.width = `${(t / TL.duration) * 100}%`;
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Thumbnail</title>
+<style>
+  * { margin: 0; box-sizing: border-box; }
+  body { width: 1280px; height: 720px; overflow: hidden; background: #070708; font-family: Inter, Arial, sans-serif; color: #fff; }
+  .bg { position: absolute; inset: 0; background: radial-gradient(620px 520px at 78% 46%, rgba(230, 190, 110, .42), transparent 70%), radial-gradient(900px 600px at 0% 100%, rgba(120, 80, 20, .28), transparent 70%), #070708; }
+  .vig { position: absolute; inset: 0; background: radial-gradient(ellipse at 60% 50%, transparent 40%, rgba(0, 0, 0, .78) 100%); }
+  .txt { position: absolute; left: 64px; top: 50%; transform: translateY(-50%); }
+  .a { font-weight: 800; font-size: 92px; letter-spacing: .01em; line-height: 1; }
+  .b { font: 700 290px/0.9 "Bitstream Charter", Georgia, serif; color: #f0cf88; letter-spacing: -.03em; text-shadow: 0 8px 50px rgba(0, 0, 0, .9); margin: 10px 0 18px -8px; }
+  .c { font-weight: 800; font-size: 70px; line-height: 1; background: #f0cf88; color: #14100a; display: inline-block; padding: 12px 22px 14px; }
+  svg { position: absolute; right: 30px; top: 40px; width: 560px; height: 660px; overflow: visible; }
+  svg * { fill: none; stroke: #f6dfa8; stroke-width: 7; stroke-linecap: round; stroke-linejoin: round; }
+  svg .dim { stroke-width: 4; opacity: .7; }
+  svg .oil { stroke: #0b0b0c; stroke-width: 16; }
+  svg .oil2 { stroke: #f6dfa8; stroke-width: 22; }
+</style></head>
+<body><div class="bg"></div>
+<svg viewBox="80 -40 440 460">
+  <path class="oil2" d="M300 90 L300 -10 M300 30 C300 -20 262 -34 232 6 M300 30 C300 -20 338 -34 368 6"/>
+  <path class="oil" d="M300 90 L300 -10 M300 30 C300 -20 262 -34 232 6 M300 30 C300 -20 338 -34 368 6"/>
+  <line x1="110" y1="390" x2="490" y2="390"/><line x1="215" y1="390" x2="282" y2="90"/><line x1="385" y1="390" x2="318" y2="90"/><line x1="282" y1="90" x2="318" y2="90"/>
+  <polyline class="dim" points="226,340 374,340 240,280 362,280 254,215 348,215 268,150 334,150"/>
+  <rect x="410" y="320" width="80" height="70"/><line x1="400" y1="320" x2="450" y2="290"/><line x1="500" y1="320" x2="450" y2="290"/>
+</svg>
+<div class="vig"></div>
+<div class="txt"><div class="a">ONE MAN.</div><div class="b">90%</div><div class="c">OF AMERICA'S OIL</div></div>
+</body></html>
