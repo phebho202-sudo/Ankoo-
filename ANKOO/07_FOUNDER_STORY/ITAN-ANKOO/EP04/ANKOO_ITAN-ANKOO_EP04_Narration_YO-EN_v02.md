@@ -1,7 +1,7 @@
 # ÌTÀN ÀNKÓÒ — ÌPÍN KẸRIN: ÌRAN NÁÀ ÀTI ÌBẸ̀RẸ̀ ÀNKÓÒ
 ## THE STORY OF ANKOO — EPISODE 4: THE VISION AND THE BEGINNING OF ANKOO
 
-**Revised Yoruba narration v02, for sentence-by-sentence approval.**
+**Revised Yoruba narration v02. APPROVED IN FULL by Bolu Felix on 11 Nov 2026 (all 25 lines, no changes).**
 Voice: Bolu Felix, approved ElevenLabs clone. Length: about 90 seconds.
 Storyline and creative direction approved by Bolu Felix on 10 Nov 2026. **Production starts only after every sentence below is approved.**
 
@@ -91,7 +91,7 @@ Every line comes from the facts you supplied on 10 Nov 2026. No dates, events, p
 
 ### Approval
 ```
-☐ All 25 lines approved as written
+☑ All 25 lines approved as written (11 Nov 2026, in chat)
 ☐ Approved with changes to lines: ______
 Pure-Yoruba alternatives to use: ______
 ElevenLabs voice name: ______
