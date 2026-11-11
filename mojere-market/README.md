@@ -105,7 +105,7 @@ docs/               Guides
 - Only the **public** Supabase key ever goes in the app. The app refuses to
   start if a secret/service-role key is pasted in by mistake.
 - `.env` is never committed to Git.
-- Every database table has Row Level Security, checked by 157 automated database tests.
+- Every database table has Row Level Security, checked by 169 automated database tests.
 - Admin roles can only be granted from the Supabase dashboard, never from the app.
 - Payments are never marked as paid from the phone: only the server, after Paystack confirms with a
   verified signature, and each payment is processed once. Prices come from the database.

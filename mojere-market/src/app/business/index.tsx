@@ -12,6 +12,7 @@ import { useAuth } from '@/lib/auth';
 import {
   businessLogoUrl,
   payWithPaystack,
+  paidFeaturesOnThisDevice,
   paymentsEnabled,
   slugify,
   useMyBusiness,
@@ -228,12 +229,12 @@ function PlanSection({ subscriptions }: { subscriptions: Subscription[] }) {
         {active?.plan ? `${active.plan.name}${active.ends_at ? ` · renews by ${new Date(active.ends_at).toLocaleDateString('en-NG')}` : ''}` : 'Business Free'}
       </AppText>
       {pending?.plan ? <AppText variant="small" style={{ color: colors.warning }}>Waiting for payment: {pending.plan.name}</AppText> : null}
-      {!paymentsEnabled ? (
+      {paidFeaturesOnThisDevice() && !paymentsEnabled ? (
         <Notice tone="warning" title="Online payments are not switched on yet">
           <AppText variant="small">You can request a paid plan now. It starts once payment is confirmed.</AppText>
         </Notice>
       ) : null}
-      {(plans.data ?? []).map((p) => {
+      {(paidFeaturesOnThisDevice() ? plans.data ?? [] : []).map((p) => {
         const current = active?.plan?.code === p.code || (!active && p.code === 'free');
         return (
           <View key={p.id} style={{ borderTopWidth: 1, borderTopColor: colors.border, paddingTop: spacing.sm, gap: spacing.xs }}>
@@ -263,7 +264,9 @@ function PlanSection({ subscriptions }: { subscriptions: Subscription[] }) {
         );
       })}
       {message ? <Notice tone={message.tone} title={message.text} /> : null}
-      <AppText variant="caption">Prices are introductory and may change. You will always see the price before paying.</AppText>
+      {paidFeaturesOnThisDevice() ? (
+        <AppText variant="caption">Prices are introductory and may change. You will always see the price before paying.</AppText>
+      ) : null}
     </Card>
   );
 }
@@ -315,7 +318,8 @@ export default function BusinessScreen() {
           <Card>
             <AppText variant="title">Selling as your business</AppText>
             <AppText variant="small" muted>
-              When you sell an item, switch on “List under my business”. Promote items from My listings to reach more buyers.
+              When you sell an item, switch on “List under my business”.
+              {paidFeaturesOnThisDevice() ? ' Promote items from My listings to reach more buyers.' : ''}
             </AppText>
             <Button label="My listings and performance" kind="outline" onPress={() => router.push('/my-listings')} />
           </Card>

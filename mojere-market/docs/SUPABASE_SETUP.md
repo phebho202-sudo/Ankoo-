@@ -227,6 +227,18 @@ status). It **only adds functions**. See `docs/ADMIN_SETUP.md` for how to use th
    then **Ctrl + A**, **Ctrl + C**.
 3. Paste into Supabase and click **Run** → `Success. No rows returned`.
 
+## Part M — "Delete my account" (needed for the App Store and Google Play)
+
+Lets people delete their own account from **Profile → Delete my account**. Their profile, listings,
+messages, offers, reviews and business are removed. Payment records are **kept** (for accounting) but
+unlinked from the person. Staff accounts cannot delete themselves this way. It changes two links on
+Mojere Market tables and adds one function; nothing else is touched.
+
+1. **SQL Editor** → **+** (new empty tab).
+2. In PowerShell: `notepad supabase\migrations\20261115000100_mojere_market_account_deletion.sql`,
+   then **Ctrl + A**, **Ctrl + C**.
+3. Paste into Supabase and click **Run** → `Success. No rows returned`.
+
 ## Undoing (only if ever needed)
 
 The `.down.sql` files in `supabase/migrations` reverse each step. Undoing the core migration

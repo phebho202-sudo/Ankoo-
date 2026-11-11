@@ -88,6 +88,10 @@ export default function RootLayout() {
             />
             <Stack.Screen name="admin/audit" options={{ title: "Audit log" }} />
             <Stack.Screen
+              name="delete-account"
+              options={{ title: "Delete account" }}
+            />
+            <Stack.Screen
               name="guidelines"
               options={{ title: "Community guidelines" }}
             />

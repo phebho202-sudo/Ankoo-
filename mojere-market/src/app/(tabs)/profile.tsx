@@ -107,6 +107,7 @@ function AccountCard() {
       ) : null}
       <Button label="Community guidelines" kind="outline" onPress={() => router.push('/guidelines')} />
       <Button label="Log out" kind="outline" onPress={signOut} loading={signingOut} />
+      <Button label="Delete my account" kind="outline" onPress={() => router.push('/delete-account')} />
     </Card>
   );
 }

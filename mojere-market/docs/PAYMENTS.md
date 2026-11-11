@@ -1,5 +1,7 @@
 # Mojere Market — Payments (Paystack) guide
 
+> **iPhone:** paid promotions and business plans are hidden in the iPhone app, because Apple only allows digital extras to be sold through its own In-App Purchase. They remain available on Android.
+
 **Current status: payments are built but switched OFF.** Nobody can be charged until you complete
 the steps below *and* decide to go live. Paid plans and promotions can still be requested; they stay
 "Waiting for payment" until payment is confirmed or an admin activates them.

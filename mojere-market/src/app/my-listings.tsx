@@ -7,6 +7,7 @@ import { Chip } from '@/components/filter-sheet';
 import { ListingPhoto } from '@/components/listing-card';
 import { AppText, Button, Card, Notice } from '@/components/ui';
 import { STATUS_LABELS } from '@/lib/declutter';
+import { paidFeaturesOnThisDevice } from '@/lib/business';
 import { formatNaira } from '@/lib/format';
 import { useListingAction, useMyListings, type MyListing } from '@/lib/selling';
 import { timeAgo } from '@/lib/time';
@@ -92,7 +93,7 @@ function Row({ l }: { l: MyListing }) {
       {l.status !== 'removed' ? (
         <View style={styles.actions}>
           <Button label="Edit" kind="outline" onPress={() => router.push({ pathname: '/listing-editor', params: { id: l.id } })} style={styles.action} />
-          {l.status === 'active' && l.moderation_status === 'approved' ? (
+          {paidFeaturesOnThisDevice() && l.status === 'active' && l.moderation_status === 'approved' ? (
             <Button
               label="Promote"
               kind="accent"

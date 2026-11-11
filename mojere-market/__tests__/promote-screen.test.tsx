@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import { fireEvent, screen, waitFor } from '@testing-library/react-native';
 
 import PromoteScreen from '@/app/promote/[id]';
@@ -67,4 +68,9 @@ it('is honest that payments are not switched on, and never charges', async () =>
   );
   expect(await screen.findByText(/Online payment is not switched on yet, so an admin/)).toBeTruthy();
   expect(mockSupabase.functions.invoke).not.toHaveBeenCalled();
+});
+
+// Paid promotions are an Android-only feature (see paidFeaturesOnThisDevice).
+beforeAll(() => {
+  Platform.OS = 'android';
 });

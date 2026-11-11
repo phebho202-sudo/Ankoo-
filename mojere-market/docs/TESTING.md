@@ -42,6 +42,8 @@ What the app tests cover:
 
 - Admin: non-staff refused, statistics shown, moderators do not see admin-only sections, a reason is
   required before removing a listing, community guidelines.
+- Delete my account: nothing happens without typing DELETE, photos are removed before the server deletes
+  the account, a refusal (e.g. staff) keeps you logged in and shows the reason.
 - Push notifications: webhook payload parsing, one message per real device, removing uninstalled devices,
   tapping an alert opens the right chat or item.
 
@@ -146,6 +148,14 @@ or use the Gmail sender set up in Part D.
    payment) → the item shows **Featured** on Home.
 6. **Categories, places and settings** → add a safe meetup spot in Akure South → it appears on items there.
 7. **Audit log** shows every step above with your reasons.
+
+## Manual check for "Delete my account"
+
+Use a **test account**, never your admin account (the app refuses to delete staff accounts anyway).
+1. Log in as the test account, publish one item, then Profile → **Delete my account**.
+2. The red button stays grey until you type `DELETE`. Tap it: you are logged out.
+3. The item no longer appears in Explore; logging in with that email fails.
+4. As admin: **Audit log** shows "account_deleted_by_owner".
 
 ## Final checks (Phase 9)
 

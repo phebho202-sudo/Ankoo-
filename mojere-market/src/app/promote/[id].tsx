@@ -4,7 +4,7 @@ import { ActivityIndicator, Pressable, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AppText, Button, Card, Notice, Screen } from '@/components/ui';
-import { payWithPaystack, paymentsEnabled, useMyPromotions, usePackages, useRequestPromotion } from '@/lib/business';
+import { paidFeaturesOnThisDevice, payWithPaystack, paymentsEnabled, useMyPromotions, usePackages, useRequestPromotion } from '@/lib/business';
 import { formatNaira } from '@/lib/format';
 import { useMyListing } from '@/lib/selling';
 import { colors, radius, spacing } from '@/theme';
@@ -18,6 +18,17 @@ const STATUS: Record<string, string> = {
 };
 
 export default function PromoteScreen() {
+  if (!paidFeaturesOnThisDevice()) {
+    return (
+      <Screen>
+        <Notice title="Promotions are not available in this version of the app." />
+      </Screen>
+    );
+  }
+  return <PromoteContent />;
+}
+
+function PromoteContent() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const listing = useMyListing(id);
   const packages = usePackages();

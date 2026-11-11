@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import * as WebBrowser from 'expo-web-browser';
+import { Platform } from 'react-native';
 
 import { useAuth } from './auth';
 import { compressPhoto } from './photos';
@@ -7,6 +8,16 @@ import { supabase } from './supabase';
 
 /** Payments are only offered when explicitly switched on (see docs/PAYMENTS.md). */
 export const paymentsEnabled = process.env.EXPO_PUBLIC_PAYMENTS_ENABLED === 'true';
+
+/**
+ * Paid promotions and paid business plans are digital services. Apple only allows
+ * those to be sold inside iPhone apps through Apple's own In-App Purchase, which
+ * Mojere Market does not use, so on iPhones these paid options are not shown at all.
+ * Buying and selling physical items between people is not affected.
+ */
+export function paidFeaturesOnThisDevice(): boolean {
+  return Platform.OS !== 'ios';
+}
 
 export type BusinessPlan = {
   id: string;

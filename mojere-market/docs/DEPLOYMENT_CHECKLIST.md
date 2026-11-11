@@ -3,7 +3,7 @@
 Nothing here happens automatically. Tick each item yourself. Items marked 💳 cost money and need your decision.
 
 ## 1. Database (Supabase)
-- [ ] All migrations in `supabase/migrations` have been run, in date order (Parts B–L of `SUPABASE_SETUP.md`).
+- [ ] All migrations in `supabase/migrations` have been run, in date order (Parts B–M of `SUPABASE_SETUP.md`).
 - [ ] Your account is an **admin** (`docs/ADMIN_SETUP.md`); any moderators added.
 - [ ] Decide on listing review: Admin → Categories and settings → "New listings need approval".
 - [ ] Add a few **safe meetup spots** in Akure South and Akure North (busy public places you know).
@@ -20,7 +20,8 @@ Nothing here happens automatically. Tick each item yourself. Items marked 💳 c
 - [ ] Have a **Nigerian lawyer** review the Terms and Privacy text (`src/app/terms.tsx`), including the
       **Nigeria Data Protection Act 2023** requirements, and update the app.
 - [ ] Publish the Privacy Policy on a **public web page** (both app stores require a link).
-- [ ] Set up a support email address and show it in the app.
+- [ ] Set up a support email address and send it to your developer to show in the app (Apple and Google require a contact).
+- [ ] Try **Profile → Delete my account** with a test account (required by Apple and Google).
 - [ ] Read the community guidelines (`src/app/guidelines.tsx`) and adjust the prohibited-items list.
 
 ## 4. Payments (optional at launch)
