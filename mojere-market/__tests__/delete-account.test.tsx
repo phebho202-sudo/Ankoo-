@@ -87,3 +87,13 @@ describe('Delete account screen', () => {
     expect(mockRouter.replace).not.toHaveBeenCalled();
   });
 });
+
+describe('support contact', () => {
+  it('opens an email to the support address', async () => {
+    const { Linking } = require('react-native');
+    const spy = jest.spyOn(Linking, 'openURL').mockResolvedValue(true);
+    const { contactSupport } = require('@/lib/support');
+    await contactSupport();
+    expect(spy).toHaveBeenCalledWith(expect.stringMatching(/^mailto:phebho202@gmail\.com\?subject=/));
+  });
+});

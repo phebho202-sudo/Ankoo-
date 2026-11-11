@@ -13,6 +13,7 @@ import { ONDO_LGAS } from '@/constants/ondo';
 import { useStaffRole } from '@/lib/admin';
 import { useAuth } from '@/lib/auth';
 import { useLocations, useMyProfile } from '@/lib/profile';
+import { contactSupport } from '@/lib/support';
 import { checkSupabaseConnection, supabase, type ConnectionCheck } from '@/lib/supabase';
 import { supabaseConfig } from '@/lib/supabase-config';
 import { colors, spacing } from '@/theme';
@@ -66,7 +67,7 @@ function AccountCard() {
       ) : null}
       {p?.account_status === 'suspended' ? (
         <Notice tone="danger" title="Your account is suspended">
-          <AppText variant="small">You cannot post listings or send messages. Contact Mojere Market support.</AppText>
+          <AppText variant="small">You cannot post listings or send messages. Contact Mojere Market support at {BRAND.supportEmail}.</AppText>
         </Notice>
       ) : null}
 
@@ -106,6 +107,7 @@ function AccountCard() {
         <Button label="Admin dashboard" kind="accent" onPress={() => router.push('/admin')} />
       ) : null}
       <Button label="Community guidelines" kind="outline" onPress={() => router.push('/guidelines')} />
+      <Button label="Contact support" kind="outline" onPress={() => void contactSupport()} />
       <Button label="Log out" kind="outline" onPress={signOut} loading={signingOut} />
       <Button label="Delete my account" kind="outline" onPress={() => router.push('/delete-account')} />
     </Card>

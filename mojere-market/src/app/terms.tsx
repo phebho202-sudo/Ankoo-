@@ -44,6 +44,9 @@ export default function TermsScreen() {
       <Section title="Privacy">
         {'We collect your name, email, general location, listings, messages and activity in the app to run the marketplace. Other users see your display name, general area, listings and reviews — never your email, phone number or exact address unless you choose to share them. Messages are visible only to the people in the conversation, and to staff when investigating a report. We do not sell your personal data. You can delete your account and data at any time in Profile → Delete my account. Records of payments are kept for accounting, without your name.'}
       </Section>
+      <Section title="Contact">
+        {`Questions, complaints or data requests: ${BRAND.supportEmail}`}
+      </Section>
     </Screen>
   );
 }

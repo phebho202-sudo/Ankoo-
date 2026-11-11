@@ -1,7 +1,8 @@
 import { View } from 'react-native';
 
-import { AppText, Card, Notice, Screen } from '@/components/ui';
+import { AppText, Button, Card, Notice, Screen } from '@/components/ui';
 import { BRAND } from '@/constants/brand';
+import { contactSupport } from '@/lib/support';
 import { spacing } from '@/theme';
 
 const SECTIONS: { title: string; points: string[] }[] = [
@@ -72,6 +73,11 @@ export default function GuidelinesScreen() {
       <Notice title="See something wrong?">
         <AppText variant="small">Use “Report this listing” on an item, or ⋮ → Report in a chat. Reports are private.</AppText>
       </Notice>
+      <Card>
+        <AppText variant="title">Contact us</AppText>
+        <AppText variant="small">Questions or problems? Email {BRAND.supportEmail}.</AppText>
+        <Button label="Contact support" kind="outline" onPress={() => void contactSupport()} />
+      </Card>
     </Screen>
   );
 }

@@ -305,7 +305,7 @@ export default function BusinessScreen() {
         </>
       ) : (
         <>
-          {business.status === 'suspended' ? <Notice tone="danger" title="This business is suspended. Contact Mojere Market support." /> : null}
+          {business.status === 'suspended' ? <Notice tone="danger" title={`This business is suspended. Contact Mojere Market support at ${BRAND.supportEmail}.`} /> : null}
           <Card>
             <AppText variant="title">{business.name}</AppText>
             {business.description ? <AppText muted>{business.description}</AppText> : null}

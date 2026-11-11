@@ -6,6 +6,7 @@ import { ActivityIndicator, Alert, FlatList, Pressable, RefreshControl, StyleShe
 import { Chip } from '@/components/filter-sheet';
 import { ListingPhoto } from '@/components/listing-card';
 import { AppText, Button, Card, Notice } from '@/components/ui';
+import { BRAND } from '@/constants/brand';
 import { STATUS_LABELS } from '@/lib/declutter';
 import { paidFeaturesOnThisDevice } from '@/lib/business';
 import { formatNaira } from '@/lib/format';
@@ -126,7 +127,7 @@ function Row({ l }: { l: MyListing }) {
         </View>
       ) : (
         <AppText variant="caption" style={{ color: colors.danger }}>
-          Removed by Mojere Market. Contact support if you think this is a mistake.
+          Removed by Mojere Market. Contact {BRAND.supportEmail} if you think this is a mistake.
         </AppText>
       )}
     </Card>
