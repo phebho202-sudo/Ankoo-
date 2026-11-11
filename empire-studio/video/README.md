@@ -30,6 +30,18 @@ bash mix.sh out standard-oil-pilot.mp4
 
 `414` is the speaker number inside the LibriTTS voice model. A nine-minute video takes about 20 minutes to render on four processor cores.
 
+For a long video, use the restart-safe wrapper. It renders in five-minute segments and skips the ones already finished, so an interruption only loses the segment in progress:
+
+```bash
+bash render-all.sh out45 standard-oil-full.mp4
+```
+
+Scripts can also be written as plain text (see `standard-oil/full.txt`): `# Chapter`, then `@type fields` for each shot, followed by its narration lines. Years, dollar amounts and percentages are pronounced automatically. Check a script's length without making audio:
+
+```bash
+python3 narrate.py standard-oil/full.txt --check x
+```
+
 To preview single frames without rendering everything:
 
 ```bash
