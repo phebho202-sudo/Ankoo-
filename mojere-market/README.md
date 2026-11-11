@@ -41,6 +41,7 @@ of pretending to work.
 | [ANDROID_BUILD](docs/ANDROID_BUILD.md) / [IOS_BUILD](docs/IOS_BUILD.md) | Making installable apps with EAS |
 | [DEPLOYMENT_CHECKLIST](docs/DEPLOYMENT_CHECKLIST.md) | Everything to tick before launching |
 | [LAUNCH_PLAN](docs/LAUNCH_PLAN.md) | Going public and growing in Ondo State |
+| [PRIVACY_POLICY](docs/PRIVACY_POLICY.md) | Draft privacy policy to publish (after lawyer review) |
 
 ## Run it
 
