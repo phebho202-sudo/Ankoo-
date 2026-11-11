@@ -55,6 +55,18 @@
   .split i b { position: absolute; left: 0; bottom: 0; width: 100%; background: var(--gold); }
   .row { font: 600 78px/1.34 var(--serif); }
   .row .from { color: #cfcbd4; font-size: 58px; }
+.tl { position: relative; width: 1400px; height: 360px; }
+  .tl-line { position: absolute; left: 0; right: 0; top: 178px; height: 3px; background: var(--gold); transform-origin: 0 50%; }
+  .tl-pt { position: absolute; top: 0; width: 360px; margin-left: -180px; height: 360px; text-align: center; }
+  .tl-pt b { display: block; font: 600 96px/1 var(--serif); color: var(--gold-hi); height: 150px; }
+  .tl-pt i { display: block; width: 26px; height: 26px; border-radius: 50%; background: var(--gold-hi); margin: 16px auto 0; box-shadow: 0 0 30px rgba(230, 201, 138, .6); }
+  .tl-pt span { display: block; font-size: 36px; color: #d6d2dc; margin-top: 34px; }
+  .bars { width: 1500px; display: grid; gap: 54px; }
+  .bar-row { display: grid; grid-template-columns: 330px 1fr 420px; align-items: center; gap: 30px; }
+  .bl { font-size: 40px; color: #d6d2dc; text-align: right; }
+  .bt { height: 78px; display: block; text-align: left; }
+  .bt i { display: block; height: 100%; background: linear-gradient(90deg, #a8843f, var(--gold-hi)); border-radius: 6px; }
+  .bv { font: 600 76px/1 var(--serif); color: var(--gold-hi); text-align: left; font-variant-numeric: tabular-nums; white-space: nowrap; }
   .row .arrow { color: var(--gold); margin: 0 26px; font-family: var(--sans); font-weight: 400; }
 </style>
 </head>
@@ -143,6 +155,86 @@ const ART = {
     ...[0, 60, 120].flatMap((a) => [196, 410].map((cx) => { const r = (a * Math.PI) / 180, x = 44 * Math.cos(r), y = 44 * Math.sin(r); return d('line', `x1="${cx - x}" y1="${306 - y}" x2="${cx + x}" y2="${306 + y}"`, 'dim'); })),
     d('circle', 'cx="494" cy="232" r="12"'), d('line', 'x1="150" y1="230" x2="170" y2="190"'),
   ],
+  candle: [
+    d('rect', 'x="272" y="236" width="56" height="130"'), d('line', 'x1="300" y1="236" x2="300" y2="224"'),
+    '<path class="fill flame" d="M300 228 C280 200 292 176 300 150 C308 176 320 200 300 228 Z"/>',
+    d('path', 'd="M230 366 L370 366 L350 392 L250 392 Z"'), d('path', 'd="M370 372 C410 372 410 330 380 336"'),
+    d('path', 'd="M272 262 C282 276 282 290 276 300"', 'dim'),
+    d('line', 'x1="210" y1="150" x2="170" y2="130"', 'dim'), d('line', 'x1="390" y1="150" x2="430" y2="130"', 'dim'), d('line', 'x1="200" y1="200" x2="156" y2="200"', 'dim'), d('line', 'x1="400" y1="200" x2="444" y2="200"', 'dim'),
+  ],
+  coins: [
+    ...[[170, 4], [300, 7], [430, 11]].flatMap(([cx, n]) => Array.from({ length: n }, (_, i) => [
+      d('ellipse', `cx="${cx}" cy="${372 - i * 26}" rx="54" ry="14"`),
+      d('path', `d="M${cx - 54} ${372 - i * 26} L${cx - 54} ${386 - i * 26} C${cx - 30} ${404 - i * 26} ${cx + 30} ${404 - i * 26} ${cx + 54} ${386 - i * 26} L${cx + 54} ${372 - i * 26}"`, 'dim'),
+    ]).flat()),
+  ],
+  can: [
+    d('rect', 'x="200" y="150" width="200" height="230" rx="6"'), d('path', 'd="M200 150 L250 100 L350 100 L400 150"'), d('rect', 'x="282" y="70" width="36" height="30"'),
+    d('path', 'd="M400 190 C460 190 460 300 400 300"'), d('rect', 'x="236" y="210" width="128" height="100"', 'dim'),
+    d('line', 'x1="256" y1="244" x2="344" y2="244"', 'dim'), d('line', 'x1="256" y1="276" x2="320" y2="276"', 'dim'),
+    d('circle', 'cx="130" cy="120" r="9"'), d('circle', 'cx="130" cy="160" r="9"'), d('circle', 'cx="130" cy="200" r="9"'), d('line', 'x1="130" y1="60" x2="130" y2="96"', 'dim'),
+  ],
+  newspaper: [
+    d('rect', 'x="120" y="60" width="360" height="320"'), d('line', 'x1="150" y1="104" x2="450" y2="104"'), d('line', 'x1="150" y1="118" x2="450" y2="118"', 'dim'),
+    d('line', 'x1="150" y1="150" x2="390" y2="150"'), d('line', 'x1="150" y1="172" x2="330" y2="172"'),
+    d('rect', 'x="150" y="200" width="130" height="100"', 'dim'),
+    ...[206, 226, 246, 266, 286, 320, 340].map((y) => d('line', `x1="${y < 310 ? 300 : 150}" y1="${y}" x2="450" y2="${y}"`, 'dim')),
+  ],
+  document: [
+    d('rect', 'x="170" y="40" width="260" height="350" rx="4"'), d('line', 'x1="210" y1="90" x2="390" y2="90"'),
+    ...[130, 156, 182, 208, 234].map((y, i) => d('line', `x1="210" y1="${y}" x2="${i === 4 ? 320 : 390}" y2="${y}"`, 'dim')),
+    d('circle', 'cx="250" cy="316" r="34"'), d('circle', 'cx="250" cy="316" r="22"', 'dim'), d('path', 'd="M232 344 L222 388 L250 370 L278 388 L268 344"', 'dim'),
+    d('path', 'd="M310 330 C324 300 334 350 348 320 C358 300 368 340 392 322"'),
+  ],
+  refinery: [
+    d('line', 'x1="50" y1="390" x2="550" y2="390"'),
+    d('rect', 'x="80" y="250" width="110" height="140"'), d('ellipse', 'cx="135" cy="250" rx="55" ry="14"'), d('rect', 'x="214" y="290" width="100" height="100"'), d('ellipse', 'cx="264" cy="290" rx="50" ry="13"'),
+    d('line', 'x1="190" y1="340" x2="214" y2="340"'), d('path', 'd="M314 330 L350 330 L350 250"'),
+    d('rect', 'x="330" y="170" width="44" height="220"', 'dim'), d('path', 'd="M330 170 C330 140 374 140 374 170"'),
+    d('path', 'd="M420 390 L428 130 L456 130 L464 390"'), d('path', 'd="M442 120 C418 96 466 74 442 46 C426 28 452 14 446 0"', 'dim'),
+    d('path', 'd="M490 390 L496 210 L518 210 L524 390"'), d('path', 'd="M507 200 C490 182 524 166 507 144"', 'dim'),
+  ],
+  scales: [
+    d('line', 'x1="220" y1="388" x2="380" y2="388"'), d('line', 'x1="300" y1="388" x2="300" y2="92"'), d('circle', 'cx="300" cy="80" r="12"'),
+    d('line', 'x1="140" y1="126" x2="460" y2="126"'),
+    d('line', 'x1="140" y1="126" x2="92" y2="260"', 'dim'), d('line', 'x1="140" y1="126" x2="188" y2="260"', 'dim'), d('path', 'd="M82 260 C82 310 198 310 198 260 Z"'),
+    d('line', 'x1="460" y1="126" x2="412" y2="260"', 'dim'), d('line', 'x1="460" y1="126" x2="508" y2="260"', 'dim'), d('path', 'd="M402 260 C402 310 518 310 518 260 Z"'),
+  ],
+  building: [
+    d('line', 'x1="70" y1="392" x2="530" y2="392"'), d('rect', 'x="220" y="50" width="160" height="342"'), d('rect', 'x="130" y="190" width="90" height="202"'), d('rect', 'x="380" y="150" width="90" height="242"'),
+    d('path', 'd="M250 50 L250 24 L350 24 L350 50"'), d('line', 'x1="300" y1="24" x2="300" y2="0"'),
+    ...[90, 130, 170, 210, 250, 290, 330].flatMap((y) => [250, 300, 350].map((x) => d('line', `x1="${x - 12}" y1="${y}" x2="${x + 12}" y2="${y}"`, 'dim'))),
+    ...[230, 280, 330].flatMap((y) => [d('line', `x1="160" y1="${y}" x2="190" y2="${y}"`, 'dim'), d('line', `x1="410" y1="${y}" x2="440" y2="${y}"`, 'dim')]),
+    d('rect', 'x="282" y="350" width="36" height="42"'),
+  ],
+  globe: [
+    d('circle', 'cx="300" cy="190" r="150"'), d('ellipse', 'cx="300" cy="190" rx="62" ry="150"', 'dim'), d('ellipse', 'cx="300" cy="190" rx="112" ry="150"', 'dim'),
+    d('line', 'x1="150" y1="190" x2="450" y2="190"', 'dim'), d('path', 'd="M172 116 C240 142 360 142 428 116"', 'dim'), d('path', 'd="M172 264 C240 238 360 238 428 264"', 'dim'),
+    d('line', 'x1="300" y1="340" x2="300" y2="376"'), d('path', 'd="M230 392 C250 370 350 370 370 392 Z"'),
+  ],
+  gavel: [
+    d('path', 'd="M196 150 L326 84 L350 130 L220 196 Z"'), d('line', 'x1="210" y1="140" x2="232" y2="184"', 'dim'), d('line', 'x1="312" y1="90" x2="334" y2="134"', 'dim'),
+    d('line', 'x1="284" y1="150" x2="440" y2="330"'), d('line', 'x1="270" y1="160" x2="426" y2="340"'), d('path', 'd="M440 330 C452 346 438 356 426 340"'),
+    d('rect', 'x="120" y="330" width="210" height="28" rx="6"'), d('rect', 'x="100" y="358" width="250" height="30" rx="6"'),
+  ],
+  bulb: [
+    d('path', 'd="M232 190 C232 96 368 96 368 190 C368 244 334 256 334 300 L266 300 C266 256 232 244 232 190 Z"'),
+    d('line', 'x1="268" y1="322" x2="332" y2="322"'), d('line', 'x1="272" y1="344" x2="328" y2="344"'), d('path', 'd="M280 366 C290 384 310 384 320 366"'),
+    d('path', 'd="M278 300 L286 220 L300 250 L314 220 L322 300"', 'dim'),
+    ...[[150, 190, 196, 190], [404, 190, 450, 190], [184, 92, 214, 118], [416, 92, 386, 118], [300, 34, 300, 70]].map(([a, b, c, e]) => d('line', `x1="${a}" y1="${b}" x2="${c}" y2="${e}"`, 'dim')),
+  ],
+  church: [
+    d('line', 'x1="80" y1="392" x2="520" y2="392"'), d('rect', 'x="170" y="230" width="260" height="162"'), d('path', 'd="M156 230 L300 140 L444 230"'),
+    d('path', 'd="M270 160 L270 110 L300 50 L330 110 L330 160"'), d('line', 'x1="300" y1="50" x2="300" y2="6"'), d('line', 'x1="284" y1="24" x2="316" y2="24"'),
+    d('path', 'd="M272 392 L272 320 C272 290 328 290 328 320 L328 392"'),
+    d('path', 'd="M200 330 L200 290 C200 274 228 274 228 290 L228 330 Z"', 'dim'), d('path', 'd="M372 330 L372 290 C372 274 400 274 400 290 L400 330 Z"', 'dim'), d('circle', 'cx="300" cy="216" r="16"', 'dim'),
+  ],
+  microscope: [
+    d('path', 'd="M200 388 L400 388"'), d('path', 'd="M230 388 C230 366 370 366 370 388"'),
+    d('path', 'd="M340 370 C400 300 392 200 320 150"'), d('line', 'x1="240" y1="80" x2="316" y2="212"'), d('line', 'x1="268" y1="64" x2="344" y2="196"'),
+    d('line', 'x1="232" y1="86" x2="276" y2="60"'), d('line', 'x1="308" y1="216" x2="352" y2="192"'), d('line', 'x1="324" y1="218" x2="336" y2="240"'),
+    d('line', 'x1="236" y1="276" x2="380" y2="276"'), d('line', 'x1="300" y1="276" x2="300" y2="372"', 'dim'), d('circle', 'cx="352" cy="330" r="16"', 'dim'),
+  ],
   bottleneck: [
     ...[70, 116, 162, 210, 258, 304, 350].flatMap((y) => [d('path', `d="M40 ${y} C150 ${y} 190 210 262 210"`, 'dim'), d('path', `d="M338 210 C410 210 450 ${y} 560 ${y}"`, 'dim')]),
     d('line', 'x1="250" y1="188" x2="350" y2="188"'), d('line', 'x1="250" y1="232" x2="350" y2="232"'),
@@ -155,7 +247,7 @@ const BUILD = {
   title: (s) => `<div class="kicker" data-at="0.2">${esc(s.kicker)}</div><div class="rule" data-grow="0.4"></div><h1 data-at="0.5">${esc(s.title)}</h1><div class="sub" data-at="1.3">${esc(s.sub)}</div>`,
   chapter: (s) => `<div class="kicker" data-at="0.15">Chapter ${NUMBERS[s.num]}</div><div class="rule" data-grow="0.3"></div><h2 data-at="0.45">${esc(s.title)}</h2>`,
   year: (s) => `<div class="big" data-count data-from="${s.year - 16}" data-to="${s.year}" data-plain="1">${s.year}</div><div class="rule" data-grow="1.0"></div><div class="label" data-at="1.2" style="margin-top:0">${esc(s.label)}</div>`,
-  stat: (s) => `<div class="big stat">${esc(s.prefix || '')}<span data-count data-from="0" data-to="${s.value}"></span>${esc(s.suffix || '')}</div><div class="label" data-at="1.5">${esc(s.label)}</div>`,
+  stat: (s) => `<div class="big stat"${String(s.value).length > 6 ? ' style="font-size:190px"' : ''}>${esc(s.prefix || '')}<span data-count data-from="0" data-to="${s.value}"></span>${esc(s.suffix || '')}</div><div class="label" data-at="1.5">${esc(s.label)}</div>`,
   words: (s, dur) => s.lines.map((l, i) => `<div class="line" data-at="${(0.25 + i * Math.min(1.9, (dur * 0.5) / s.lines.length)).toFixed(2)}">${mark(l)}</div>`).join(''),
   duo: (s, dur) => {
     const col = (lines, at) => `<div data-at="${at.toFixed(2)}"><div class="k">${esc(lines[0])}</div>${lines.slice(1).map((l) => `<div class="v">${esc(l)}</div>`).join('')}</div>`;
@@ -165,6 +257,8 @@ const BUILD = {
   share: (s) => `<div class="ring"><svg viewBox="0 0 500 500"><circle cx="250" cy="250" r="220" stroke="rgba(201,163,90,.16)"/><circle id="arc" cx="250" cy="250" r="220" stroke="#e6c98a" pathLength="100" stroke-dasharray="0 100"/></svg><div class="n"><span id="pct">0</span>%</div></div><div class="label" data-at="1.0">${esc(s.label)}</div>`,
   grid: (s) => `<div class="grid">${'<i></i>'.repeat(s.total)}</div><div class="counter"><span id="cnt">0</span> of ${s.total}</div><div class="label" data-at="0.6">${esc(s.label)}</div>`,
   split: (s) => `<div class="split">${'<i><b></b></i>'.repeat(s.count)}</div><div class="counter" data-at="${s.quarter ? 0.3 : 1.6}"><span>${s.quarter ? '25%' : s.count}</span>${s.quarter ? '' : ' companies'}</div><div class="label" data-at="${s.quarter ? 0.8 : 2.2}">${esc(s.quarter ? s.label : 'Each one separate, each one independent')}</div>`,
+  timeline: (s, dur) => `<div class="tl"><div class="tl-line" data-grow="0.3"></div>${s.points.map(([y, l], i) => `<div class="tl-pt" style="left:${(i / (s.points.length - 1)) * 100}%" data-at="${(0.6 + i * ((dur * 0.6) / s.points.length)).toFixed(2)}"><b>${esc(y)}</b><i></i><span>${esc(l)}</span></div>`).join('')}</div>`,
+  bars: (s, dur) => `<div class="bars">${s.rows.map(([l, v], i) => `<div class="bar-row" data-at="${(0.3 + i * Math.min(2.4, dur * 0.3)).toFixed(2)}"><span class="bl">${esc(l)}</span><span class="bt"><i data-bar="${v}" data-i="${i}"></i></span><span class="bv" data-val="${v}" data-i="${i}"></span></div>`).join('')}</div>`,
   names: (s, dur) => s.rows.map((r, i) => {
     const at = (0.3 + i * ((dur * 0.62) / s.rows.length)).toFixed(2);
     if (!s.arrows) return `<div class="row" data-at="${at}">${esc(r)}</div>`;
@@ -185,6 +279,12 @@ const UPDATE = {
     const step = Math.min(dur - 3.2, 5.5) / s.taken; let n = 0;
     el.querySelectorAll('.grid i').forEach((c, i) => { const k = i < s.taken ? prog(t, 1.0 + i * step, 0.45) : 0; if (k > 0.5) n++; c.style.background = `rgba(230,201,138,${k})`; c.style.transform = `scale(${1 - 0.1 * Math.sin(Math.PI * k)})`; });
     $('#cnt', el).textContent = n;
+  },
+  bars: (el, s, t, dur) => {
+    const max = Math.max(...s.rows.map((r) => r[1])), step = Math.min(2.4, dur * 0.3);
+    const show = (v) => s.format.replace('#', v < 1 ? v.toFixed(2) : fmt(v));
+    el.querySelectorAll('[data-bar]').forEach((b) => { b.style.width = `${Math.max(1.2, (+b.dataset.bar / max) * 100) * prog(t, 0.5 + b.dataset.i * step, 1.4)}%`; });
+    el.querySelectorAll('[data-val]').forEach((n) => { const k = prog(t, 0.5 + n.dataset.i * step, 1.4), v = +n.dataset.val * k; n.textContent = show(k >= 0.999 ? +n.dataset.val : (+n.dataset.val < 1 ? v : Math.round(v))); });
   },
   split: (el, s, t) => {
     const g = s.quarter ? 1 : prog(t, 0.7, 1.8);
