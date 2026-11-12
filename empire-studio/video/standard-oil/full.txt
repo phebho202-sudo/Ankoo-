@@ -1,5 +1,5 @@
 title: How One Man Controlled 90% of America's Oil
-channel: Behind the Fortune
+channel: The Fortune Files
 
 # Cold Open !nocard
 
@@ -12,7 +12,7 @@ It was meant to be a punishment.
 @words Instead, it made its founder | the *richest American* | who has ever lived.
 Instead, by most estimates, it made its founder the richest American who has ever lived.
 
-@title Behind the Fortune | Standard Oil | The rise and breakup of an empire
+@title The Fortune Files | Standard Oil | The rise and breakup of an empire
 This is the story of Standard Oil.
 
 @share 0 90 | of America's oil refining
@@ -707,5 +707,5 @@ An empire built in ten years. Dominant for thirty. Broken up by the highest cour
 So the next time one company seems to stand between everyone and something they need, it is worth asking the question that Ida Tarbell asked.
 Not only, is it cheap? But, how was it built?
 
-@title Thank you for watching | Behind the Fortune | The stories behind the world's great fortunes
-This has been Behind the Fortune.
+@title Thank you for watching | The Fortune Files | The stories behind the world's great fortunes
+This has been The Fortune Files.

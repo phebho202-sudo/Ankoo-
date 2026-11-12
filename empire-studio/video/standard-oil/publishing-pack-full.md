@@ -34,11 +34,11 @@ Standard Oil Co. of New Jersey v. United States, 221 U.S. 1 (1911)
 
 Narration is a synthetic voice made with Piper using the LibriTTS voice model (CC BY 4.0).
 
-Behind the Fortune tells the stories behind the world's great fortunes.
+The Fortune Files tells the stories behind the world's great fortunes.
 
 ## Tags
 
-standard oil, john d rockefeller, rockefeller documentary, business documentary, monopoly, antitrust, sherman antitrust act, ida tarbell, history of oil, exxon mobil history, richest man in history, business history, corporate empires, behind the fortune
+standard oil, john d rockefeller, rockefeller documentary, business documentary, monopoly, antitrust, sherman antitrust act, ida tarbell, history of oil, exxon mobil history, richest man in history, business history, corporate empires, the fortune files
 
 ## Upload settings
 
