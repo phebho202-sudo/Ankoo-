@@ -7,5 +7,5 @@ export const BRAND = {
   businessName: 'Mojere Market Business',
   region: 'Ondo State, Nigeria',
   /** Shown in the app so people (and app reviewers) can contact the team. */
-  supportEmail: 'phebho202@gmail.com',
+  supportEmail: 'mojeremarket.help@gmail.com',
 } as const;

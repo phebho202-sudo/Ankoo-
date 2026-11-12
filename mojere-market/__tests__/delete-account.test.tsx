@@ -94,6 +94,6 @@ describe('support contact', () => {
     const spy = jest.spyOn(Linking, 'openURL').mockResolvedValue(true);
     const { contactSupport } = require('@/lib/support');
     await contactSupport();
-    expect(spy).toHaveBeenCalledWith(expect.stringMatching(/^mailto:phebho202@gmail\.com\?subject=/));
+    expect(spy).toHaveBeenCalledWith(expect.stringMatching(/^mailto:mojeremarket\.help@gmail\.com\?subject=/));
   });
 });

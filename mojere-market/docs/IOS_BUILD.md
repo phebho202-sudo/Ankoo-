@@ -26,7 +26,7 @@ Apple's site). Nothing else in this guide costs money.
 1. **Privacy Policy web page.** Apple requires a public link. Have a lawyer review the text in
    `src/app/terms.tsx`, then put it on a free web page (for example **Google Sites**). Copy the link.
 2. **Support contact.** Create an email address for support (for example a new Gmail such as
-   `mojeremarket.help@gmail.com`). Already done: the app shows phebho202@gmail.com; send your developer a new address if you change it, because Apple
+   `mojeremarket.help@gmail.com`). Already done: the app shows mojeremarket.help@gmail.com; send your developer a new address if you change it, because Apple
    asks for a way to contact you.
 3. **Database:** run **Part M** in `SUPABASE_SETUP.md` ("Delete my account").
 4. **A reviewer account.** Apple's reviewer needs to log in. Create a normal account with an email you

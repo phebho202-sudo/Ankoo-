@@ -17,7 +17,7 @@ share it with, and your rights.
 
 **Who is responsible for your data**
 [YOUR FULL NAME, or your registered business name], [YOUR ADDRESS, Ondo State, Nigeria].
-Contact: phebho202@gmail.com
+Contact: mojeremarket.help@gmail.com
 
 **1. What we collect**
 
@@ -90,7 +90,7 @@ Under the NDPA you can ask to: access a copy of your data; correct it; delete it
 restrict certain uses; withdraw consent; and receive your data in a portable format.
 - **Delete your account yourself** in the app: Profile → Delete my account.
 - **Edit your profile** in the app: Profile → Edit profile.
-- For anything else, email phebho202@gmail.com. We will reply within [30] days.
+- For anything else, email mojeremarket.help@gmail.com. We will reply within [30] days.
 You can also complain to the **Nigeria Data Protection Commission (NDPC)**.
 
 **7. Age**
@@ -106,4 +106,4 @@ If we change this policy, we will update the date above and tell you in the app 
 important.
 
 **10. Contact**
-phebho202@gmail.com
+mojeremarket.help@gmail.com
