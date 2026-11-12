@@ -16,14 +16,14 @@ In 1911 the US Supreme Court broke Standard Oil into 34 companies. It was meant 
 
 CHAPTERS
 0:00 The verdict
-0:44 The Bookkeeper
-5:01 Black Gold
-10:59 The Standard
-17:31 The Empire
-24:58 The Reckoning
-31:28 The Twist
-35:25 The Giver
-40:20 The Lesson
+0:43 The Bookkeeper
+4:55 Black Gold
+10:48 The Standard
+17:30 The Empire
+24:50 The Reckoning
+31:20 The Twist
+35:12 The Giver
+40:10 The Lesson
 
 SOURCES
 Ron Chernow, Titan: The Life of John D. Rockefeller, Sr. (1998)
