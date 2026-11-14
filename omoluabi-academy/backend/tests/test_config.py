@@ -26,7 +26,7 @@ def test_production_rejects_unsafe_defaults():
     s = Settings(
         _env_file=None,
         app_env=AppEnv.PRODUCTION,
-        admin_api_token=None,
+        admin_api_token="short",
         database_url="postgresql+psycopg://omoluabi:omoluabi@localhost/omoluabi",
         cors_origins="http://localhost:3000",
     )
@@ -41,6 +41,17 @@ def test_production_accepts_safe_config():
         _env_file=None,
         app_env=AppEnv.PRODUCTION,
         admin_api_token="x" * 40,
+        database_url="postgresql+psycopg://app:strong@db:5432/omoluabi",
+        cors_origins="https://admin.omoluabi.ng",
+    )
+    assert s.validate_for_production() == []
+
+
+def test_production_allows_no_service_token():
+    s = Settings(
+        _env_file=None,
+        app_env=AppEnv.PRODUCTION,
+        admin_api_token=None,
         database_url="postgresql+psycopg://app:strong@db:5432/omoluabi",
         cors_origins="https://admin.omoluabi.ng",
     )

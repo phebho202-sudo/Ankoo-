@@ -26,4 +26,24 @@ describe("getReadiness", () => {
     const r = await getReadiness(() => jsonResponse(401, { error: { message: "token required" } }));
     expect(r).toEqual({ ok: false, error: "token required", httpStatus: 401 });
   });
+
+  it("keeps the error code and details for callers to act on", async () => {
+    const { fetchJson } = await import("./api");
+    const r = await fetchJson("/api/v1/settings/x", undefined, () =>
+      jsonResponse(422, { error: { message: "m", code: "blocked_by_policy", details: { requires: "confirm_increase" } } }),
+    );
+    expect(r).toEqual({
+      ok: false,
+      error: "m",
+      code: "blocked_by_policy",
+      details: { requires: "confirm_increase" },
+      httpStatus: 422,
+    });
+  });
+
+  it("does not treat a 503 from other endpoints as success", async () => {
+    const { fetchJson } = await import("./api");
+    const r = await fetchJson("/api/v1/overview", undefined, () => jsonResponse(503, { error: { message: "down" } }));
+    expect(r.ok).toBe(false);
+  });
 });

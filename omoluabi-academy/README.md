@@ -4,7 +4,7 @@ Practical business education in natural Nigerian Yoruba. This is the software th
 the academy's research, rights management, Yoruba scripting, voice and video production,
 publishing and monetisation, with a human approval gate at every risky step.
 
-> **Status: Phase 1 (foundation) complete, awaiting owner approval before Phase 2.**
+> **Status: Phase 2 (brand and administration dashboard) complete, awaiting owner approval before Phase 3.**
 > See [`docs/PHASE_STATUS.md`](docs/PHASE_STATUS.md) for what works, what doesn't yet, and test results.
 
 ## Safety rules built into the platform
@@ -17,7 +17,10 @@ publishing and monetisation, with a human approval gate at every risky step.
 | Complete audit trail | Hash-chained `audit_logs`, append-only enforced by PostgreSQL triggers; `GET /api/v1/system/audit/verify` |
 | Replaceable services | Every external service sits behind an interface in `app/adapters/base.py` |
 | Capped retries | Worker retries are bounded by `TASK_MAX_RETRIES` (max 10) |
-| Safe production start | The API refuses to start in production with default passwords or a weak admin token |
+| Safe production start | The API refuses to start in production with default passwords or a weak automation token |
+| Owner approval for spending | Raising any spending limit needs explicit owner confirmation, recorded as `budget.limit_increase_approved` |
+| No early auto-publishing | Automatic publishing cannot be switched on until the publishing pipeline exists and 10 videos are owner-approved |
+| Secure owner login | scrypt-hashed passwords, 5-attempt lockout, expiring sessions stored only as hashes, httpOnly cookies |
 
 Rights verification, budget limits, duplicate prevention and publishing gates are added in
 Phases 3–8, as specified.
@@ -35,7 +38,7 @@ omoluabi-academy/
 │   ├── app/worker/     Celery app and tasks
 │   ├── alembic/        database migrations
 │   └── tests/          pytest suite
-├── frontend/           Next.js + TypeScript + Tailwind admin dashboard
+├── frontend/           Next.js + TypeScript + Tailwind admin dashboard (English + Yorùbá)
 ├── docs/               installation, architecture, phase status
 ├── docker-compose.yml  full local stack
 └── Makefile            common commands
@@ -47,8 +50,9 @@ See **[docs/INSTALL.md](docs/INSTALL.md)**. Short version with Docker:
 
 ```bash
 cd omoluabi-academy
-cp .env.example .env    # then set ADMIN_API_TOKEN
+cp .env.example .env
 docker compose up --build
+docker compose exec api python -m app.cli create-owner --email you@example.com --name "Your Name"
 # Dashboard: http://localhost:3000   API docs: http://localhost:8000/docs
 ```
 
@@ -57,3 +61,4 @@ docker compose up --build
 - [Installation guide](docs/INSTALL.md)
 - [Architecture and database schema](docs/ARCHITECTURE.md)
 - [Phase status, test results and known limitations](docs/PHASE_STATUS.md)
+- [Yoruba interface text for language review](docs/YORUBA_UI_REVIEW.md)

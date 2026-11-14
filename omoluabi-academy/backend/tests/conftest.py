@@ -74,6 +74,18 @@ def engine():
         command.downgrade(cfg, "base")
         command.upgrade(cfg, "head")
     else:
+        # pysqlite ignores SAVEPOINTs unless SQLAlchemy controls BEGIN itself (documented
+        # recipe); without this, rows committed in one test leak into the next.
+        from sqlalchemy import event
+
+        @event.listens_for(eng, "connect")
+        def _no_pysqlite_tx(dbapi_conn, _record):
+            dbapi_conn.isolation_level = None
+
+        @event.listens_for(eng, "begin")
+        def _begin(conn):
+            conn.exec_driver_sql("BEGIN")
+
         import app.models  # noqa: F401
         from app.db.base import Base
 
@@ -138,3 +150,25 @@ def redis_available() -> bool:
         return True
     except Exception:
         return False
+
+
+OWNER_EMAIL = "owner@omoluabi.test"
+OWNER_PASSWORD = "Correct-Horse-42"
+
+
+@pytest.fixture
+def owner(db):
+    from app.services import auth
+
+    user = auth.create_owner(
+        db, email=OWNER_EMAIL, password=OWNER_PASSWORD, display_name="Ọ̀gá Owner"
+    )
+    db.commit()
+    return user
+
+
+@pytest.fixture
+def owner_headers(client, owner) -> dict[str, str]:
+    r = client.post("/api/v1/auth/login", json={"email": OWNER_EMAIL, "password": OWNER_PASSWORD})
+    assert r.status_code == 200, r.text
+    return {"Authorization": f"Bearer {r.json()['token']}"}

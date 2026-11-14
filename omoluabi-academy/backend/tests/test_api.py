@@ -64,12 +64,12 @@ def test_admin_endpoints_require_token(client, headers):
     assert r.json()["error"]["code"] == "authentication_required"
 
 
-def test_admin_api_disabled_when_token_not_configured(client, monkeypatch):
+def test_service_token_rejected_when_not_configured(client, monkeypatch):
     from app.core.config import get_settings
 
     monkeypatch.setattr(get_settings(), "admin_api_token", None)
     r = client.get("/api/v1/system/providers", headers=ADMIN_HEADERS)
-    assert r.status_code == 503
+    assert r.status_code == 401
 
 
 def test_provider_status_is_honest_in_sample_mode(client):

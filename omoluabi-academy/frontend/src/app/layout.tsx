@@ -1,29 +1,32 @@
 import type { Metadata } from "next";
+import { getLocale } from "@/lib/i18n/server";
+// Noto fonts position stacked Yoruba diacritics (e.g. ọ̀, ẹ́) correctly. The latin-ext and
+// 'vietnamese' subsets contain the dotted letters ẹ ọ ṣ; files are bundled, not fetched from Google.
+import "@fontsource/noto-sans/latin-400.css";
+import "@fontsource/noto-sans/latin-500.css";
+import "@fontsource/noto-sans/latin-600.css";
+import "@fontsource/noto-sans/latin-ext-400.css";
+import "@fontsource/noto-sans/latin-ext-500.css";
+import "@fontsource/noto-sans/latin-ext-600.css";
+import "@fontsource/noto-sans/vietnamese-400.css";
+import "@fontsource/noto-sans/vietnamese-500.css";
+import "@fontsource/noto-sans/vietnamese-600.css";
+import "@fontsource/noto-serif/latin-600.css";
+import "@fontsource/noto-serif/latin-ext-600.css";
+import "@fontsource/noto-serif/vietnamese-600.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Ọmọlúàbí Business Academy — Admin",
+  title: "Ọmọlúàbí Business Academy · Admin",
   description: "Content operations dashboard for OMỌLÚÀBÍ BUSINESS ACADEMY",
   robots: { index: false, follow: false }, // private admin tool
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const locale = await getLocale();
   return (
-    <html lang="en">
-      <body className="min-h-screen">
-        <header className="border-b-4 border-gold bg-navy text-cream">
-          <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-4">
-            <span aria-hidden className="grid h-9 w-9 place-items-center rounded-full bg-gold font-display text-lg font-bold text-navy">
-              Ọ
-            </span>
-            <div>
-              <p className="font-display text-lg font-semibold tracking-wide">OMỌLÚÀBÍ BUSINESS ACADEMY</p>
-              <p className="text-xs text-gold-100">Ẹ̀kọ́ iṣẹ́ òwò ní èdè Yorùbá · Admin</p>
-            </div>
-          </div>
-        </header>
-        <main className="mx-auto max-w-6xl px-4 py-8">{children}</main>
-      </body>
+    <html lang={locale}>
+      <body className="min-h-screen">{children}</body>
     </html>
   );
 }

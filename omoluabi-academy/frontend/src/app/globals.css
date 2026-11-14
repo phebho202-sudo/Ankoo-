@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 :root {
-  /* System fonts: no external font download, works offline and keeps builds reproducible. */
-  --font-sans: "Inter", "Segoe UI", "Noto Sans", Roboto, Helvetica, Arial, sans-serif;
+  /* Self-hosted Noto (see layout.tsx): correct Yoruba tone-mark rendering everywhere. */
+  --font-sans: "Noto Sans", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --font-display: "Noto Serif", Georgia, "Times New Roman", serif;
 }
 

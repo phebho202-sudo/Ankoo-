@@ -22,11 +22,8 @@ git clone <your-repository-url>
 cd <repository>/omoluabi-academy
 cp .env.example .env
 ```
-Generate an admin token and paste it into `.env` as `ADMIN_API_TOKEN=...`:
-```bash
-python3 -c "import secrets; print(secrets.token_urlsafe(32))"
-# or: openssl rand -base64 32
-```
+`ADMIN_API_TOKEN` is optional. It is only for scripts and `curl`; you log in to the
+dashboard with your own email and password (step 4).
 
 ### 3. Start
 ```bash
@@ -41,12 +38,20 @@ and the dashboard.
 | API | http://localhost:8000 |
 | Interactive API docs | http://localhost:8000/docs |
 
-### 4. Check it works
+### 4. Create your owner login (once)
+```bash
+docker compose exec api python -m app.cli create-owner --email you@example.com --name "Your Name"
+```
+You are asked for a password twice: at least 12 characters, mixed case, and a digit.
+
+### 5. Check it works
 ```bash
 curl http://localhost:8000/health/ready
 # {"status":"ok","checks":{"database":{"ok":true},"redis":{"ok":true}},...}
 ```
-The dashboard home page should show **API / database / redis: OK** and **SAMPLE mode**.
+Open http://localhost:3000 and log in. The Overview page should show **API / database /
+job queue: OK** and **SAMPLE mode**. Use the **English / Yorùbá** switch at the bottom of
+the menu to change the language. Your choice is remembered on your account.
 
 Stop with `docker compose down`. Your data stays in Docker volumes. `docker compose down -v`
 **deletes** all data.
@@ -96,8 +101,8 @@ refuses to start in production with it.
 cd omoluabi-academy
 make backend-setup         # or: cd backend && python3 -m venv .venv && .venv/bin/pip install -e ".[dev]"
 cp backend/.env.example backend/.env
-# edit backend/.env: set ADMIN_API_TOKEN
 make migrate               # creates the tables
+make owner                 # creates your owner login (asks for email and password)
 ```
 
 ### 4. Frontend
@@ -113,7 +118,12 @@ make worker    # background jobs
 make web       # http://localhost:3000
 ```
 
-### 6. Verify the full pipeline (API → Redis → worker → database)
+### 6. Log in
+Open http://localhost:3000 and sign in with the owner email and password.
+
+### 7. Verify the full pipeline (API → Redis → worker → database)
+This uses the optional automation token. Set `ADMIN_API_TOKEN` in `backend/.env` first
+and restart the API.
 ```bash
 TOKEN=<your ADMIN_API_TOKEN>
 curl -s -X POST -H "Authorization: Bearer $TOKEN" localhost:8000/api/v1/system/jobs/ping
@@ -124,7 +134,7 @@ curl -s -H "Authorization: Bearer $TOKEN" localhost:8000/api/v1/system/audit/ver
 # -> {"ok":true,...}
 ```
 
-### 7. Run the tests
+### 8. Run the tests
 ```bash
 make test     # backend pytest + frontend typecheck and tests
 make lint
@@ -133,6 +143,11 @@ Backend tests use the `omoluabi_test` PostgreSQL database when it is reachable (
 the real migrations). Otherwise they fall back to SQLite and skip the PostgreSQL-only tests.
 Set `TEST_DATABASE_URL` to use a different database. **Tests never call paid APIs.**
 
+Browser test of the running dashboard. It changes settings, so use development data only:
+```bash
+E2E_EMAIL=you@example.com E2E_PASSWORD='...' make e2e
+```
+
 ---
 
 ## Troubleshooting
@@ -140,7 +155,9 @@ Set `TEST_DATABASE_URL` to use a different database. **Tests never call paid API
 | Symptom | Fix |
 |---|---|
 | `/health/ready` returns 503 | The response says which dependency is down. Start PostgreSQL/Redis. |
-| `provider_not_configured` (503) on admin endpoints | `ADMIN_API_TOKEN` is not set in the backend's environment. |
-| `authentication_required` (401) | Send `Authorization: Bearer <ADMIN_API_TOKEN>`. |
+| Login says "Incorrect email or password" | Check the email. Create the owner with `make owner` if you haven't. |
+| Login says "Too many failed attempts" | 5 wrong passwords lock the account for 15 minutes. Wait, then try again. |
+| Logged straight back out, or the login loops | You are using plain `http://` on an address other than `localhost`: set `COOKIE_SECURE=false` for the frontend (development only). |
+| `authentication_required` (401) from `curl` | Send `Authorization: Bearer <ADMIN_API_TOKEN>` (set in `backend/.env`). |
 | Dashboard says "Backend unreachable" | Start the API, or set `BACKEND_URL` in `frontend/.env.local`. |
 | `alembic upgrade` cannot connect | Check `DATABASE_URL` in `backend/.env`. |

@@ -40,7 +40,9 @@ class Settings(BaseSettings):
     redis_url: str = "redis://localhost:6379/0"
     cors_origins: list[str] = ["http://localhost:3000"]
 
+    # Optional machine token for scripts/automation. Dashboard users log in with sessions.
     admin_api_token: SecretStr | None = None
+    session_ttl_hours: int = Field(default=12, ge=1, le=24 * 7)
 
     storage_backend: str = Field(default="local", pattern="^(local|r2)$")
     local_storage_path: str = "./var/storage"
@@ -85,8 +87,8 @@ class Settings(BaseSettings):
     def validate_for_production(self) -> list[str]:
         """Return a list of problems that must block a production start."""
         problems: list[str] = []
-        if self.admin_api_token is None or len(self.admin_api_token.get_secret_value()) < 32:
-            problems.append("ADMIN_API_TOKEN must be set to at least 32 characters")
+        if self.admin_api_token is not None and len(self.admin_api_token.get_secret_value()) < 32:
+            problems.append("ADMIN_API_TOKEN, if set, must be at least 32 characters")
         if "omoluabi:omoluabi@" in self.database_url:
             problems.append("DATABASE_URL uses the default development password")
         if any(o.startswith("http://localhost") for o in self.cors_origins):

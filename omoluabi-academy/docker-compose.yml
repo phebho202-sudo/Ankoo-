@@ -8,7 +8,8 @@ x-backend-env: &backend-env
   DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-omoluabi}:${POSTGRES_PASSWORD:-omoluabi}@postgres:5432/${POSTGRES_DB:-omoluabi}
   REDIS_URL: redis://redis:6379/0
   CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000}
-  ADMIN_API_TOKEN: ${ADMIN_API_TOKEN:?Set ADMIN_API_TOKEN in .env (see docs/INSTALL.md)}
+  # Optional automation token (scripts/curl). The dashboard uses owner login sessions.
+  ADMIN_API_TOKEN: ${ADMIN_API_TOKEN:-}
   LOCAL_STORAGE_PATH: /app/var/storage
   ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
   ELEVENLABS_API_KEY: ${ELEVENLABS_API_KEY:-}
@@ -67,6 +68,8 @@ services:
     build: ./frontend
     environment:
       BACKEND_URL: http://api:8000
+      # This dev stack serves plain http. Production must use HTTPS with COOKIE_SECURE unset.
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
     ports: ["127.0.0.1:3000:3000"]
     depends_on: [api]
 

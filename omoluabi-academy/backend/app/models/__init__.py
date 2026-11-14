@@ -3,5 +3,6 @@
 from app.models.audit import AuditLog
 from app.models.job import JobRun, JobStatus
 from app.models.setting import SystemSetting
+from app.models.user import AuthSession, User
 
-__all__ = ["AuditLog", "JobRun", "JobStatus", "SystemSetting"]
+__all__ = ["AuditLog", "AuthSession", "JobRun", "JobStatus", "SystemSetting", "User"]

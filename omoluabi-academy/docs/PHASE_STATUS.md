@@ -2,8 +2,8 @@
 
 | Phase | Status |
 |---|---|
-| 1. Project foundation | **Complete. Awaiting owner approval.** |
-| 2. Brand and administration | Not started |
+| 1. Project foundation | Complete. Approved 2026-11-14. |
+| 2. Brand and administration | **Complete. Awaiting owner approval.** |
 | 3. Discovery and research | Not started |
 | 4. Rights management | Not started |
 | 5. Yoruba content engine | Not started |
@@ -12,6 +12,63 @@
 | 8. Publishing | Not started |
 | 9. Monetisation | Not started |
 | 10. Deployment | Not started |
+
+---
+
+## Phase 2: Brand and administration (2026-11-14)
+
+Owner decisions: English **and** Yoruba interface; proper owner login (two-step
+verification not requested, available later).
+
+### Delivered
+| Area | What exists |
+|---|---|
+| Owner login | Email and password login (scrypt), 5-attempt lockout for 15 minutes, 12-hour sessions stored only as hashes, httpOnly cookies, logout revokes the session, `create-owner` CLI. Every login, failure, lockout and logout is audited. |
+| Bilingual dashboard | Every screen in English and Yorùbá. The switch is remembered per account. TypeScript blocks any missing Yoruba string. |
+| Brand | Deep navy sidebar, warm gold accents, cream pages, charcoal text. Self-hosted Noto fonts so Yoruba tone marks render correctly. Responsive down to phone width. |
+| 12 pages | **Overview** and **System settings** are fully working. The other 10 (Episodes, Research, Rights, Yoruba scripts, Voice, Video, Publishing calendar, Social accounts, Analytics, Monetisation) are labelled "Not built yet · Phase N", explain their purpose and safeguards, and show no sample data. |
+| Overview | Live health (API, database, Redis), provider mode, real spend this month against the limit with the alert marker (sample runs are excluded), job counts, audit-trail integrity, setup checklist, provider status, recent activity. |
+| System settings | 10 typed, range-checked settings for budget, storage, publishing and production. Raising a spending limit needs a ticked approval box and is audited as `budget.limit_increase_approved`. Automatic publishing cannot be switched on yet. Paginated audit-trail viewer. |
+| API | `POST /api/v1/auth/login`, `POST /auth/logout`, `GET /auth/me`, `PUT /auth/me/language`, `GET /api/v1/overview`, `GET /api/v1/audit`, `GET/PUT /api/v1/settings` |
+| Migration | `users`, `auth_sessions` (upgrade, downgrade and drift checked) |
+
+### Test results
+* **Backend:** 72 passed on PostgreSQL 16 (coverage 97%). SQLite fallback: 70 passed, 2 skipped. Lint clean.
+* **Frontend:** typecheck clean; 22 unit tests passed (dictionary completeness and
+  placeholders, NFC Yoruba text, date formats, settings parsing, API errors); production build succeeded.
+* **Browser test** (`frontend/e2e/dashboard.e2e.cjs`, real API, worker, PostgreSQL and Redis):
+  19 of 19 checks passed, 3 consecutive runs. It covers the login redirect, wrong password,
+  httpOnly cookie, real $0.00 spend, lowering a limit, a blocked unapproved raise, an approved
+  raise that is audited, the blocked auto-publish, the Yoruba switch, the honest placeholder
+  page, no horizontal scroll on mobile, logout revoking the token, the saved language
+  restored on the next login, and no browser errors.
+
+### Failures found and fixed during Phase 2
+1. **Email cleared after a failed login.** React 19 resets forms after an action, so the
+   owner had to retype the email. The form now keeps it.
+2. **Yoruba tone marks misplaced in headings** (e.g. "Àkópọ̀"). The system fonts could not
+   stack diacritics. Fixed with self-hosted Noto fonts.
+3. **Yoruba dates showed as "14 11 2026"** (the runtime has no Yoruba month names). Now
+   "14/11/2026, 07:56", Lagos time.
+4. A route-module name clash in `main.py` broke every endpoint (caught by tests at once).
+5. **SQLite test isolation:** rows leaked between tests because pysqlite ignores
+   SAVEPOINTs. Fixed with SQLAlchemy's documented recipe.
+6. Several browser-test timing and selector mistakes (in the test script, not the app).
+
+### Needs your action
+* **Yoruba language review.** The interface text was written carefully but has not been
+  checked by a fluent Nigerian Yoruba reviewer. The full list of terms is in
+  [YORUBA_UI_REVIEW.md](YORUBA_UI_REVIEW.md).
+* Docker images still need one build on your machine or in CI (unchanged from Phase 1).
+
+### Known limitations
+* Single owner role. No staff or reviewer accounts yet; they are added when the
+  language-review workflow needs them (Phase 5).
+* No two-step verification (can be added on request).
+* No password reset by email (no email provider configured). If you forget your password,
+  create a new owner with the CLI on the server.
+* No rate limit by IP address beyond the per-account lockout. A reverse-proxy rate limit is
+  part of Phase 10.
 
 ---
 
