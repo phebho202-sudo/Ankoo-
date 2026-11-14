@@ -7,9 +7,8 @@ Rules:
   The registry never falls back to a sample adapter in live mode, so a missing key can never
   be mistaken for a working connection.
 
-Live adapters are added phase by phase (Claude: Phase 5, ElevenLabs/avatar: Phase 6,
-YouTube Data API: Phase 3, R2: Phase 10, publishers: Phase 8) by registering them in
-``_LIVE_FACTORIES``.
+Live adapters so far: Claude (LLM) and the YouTube Data API (video source), both Phase 3.
+ElevenLabs/avatar arrive in Phase 6, publishers in Phase 8, R2 in Phase 10.
 """
 
 from __future__ import annotations
@@ -39,10 +38,38 @@ _SAMPLE_FACTORIES: dict[Capability, Callable[[Settings], Provider]] = {
     Capability.PUBLISHER: lambda s: sample.SamplePublisher(),
 }
 
-# capability -> (credential check, factory). Filled in by later phases.
+
+def _claude(s: Settings) -> Provider:
+    from app.adapters.anthropic_llm import ClaudeLLM
+
+    assert s.anthropic_api_key is not None  # noqa: S101 (guarded by is_configured)
+    return ClaudeLLM(
+        api_key=s.anthropic_api_key.get_secret_value(),
+        model=s.anthropic_model,
+        effort=s.anthropic_effort,
+    )
+
+
+def _youtube(s: Settings) -> Provider:
+    from app.adapters.youtube import YouTubeDataAPI
+
+    assert s.youtube_api_key is not None  # noqa: S101 (guarded by is_configured)
+    return YouTubeDataAPI(api_key=s.youtube_api_key.get_secret_value())
+
+
+def _default_live() -> dict[
+    Capability, tuple[Callable[[Settings], bool], Callable[[Settings], Provider]]
+]:
+    return {
+        Capability.LLM: (lambda s: s.anthropic_api_key is not None, _claude),
+        Capability.VIDEO_SOURCE: (lambda s: s.youtube_api_key is not None, _youtube),
+    }
+
+
+# capability -> (credential check, factory). Later phases add TTS, avatar, R2, publishers.
 _LIVE_FACTORIES: dict[
     Capability, tuple[Callable[[Settings], bool], Callable[[Settings], Provider]]
-] = {}
+] = _default_live()
 
 _CREDENTIAL_HINT: dict[Capability, str] = {
     Capability.LLM: "ANTHROPIC_API_KEY",

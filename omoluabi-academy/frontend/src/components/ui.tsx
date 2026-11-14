@@ -46,3 +46,33 @@ export function Alert({ tone, children }: { tone: "error" | "warn" | "ok"; child
     </div>
   );
 }
+
+export function Badge({
+  tone = "neutral",
+  children,
+}: {
+  tone?: "neutral" | "gold" | "green" | "red" | "navy";
+  children: React.ReactNode;
+}) {
+  const styles = {
+    neutral: "bg-navy-50 text-navy-700",
+    gold: "bg-gold-100 text-gold-600",
+    green: "bg-emerald-100 text-emerald-900",
+    red: "bg-red-100 text-red-900",
+    navy: "bg-navy text-cream",
+  }[tone];
+  return (
+    <span className={`inline-flex items-center rounded px-1.5 py-0.5 text-[11px] font-semibold ${styles}`}>
+      {children}
+    </span>
+  );
+}
+
+export const inputClass =
+  "w-full rounded-md border border-navy-100 bg-white px-3 py-2 text-sm shadow-sm focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/40";
+
+export const buttonClass =
+  "rounded-md bg-navy px-4 py-2 text-sm font-semibold text-cream hover:bg-navy-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold disabled:opacity-60";
+
+export const secondaryButtonClass =
+  "rounded-md border border-navy-100 bg-white px-3 py-1.5 text-sm font-medium text-navy hover:bg-cream-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold disabled:opacity-60";

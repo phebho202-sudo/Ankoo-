@@ -126,6 +126,15 @@ DEFINITIONS: dict[str, SettingDef] = {
             choices=("private", "unlisted"),
         ),
         SettingDef(
+            "discovery.max_videos_per_scan",
+            "discovery",
+            "int",
+            50,
+            "Most videos recorded per channel scan (about 2 YouTube quota units per 50).",
+            Decimal("1"),
+            Decimal("500"),
+        ),
+        SettingDef(
             "production.default_video_format",
             "production",
             "choice",

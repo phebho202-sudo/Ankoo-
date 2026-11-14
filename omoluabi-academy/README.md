@@ -4,7 +4,7 @@ Practical business education in natural Nigerian Yoruba. This is the software th
 the academy's research, rights management, Yoruba scripting, voice and video production,
 publishing and monetisation, with a human approval gate at every risky step.
 
-> **Status: Phase 2 (brand and administration dashboard) complete, awaiting owner approval before Phase 3.**
+> **Status: Phase 3 (discovery and research) complete, awaiting owner approval before Phase 4.**
 > See [`docs/PHASE_STATUS.md`](docs/PHASE_STATUS.md) for what works, what doesn't yet, and test results.
 
 ## Safety rules built into the platform
@@ -18,6 +18,10 @@ publishing and monetisation, with a human approval gate at every risky step.
 | Replaceable services | Every external service sits behind an interface in `app/adapters/base.py` |
 | Capped retries | Worker retries are bounded by `TASK_MAX_RETRIES` (max 10) |
 | Safe production start | The API refuses to start in production with default passwords or a weak automation token |
+| Never exceed the spending limit | Each paid call reserves its worst-case cost first, under a database lock, and is blocked if the monthly limit would be exceeded (`app/services/budget.py`) |
+| No duplicate videos | Unique (platform, video ID) in the database, plus re-upload detection by content fingerprint |
+| No copying the source | Research is written in our own words, and any run of 12+ words copied from the source flags the report and blocks approval of its topics |
+| Permitted transcripts only | No scraping. A transcript needs a recorded source and permission reference. |
 | Owner approval for spending | Raising any spending limit needs explicit owner confirmation, recorded as `budget.limit_increase_approved` |
 | No early auto-publishing | Automatic publishing cannot be switched on until the publishing pipeline exists and 10 videos are owner-approved |
 | Secure owner login | scrypt-hashed passwords, 5-attempt lockout, expiring sessions stored only as hashes, httpOnly cookies |
@@ -59,6 +63,8 @@ docker compose exec api python -m app.cli create-owner --email you@example.com -
 ## Documentation
 
 - [Installation guide](docs/INSTALL.md)
+- [API configuration: YouTube and Claude keys](docs/API_SETUP.md)
+- [Operating costs](docs/COSTS.md)
 - [Architecture and database schema](docs/ARCHITECTURE.md)
 - [Phase status, test results and known limitations](docs/PHASE_STATUS.md)
 - [Yoruba interface text for language review](docs/YORUBA_UI_REVIEW.md)

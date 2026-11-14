@@ -33,11 +33,11 @@
 
 | Capability | Interface | Planned live provider | Phase |
 |---|---|---|---|
-| `llm` | `LLMProvider.complete()` | Claude API | 5 |
+| `llm` | `LLMProvider.complete()` | Claude API (official `anthropic` SDK) | **3 (built)** |
 | `tts` | `TTSProvider.synthesize()` | ElevenLabs (Yoruba-capable) | 6 |
 | `avatar` | `AvatarProvider.render()` | licensed avatar API (when affordable) | 6 |
 | `storage` | `StorageProvider.put/get/...` | local filesystem now, Cloudflare R2 later | 1 / 10 |
-| `video_source` | `VideoSourceProvider.list_channel_videos()` | YouTube Data API v3 | 3 |
+| `video_source` | `VideoSourceProvider.resolve_channel()` / `list_channel_videos()` | YouTube Data API v3 (`httpx`) | **3 (built)** |
 | `publisher` | `PublisherProvider.upload()` | YouTube, Meta, TikTok | 8 |
 
 `app/adapters/registry.py` chooses the implementation:
@@ -129,6 +129,27 @@ publishing rules. Unknown keys are rejected. Decimals are stored as strings, nev
 Settings flagged as **spending limits** can be lowered freely, but raising one needs
 `confirm_increase: true` and is audited as `budget.limit_increase_approved`. Automatic
 publishing is refused until the Phase 8 approval gate exists.
+
+### Discovery and research (Phase 3)
+
+| Table | Purpose | Key rules |
+|---|---|---|
+| `source_channels` | Channels the owner authorised | Unique (platform, external_id). `authorisation_basis` is `research_only` or `licensed`. An authorisation note is required. Pausable. Sample channels can't be scanned by live providers, and real channels can't be scanned by the sample provider. |
+| `episodes` | Discovered source videos | **Unique (platform, external_id)**, so a video can never be stored twice. `content_fingerprint` (normalised title + rounded duration) flags re-uploads under a new ID via `possible_duplicate_of_id`. |
+| `transcripts` | Transcripts we are permitted to hold | One per episode. `source` is `licensor_provided`, `owner_entered` or `official_api`. A `permission_reference` is required. Maximum 200,000 characters (rejected, never truncated). |
+| `research_reports` | Model-written research | Status `pending`/`completed`/`failed`/`blocked`; provider, model, tokens, `cost_usd`; `max_verbatim_overlap_words` and `overlap_flagged`. |
+| `topics` | Proposed lesson topics | `proposed` → `approved`/`rejected` by the owner (who, when, note, all audited). Can't be approved if the report copied the source. `is_sample` follows the data forever. |
+
+**Research pipeline:** owner request → `research.generate_report` job → budget reservation
+→ Claude call with structured JSON output (`output_config.format`) and server-side refusal
+fallback → validation (`ReportOut`) → originality check (longest word-for-word run shared
+with the description or transcript; 12+ words is flagged) → topics saved → owner decides.
+
+**Budget guard** (`app/services/budget.py`): before any paid call the job's *worst-case*
+cost is written onto it under a PostgreSQL advisory lock, after checking that month-to-date
+spend plus open reservations plus this estimate stays within the monthly limit. After the
+call the reservation is replaced by the actual cost (or released on failure). Paid jobs are
+never retried automatically.
 
 Later phases add: source channels, episodes, licences and rights, research reports,
 scripts and revisions, pronunciation dictionary, voice/video assets, publications,

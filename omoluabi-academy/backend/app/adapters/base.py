@@ -62,15 +62,29 @@ class LLMResponse:
     input_tokens: int = 0
     output_tokens: int = 0
     cost_usd: Decimal = Decimal("0")
+    parsed: dict[str, Any] | None = None  # set when a json_schema was requested
+    refused: bool = False  # the model declined (safety policy); text/parsed are empty
+    stop_reason: str | None = None
 
 
 class LLMProvider(Provider):
     capability = Capability.LLM
+    model: str = ""
 
     @abc.abstractmethod
     def complete(
-        self, *, system: str, messages: list[LLMMessage], max_tokens: int = 2048
-    ) -> LLMResponse: ...
+        self,
+        *,
+        system: str,
+        messages: list[LLMMessage],
+        max_tokens: int = 2048,
+        json_schema: dict[str, Any] | None = None,
+    ) -> LLMResponse:
+        """Run one completion. With ``json_schema``, ``parsed`` holds the validated object."""
+
+    @abc.abstractmethod
+    def estimate_max_cost(self, *, input_chars: int, max_tokens: int) -> Decimal:
+        """Upper-bound cost of one call, used by the budget guard *before* spending."""
 
 
 # ---------------------------------------------------------------- TTS
@@ -147,6 +161,8 @@ class SourceVideo:
     published_at: datetime
     duration_seconds: int | None
     url: str
+    thumbnail_url: str | None = None
+    has_captions: bool | None = None
     raw: dict[str, Any] = field(default_factory=dict)
 
 
@@ -155,15 +171,33 @@ class SourceVideoPage:
     videos: list[SourceVideo]
     next_page_token: str | None
     is_sample: bool
+    quota_units: int = 0  # API quota consumed fetching this page
+
+
+@dataclass(frozen=True)
+class ChannelInfo:
+    platform: str
+    external_id: str
+    title: str
+    handle: str | None
+    uploads_playlist_id: str | None
+    is_sample: bool
+    quota_units: int = 0
 
 
 class VideoSourceProvider(Provider):
     capability = Capability.VIDEO_SOURCE
+    platform: str
+
+    @abc.abstractmethod
+    def resolve_channel(self, reference: str) -> ChannelInfo:
+        """Look up a channel by ID (UC...), @handle or channel URL."""
 
     @abc.abstractmethod
     def list_channel_videos(
-        self, channel_id: str, page_token: str | None = None
-    ) -> SourceVideoPage: ...
+        self, channel: ChannelInfo, page_token: str | None = None
+    ) -> SourceVideoPage:
+        """One page of the channel's public uploads, newest first."""
 
 
 # ---------------------------------------------------------------- Publisher

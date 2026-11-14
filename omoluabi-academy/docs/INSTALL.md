@@ -5,7 +5,8 @@ simplest. **Option B (native)** is better for day-to-day development.
 
 Nothing here creates paid accounts or spends money. The platform starts in **sample mode**
 (`PROVIDER_MODE=sample`): every AI and publishing provider is replaced by an offline sample
-adapter that makes no network calls.
+adapter that makes no network calls. To connect real YouTube and Claude accounts later,
+follow [API_SETUP.md](API_SETUP.md).
 
 ---
 

@@ -8,7 +8,7 @@ import { SettingRow, type SettingRowLabels } from "./SettingRow";
 
 export const dynamic = "force-dynamic";
 
-const CATEGORY_ORDER = ["budget", "storage", "publishing", "production"] as const;
+const CATEGORY_ORDER = ["budget", "storage", "discovery", "publishing", "production"] as const;
 
 export default async function SettingsPage({
   searchParams,

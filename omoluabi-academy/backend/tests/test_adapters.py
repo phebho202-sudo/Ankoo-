@@ -99,8 +99,9 @@ def test_sample_publisher_never_claims_confirmed_upload():
 
 def test_sample_video_source_paginates():
     src = SampleVideoSource()
-    first = src.list_channel_videos("chan")
-    second = src.list_channel_videos("chan", first.next_page_token)
+    chan = src.resolve_channel("@chan")
+    first = src.list_channel_videos(chan)
+    second = src.list_channel_videos(chan, first.next_page_token)
     assert len(first.videos) == 3 and second.next_page_token is None
     ids = {v.external_id for v in first.videos + second.videos}
     assert len(ids) == 6
@@ -119,3 +120,16 @@ def test_local_storage_roundtrip(tmp_path):
 def test_local_storage_blocks_path_traversal(tmp_path):
     with pytest.raises(AppError):
         LocalStorage(tmp_path / "root").put("../escape.txt", b"x", "text/plain")
+
+
+def test_sample_json_matches_schema_and_reads_as_placeholder():
+    from app.adapters.base import LLMMessage
+    from app.services.research import REPORT_SCHEMA, ReportOut
+
+    r = SampleLLM().complete(
+        system="s", messages=[LLMMessage("user", "u")], json_schema=REPORT_SCHEMA
+    )
+    report = ReportOut.model_validate(r.parsed)  # valid against the real report format
+    assert report.topics[1].title == "[SAMPLE] Example title (topic 2)"
+    assert report.cautions[0] == "[SAMPLE] Example caution 1"
+    assert r.is_sample and r.cost_usd == 0

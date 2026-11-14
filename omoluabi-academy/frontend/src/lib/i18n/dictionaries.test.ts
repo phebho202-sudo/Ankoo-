@@ -52,8 +52,9 @@ describe("dictionaries", () => {
     for (const item of NAV) {
       expect(en.nav[item.key]).toBeTruthy();
       expect(yo.nav[item.key]).toBeTruthy();
-      if (item.key !== "overview" && item.key !== "settings") {
-        expect(yo.pages[item.key].safeguards.length).toBe(en.pages[item.key].safeguards.length);
+      if (!["overview", "settings", "episodes", "research"].includes(item.key)) {
+        const k = item.key as keyof typeof en.pages;
+        expect(yo.pages[k].safeguards.length).toBe(en.pages[k].safeguards.length);
       }
     }
   });
@@ -70,6 +71,7 @@ describe("dictionaries", () => {
       "publishing.required_approved_videos",
       "publishing.default_visibility",
       "production.default_video_format",
+      "discovery.max_videos_per_scan",
     ];
     for (const k of keys) {
       expect(en.settings.labels[k], k).toBeTruthy();

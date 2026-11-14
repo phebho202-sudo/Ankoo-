@@ -48,6 +48,8 @@ class Settings(BaseSettings):
     local_storage_path: str = "./var/storage"
 
     anthropic_api_key: SecretStr | None = None
+    anthropic_model: str = "claude-opus-5-5"
+    anthropic_effort: str = Field(default="medium", pattern="^(low|medium|high|xhigh|max)$")
     elevenlabs_api_key: SecretStr | None = None
     youtube_api_key: SecretStr | None = None
     r2_account_id: str | None = None

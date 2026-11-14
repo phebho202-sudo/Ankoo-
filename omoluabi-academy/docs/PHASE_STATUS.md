@@ -3,8 +3,8 @@
 | Phase | Status |
 |---|---|
 | 1. Project foundation | Complete. Approved 2026-11-14. |
-| 2. Brand and administration | **Complete. Awaiting owner approval.** |
-| 3. Discovery and research | Not started |
+| 2. Brand and administration | Complete. Approved 2026-11-14. |
+| 3. Discovery and research | **Complete in sample mode. Awaiting owner approval and API keys.** |
 | 4. Rights management | Not started |
 | 5. Yoruba content engine | Not started |
 | 6. Voice and avatar | Not started |
@@ -12,6 +12,67 @@
 | 8. Publishing | Not started |
 | 9. Monetisation | Not started |
 | 10. Deployment | Not started |
+
+---
+
+## Phase 3: Discovery and research (2026-11-14)
+
+### Delivered
+| Area | What exists |
+|---|---|
+| YouTube Data API v3 adapter | Resolves channels by URL, @handle or ID, and pages through public uploads (`channels.list`, `playlistItems.list`, `videos.list`). Keeps only public, processed, non-live videos. Records the quota used. Reports quota and invalid-key errors plainly. Doesn't download captions (that needs owner consent). |
+| Claude adapter | Official `anthropic` SDK (2.8). Structured JSON output, server-side refusal fallback, cost from real token usage at published rates. Unknown models are costed at the highest rate. Refusals are reported, never filled in. |
+| Channel authorisation | Each channel needs a basis (research only or licensed) and a written note. Channels can be paused. Every change is audited. |
+| Discovery | Scans stop early once caught up (saving quota). Capped by a new setting (videos per scan). Duplicates are impossible at database level, and re-uploads are flagged. Sample and real data can't mix. |
+| Permitted transcripts | Added by the owner, with a source and permission reference. No scraping path exists. |
+| Research reports | Claude studies an episode (or a subject you type) and proposes 3–8 topics for **original** lessons, with Nigerian context and cautions. The prompt forbids reproducing the source, adopting a creator's persona, or presenting branded frameworks as ours. An **originality check** flags any 12+ word run copied from the source and blocks approval. |
+| Topic approval | You approve or reject each topic, with an optional note. Audited. |
+| Budget guard | Worst-case cost reserved under a lock before every paid call. Blocked if the monthly limit would be exceeded. Settled to the actual cost afterwards. No automatic retries of paid calls. |
+| Dashboard | **Episode catalogue** (channels, scan with live progress, search and filter, pagination), **episode page** (description, transcript form, research), **Research** (approval queue, approved topics, independent research, reports), **report page** (summary, topics, concepts, Nigerian context, cautions, cost, originality result). All in English and Yorùbá. |
+| Docs | [API_SETUP.md](API_SETUP.md) (step-by-step keys), [COSTS.md](COSTS.md) |
+
+### Test results
+* **Backend:** 127 passed on PostgreSQL 16 (coverage 95%); SQLite fallback passes too. Lint clean.
+  New tests cover the YouTube adapter (mocked HTTP), the Claude adapter (fake SDK client,
+  real SDK error classes, request shape checked against the installed SDK), discovery
+  and duplicates, transcripts, research, the originality check, refusals, the budget guard and the API.
+* **Frontend:** typecheck clean; 22 unit tests (every new string has its Yoruba version); build OK.
+* **Browser tests on the real stack (sample mode):** Phase 3 suite **18/18** and Phase 2
+  suite **19/19**, each run repeatedly.
+* **Not tested against the real APIs:** no YouTube or Anthropic key exists yet. Both
+  adapters are tested against mocked responses that follow the official API formats. The
+  first live scan and the first live report should be watched (see API_SETUP.md §4).
+
+### Failures found and fixed
+1. **Saved transcript not visible to research in the same session** (stale relationship).
+   Fixed, with a test.
+2. **Blocked research reports lost their "blocked" status** when the model wasn't configured
+   (the job rollback undid it). Fixed before release; a test confirms the honest status.
+3. **New "videos per scan" setting not registered** (my edit missed the reformatted file).
+   Caught by the API test.
+4. **"Channel authorised" confirmation was hidden** because the form collapsed after the
+   first channel. The form is now always visible.
+5. A test assertion that could never fail. Replaced with the real rule: a live model
+   studying sample data stays labelled sample.
+6. Sample output read like code ("sample.topics[0].title"). It now reads
+   "[SAMPLE] Example title (topic 2)".
+
+### Needs your action
+1. **YouTube Data API key** (free). Steps in API_SETUP.md §1.
+2. **Anthropic API key** with prepaid credits and a Console spend limit (API_SETUP.md §2).
+   The default model is `claude-opus-5-5`. Choosing a cheaper model is your decision.
+3. **The list of channels you are authorised to use**, and for each one whether it is
+   research only or licensed. Licensed adaptations stay blocked until Phase 4 verifies the licence.
+4. Yoruba review of the new interface text (YORUBA_UI_REVIEW.md, regenerated).
+
+### Known limitations
+* Topics are proposed in English. Yoruba scripting, with human language review, is Phase 5.
+* The originality check compares against the description and any transcript held. Without
+  a transcript it cannot see the spoken content. Reports say so.
+* Captions on YouTube are not downloaded (owner consent required). Transcripts come only
+  from the permitted-transcript form.
+* No scheduled automatic scans yet. Scans are started by you. Scheduling arrives with the
+  publishing calendar (Phase 8).
 
 ---
 

@@ -139,12 +139,128 @@ Source of truth: `frontend/src/lib/i18n/dictionaries.ts`. Regenerate this file a
 | `pages.monetisation.purpose` | Affiliate links, digital products, sponsorships and YouTube earnings. | Ìjápọ̀ affiliate, ọjà oní-nọ́ńbà, ìgbọ̀wọ́ àti owó tí a ń rí lórí YouTube. | |
 | `pages.monetisation.safeguards[0]` | No earnings are shown until they are actually reported. | A kò ní fi owó-wíwọlé kankan hàn títí tí a ó fi gbà á ní ti gidi. | |
 | `pages.monetisation.safeguards[1]` | YouTube monetisation is never assumed to be approved. | A kò ní rò pé YouTube ti fọwọ́ sí ìpawówọlé láìsí ẹ̀rí. | |
+| `jobs.queued` | Queued… | Ó ń dúró… | |
+| `jobs.running` | Working… | Ó ń ṣiṣẹ́… | |
+| `jobs.succeeded` | Finished. | Ó ti parí. | |
+| `jobs.failed` | Failed: {msg} | Kò yọrí: {msg} | |
+| `jobs.blocked` | Stopped by a rule: {msg} | Òfin kan dá a dúró: {msg} | |
+| `jobs.slow` | Still running. Refresh the page later to see the result. | Ó ṣì ń ṣiṣẹ́. Tún ojú-ìwé náà ṣí lẹ́yìn náà láti rí èsì. | |
+| `episodes.subtitle` | Source videos from channels you have authorised. Discovery uses the official YouTube Data API. | Fídíò orísun láti inú àwọn ikanni tí o fún láṣẹ. A ń lo YouTube Data API ti ìjọba YouTube fúnra rẹ̀ láti wá wọn. | |
+| `episodes.sampleBanner` | Sample mode: the channels and videos below are invented test data. Nothing here came from YouTube. | Ipò àpẹẹrẹ: àwọn ikanni àti fídíò ìsàlẹ̀ yìí jẹ́ dátà ìdánwò tí a ṣẹ̀dá. Kò sí èyí tó wá láti YouTube. | |
+| `episodes.channels` | Authorised source channels | Àwọn ikanni orísun tí a fún láṣẹ | |
+| `episodes.noChannels` | No channels yet. Authorise one below. | Kò sí ikanni kankan síbẹ̀. Fún ọ̀kan láṣẹ nísàlẹ̀. | |
+| `episodes.addChannel` | Authorise a channel | Fún ikanni kan láṣẹ | |
+| `episodes.reference` | Channel link, @handle or ID | Ìjápọ̀ ikanni, @orúkọ tàbí ID | |
+| `episodes.referenceHelp` | For example: youtube.com/@channelname | Àpẹẹrẹ: youtube.com/@orukọikanni | |
+| `episodes.basis` | Basis for using this channel | Ìdí tí a fi lè lo ikanni yìí | |
+| `episodes.basisResearch` | Research only | Fún ìwádìí nìkan | |
+| `episodes.basisResearchHelp` | Videos are studied for general business ideas only. They are never translated, adapted or republished. | A ń kẹ́kọ̀ọ́ èrò òwò gbogbogbò láti inú fídíò wọ̀nyí nìkan. A kò ní túmọ̀, ṣàtúnṣe tàbí tún wọn gbé jáde láé. | |
+| `episodes.basisLicensed` | Licensed | Pẹ̀lú ìwé àṣẹ | |
+| `episodes.basisLicensedHelp` | A licence exists. It must still be verified in Rights management before any adaptation. | Ìwé àṣẹ wà. A ṣì gbọ́dọ̀ fìdí rẹ̀ múlẹ̀ nínú Ìṣàkóso ẹ̀tọ́ kí a tó ṣe àtúnṣe kankan. | |
+| `episodes.note` | Authorisation note | Àkọsílẹ̀ àṣẹ | |
+| `episodes.noteHelp` | Why you may use this channel: licence reference, permission email, or “research only”. | Ìdí tí o fi lè lo ikanni yìí: nọ́ńbà ìwé àṣẹ, ímeèlì ìyọ̀ǹda, tàbí “fún ìwádìí nìkan”. | |
+| `episodes.add` | Authorise channel | Fún ikanni láṣẹ | |
+| `episodes.adding` | Authorising… | Ó ń fún un láṣẹ… | |
+| `episodes.added` | Channel authorised. | A ti fún ikanni náà láṣẹ. | |
+| `episodes.failed` | Could not authorise the channel: {msg} | A kò lè fún ikanni náà láṣẹ: {msg} | |
+| `episodes.scan` | Scan for new videos | Wá fídíò tuntun | |
+| `episodes.pause` | Pause | Dá a dúró | |
+| `episodes.resume` | Resume | Tẹ̀síwájú | |
+| `episodes.paused` | Paused | A ti dá a dúró | |
+| `episodes.videoCount` | {n} videos | Fídíò {n} | |
+| `episodes.lastScanned` | Last scanned {when} | Ìgbà ìkẹyìn tí a wá: {when} | |
+| `episodes.neverScanned` | Not scanned yet | A kò tíì wá a rí | |
+| `episodes.sample` | SAMPLE | ÀPẸẸRẸ | |
+| `episodes.list` | Episodes | Àwọn ìpín | |
+| `episodes.search` | Search titles | Wá àkọlé | |
+| `episodes.allStatuses` | All statuses | Gbogbo ipò | |
+| `episodes.status.discovered` | Discovered | A ti rí i | |
+| `episodes.status.researched` | Researched | A ti ṣèwádìí | |
+| `episodes.status.archived` | Archived | A ti fi pamọ́ | |
+| `episodes.filter` | Filter | Ṣàsẹ́ | |
+| `episodes.colTitle` | Title | Àkọlé | |
+| `episodes.colChannel` | Channel | Ikanni | |
+| `episodes.colPublished` | Published | Ọjọ́ ìgbéjáde | |
+| `episodes.colLength` | Length | Gígùn | |
+| `episodes.colTranscript` | Transcript | Àkọsílẹ̀ ọ̀rọ̀ | |
+| `episodes.colStatus` | Status | Ipò | |
+| `episodes.possibleDuplicate` | Possible re-upload | Ó lè jẹ́ àtúngbéjáde | |
+| `episodes.none` | No episodes match. | Kò sí ìpín tó bá a mu. | |
+| `episodes.showing` | Showing {from}–{to} of {total} | À ń fi {from}–{to} hàn nínú {total} | |
+| `episodes.prev` | Previous | Ti tẹ́lẹ̀ | |
+| `episodes.next` | Next | Tó kàn | |
+| `episodes.back` | Back to episodes | Padà sí àwọn ìpín | |
+| `episodes.open` | Open the source video | Ṣí fídíò orísun | |
+| `episodes.description` | Description | Àlàyé | |
+| `episodes.noDescription` | No description. | Kò sí àlàyé. | |
+| `episodes.captions` | Captions exist on YouTube (not downloaded: that needs the owner's consent). | Àkọlé ìsàlẹ̀ wà lórí YouTube (a kò gbà á sílẹ̀: ìyẹn nílò àṣẹ olóhun). | |
+| `episodes.transcript` | Transcript | Àkọsílẹ̀ ọ̀rọ̀ | |
+| `episodes.transcriptNone` | No transcript held. Research will use the title and description only. | Kò sí àkọsílẹ̀ ọ̀rọ̀. Ìwádìí yóò lo àkọlé àti àlàyé nìkan. | |
+| `episodes.transcriptRule` | Only add a transcript you are permitted to hold: one supplied by the rights holder, your own notes, or one downloaded with the owner's consent. Transcripts are never scraped. | Fi àkọsílẹ̀ ọ̀rọ̀ tí o ní àṣẹ láti ní nìkan kún un: èyí tí olóhun ẹ̀tọ́ fúnni, àkọsílẹ̀ tìrẹ, tàbí èyí tí a gbà pẹ̀lú àṣẹ olóhun. A kò ní jí àkọsílẹ̀ ọ̀rọ̀ láé. | |
+| `episodes.transcriptHeld` | {words} words · {source} · added by {who} | Ọ̀rọ̀ {words} · {source} · {who} ló fi kún un | |
+| `episodes.permission` | Permission | Àṣẹ | |
+| `episodes.text` | Transcript text | Àkọsílẹ̀ ọ̀rọ̀ | |
+| `episodes.language` | Language | Èdè | |
+| `episodes.source` | Where it came from | Ibi tí ó ti wá | |
+| `episodes.sources.licensor_provided` | Supplied by the rights holder | Olóhun ẹ̀tọ́ ló fúnni | |
+| `episodes.sources.owner_entered` | My own notes or material | Àkọsílẹ̀ tàbí ohun tèmi | |
+| `episodes.sources.official_api` | Platform API, with the owner's consent | API ìkànnì, pẹ̀lú àṣẹ olóhun | |
+| `episodes.permissionRef` | Permission reference | Ẹ̀rí àṣẹ | |
+| `episodes.permissionHelp` | Licence number, date of the permission email, or “my own notes”. | Nọ́ńbà ìwé àṣẹ, ọjọ́ ímeèlì ìyọ̀ǹda, tàbí “àkọsílẹ̀ tèmi”. | |
+| `episodes.saveTranscript` | Save transcript | Fi àkọsílẹ̀ pamọ́ | |
+| `episodes.transcriptSaved` | Transcript saved. | A ti fi àkọsílẹ̀ ọ̀rọ̀ pamọ́. | |
+| `episodes.research` | Research | Ìwádìí | |
+| `episodes.researchHelp` | The language model studies this episode and proposes topics for original Yoruba lessons. | Ẹ̀rọ èdè yóò kẹ́kọ̀ọ́ ìpín yìí, yóò sì dábàá kókó fún ẹ̀kọ́ Yorùbá tuntun. | |
+| `episodes.runResearch` | Generate research report | Ṣe ìròyìn ìwádìí | |
+| `episodes.noReports` | No research yet. | Kò sí ìwádìí síbẹ̀. | |
+| `research.subtitle` | Turn source material and your own ideas into topics for original Yoruba lessons. You decide which topics go forward. | Sọ ohun orísun àti èrò tìrẹ di kókó fún ẹ̀kọ́ Yorùbá tuntun. Ìwọ ni yóò pinnu kókó tí yóò tẹ̀síwájú. | |
+| `research.newSubject` | Research a subject | Ṣèwádìí lórí kókó kan | |
+| `research.subjectHelp` | Independent research needs no source video, for example “Cash flow for market traders”. | Ìwádìí òmìnira kò nílò fídíò orísun, fún àpẹẹrẹ “Ìṣàn owó fún àwọn oníṣòwò ọjà”. | |
+| `research.subject` | Subject | Kókó | |
+| `research.start` | Start research | Bẹ̀rẹ̀ ìwádìí | |
+| `research.queue` | Topics awaiting your decision | Àwọn kókó tó ń dúró de ìpinnu rẹ | |
+| `research.queueEmpty` | No topics are waiting. Generate research to get proposals. | Kò sí kókó tó ń dúró. Ṣe ìwádìí láti rí àbá. | |
+| `research.approvedTitle` | Approved topics | Àwọn kókó tí a fọwọ́ sí | |
+| `research.approvedEmpty` | No approved topics yet. | Kò sí kókó tí a fọwọ́ sí síbẹ̀. | |
+| `research.approve` | Approve | Fọwọ́ sí i | |
+| `research.reject` | Reject | Kọ̀ ọ́ | |
+| `research.decisionNote` | Note (optional) | Àkíyèsí (kò pọn dandan) | |
+| `research.audience` | Audience | Àwọn olùgbọ́ | |
+| `research.angle` | Lesson angle | Ọ̀nà ẹ̀kọ́ | |
+| `research.fromReport` | From report: {subject} | Láti inú ìròyìn: {subject} | |
+| `research.reports` | Research reports | Àwọn ìròyìn ìwádìí | |
+| `research.reportsEmpty` | No reports yet. | Kò sí ìròyìn síbẹ̀. | |
+| `research.reportStatus.pending` | In progress | Ó ń lọ lọ́wọ́ | |
+| `research.reportStatus.completed` | Completed | Ó ti parí | |
+| `research.reportStatus.failed` | Failed | Kò yọrí | |
+| `research.reportStatus.blocked` | Blocked | A dí i lọ́nà | |
+| `research.cost` | Cost | Owó | |
+| `research.model` | Model | Ẹ̀rọ | |
+| `research.tokens` | Tokens | Tókìnì | |
+| `research.overlapOk` | Originality check passed. Longest run copied from the source: {n} words. | Àyẹ̀wò àìdàkọ yege. Ọ̀rọ̀ tó gùn jùlọ tí a dà kọ láti orísun: ọ̀rọ̀ {n}. | |
+| `research.overlapBad` | Copied wording detected ({n} words in a row). Topics from this report cannot be approved. Run the research again. | A rí ọ̀rọ̀ tí a dà kọ (ọ̀rọ̀ {n} léraléra). A kò lè fọwọ́ sí kókó láti inú ìròyìn yìí. Tún ìwádìí náà ṣe. | |
+| `research.summary` | Summary | Àkópọ̀ | |
+| `research.concepts` | Key concepts | Àwọn èrò pàtàkì | |
+| `research.nigeria` | Nigerian context | Àyíká Nàìjíríà | |
+| `research.topics` | Proposed topics | Àwọn kókó tí a dábàá | |
+| `research.cautions` | Cautions | Àwọn ìkìlọ̀ | |
+| `research.noTranscript` | Based on the title and description only (no transcript). | Ó dá lórí àkọlé àti àlàyé nìkan (kò sí àkọsílẹ̀ ọ̀rọ̀). | |
+| `research.withTranscript` | Based on the permitted transcript. | Ó dá lórí àkọsílẹ̀ ọ̀rọ̀ tí a ní àṣẹ fún. | |
+| `research.topicStatus.proposed` | Awaiting decision | Ó ń dúró de ìpinnu | |
+| `research.topicStatus.approved` | Approved | A fọwọ́ sí i | |
+| `research.topicStatus.rejected` | Rejected | A kọ̀ ọ́ | |
+| `research.decidedBy` | {status} by {who} | {status} láti ọwọ́ {who} | |
+| `research.decisionFailed` | The decision could not be saved: {msg} | A kò lè fi ìpinnu náà pamọ́: {msg} | |
+| `research.sampleNote` | Sample output: written offline without a language model, to test the workflow only. | Èsì àpẹẹrẹ: a kọ ọ́ láìlo ẹ̀rọ èdè, fún ìdánwò ètò iṣẹ́ nìkan. | |
+| `research.problem` | Problem | Ìṣòro | |
+| `research.back` | Back to research | Padà sí ìwádìí | |
 | `settings.title` | System settings | Ètò sístẹ́mù | |
 | `settings.subtitle` | Limits and rules the platform must obey. Every change is recorded in the audit trail. | Àwọn òpin àti òfin tí sístẹ́mù gbọ́dọ̀ tẹ̀lé. A ń kọ gbogbo àyípadà sínú àkọsílẹ̀ àyẹ̀wò. | |
 | `settings.categories.budget` | Budget and cost control | Ìṣúná àti ìṣàkóso ìnáwó | |
 | `settings.categories.storage` | Storage | Ibi ìpamọ́ | |
 | `settings.categories.publishing` | Publishing | Ìtẹ̀jáde | |
 | `settings.categories.production` | Production | Ìṣẹ̀dá | |
+| `settings.categories.discovery` | Discovery | Ìwádìí fídíò | |
 | `settings.default` | Default | Àtilẹ̀wá | |
 | `settings.custom` | Changed | A ti yí i padà | |
 | `settings.changedBy` | Last changed by {who} | Ẹni tó yí i padà kẹ́yìn: {who} | |
@@ -171,6 +287,7 @@ Source of truth: `frontend/src/lib/i18n/dictionaries.ts`. Regenerate this file a
 | `settings.labels.publishing.required_approved_videos` | Approved videos before automation | Fídíò tí a fọwọ́ sí kí aládàáṣe tó bẹ̀rẹ̀ | |
 | `settings.labels.publishing.default_visibility` | Default upload visibility | Ìrísí ìgbéjáde àtilẹ̀wá | |
 | `settings.labels.production.default_video_format` | Default video format | Ọ̀nà fídíò àtilẹ̀wá | |
+| `settings.labels.discovery.max_videos_per_scan` | Videos per channel scan | Fídíò fún ìwádìí ikanni kọ̀ọ̀kan | |
 | `settings.help.budget.monthly_limit_usd` | Maximum total provider spend per calendar month. | Àpapọ̀ owó tó pọ̀ jù tí a lè ná lórí àwọn olùpèsè ní oṣù kan. | |
 | `settings.help.budget.alert_threshold_percent` | Alert the owner when monthly spend reaches this share of the limit. | Kìlọ̀ fún ọ̀gá nígbà tí ìnáwó oṣù bá dé ìpín yìí nínú òpin. | |
 | `settings.help.budget.max_cost_per_video_usd` | A video job stops if its provider cost would exceed this. | Iṣẹ́ fídíò yóò dúró bí owó rẹ̀ bá fẹ́ kọjá iye yìí. | |
@@ -181,6 +298,7 @@ Source of truth: `frontend/src/lib/i18n/dictionaries.ts`. Regenerate this file a
 | `settings.help.publishing.required_approved_videos` | Owner-approved videos required before automatic publishing can be enabled (minimum 10). | Iye fídíò tí ọ̀gá gbọ́dọ̀ fọwọ́ sí kí ìtẹ̀jáde aládàáṣe tó ṣeé ṣe (ó kéré tán mẹ́wàá). | |
 | `settings.help.publishing.default_visibility` | Visibility for new uploads. Public is not allowed during the trial period. | Ìrísí fún fídíò tuntun. A kò gbà á láàyè fún gbogbo ènìyàn nígbà ìdánwò. | |
 | `settings.help.production.default_video_format` | Default presenter format. Hybrid is the low-cost default. | Ọ̀nà olùkọ́ àtilẹ̀wá. Àdàpọ̀ ni èyí tí owó rẹ̀ kéré. | |
+| `settings.help.discovery.max_videos_per_scan` | Most videos recorded per channel scan. Each 50 videos use about 2 of YouTube's 10,000 free daily quota units. | Iye fídíò tó pọ̀ jùlọ tí a ó kọ sílẹ̀ nínú ìwádìí ikanni kan. Fídíò 50 kọ̀ọ̀kan ń lo nǹkan bí 2 nínú 10,000 ìpín ọ̀fẹ́ YouTube lójoojúmọ́. | |
 | `settings.audit` | Audit trail | Àkọsílẹ̀ àyẹ̀wò | |
 | `settings.auditSubtitle` | Every login, change and job, newest first. Entries cannot be edited or deleted. | Gbogbo ìwọlé, àyípadà àti iṣẹ́, láti tuntun jùlọ. A kò lè ṣàtúnṣe tàbí pa àkọsílẹ̀ rẹ́. | |
 | `settings.time` | Time | Àkókò | |

@@ -44,3 +44,30 @@ export function formatUsd(amount: string | number, locale: Locale): string {
     currency: "USD",
   }).format(Number(amount));
 }
+
+export function formatDuration(seconds: number | null): string {
+  if (seconds === null || seconds === undefined) return "—";
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = seconds % 60;
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return h > 0 ? `${h}:${pad(m)}:${pad(s)}` : `${m}:${pad(s)}`;
+}
+
+export function formatDate(iso: string, locale: Locale): string {
+  const d = new Date(iso);
+  if (locale === "yo") {
+    return new Intl.DateTimeFormat("en-GB", { day: "2-digit", month: "2-digit", year: "numeric", timeZone: "Africa/Lagos" }).format(d);
+  }
+  return new Intl.DateTimeFormat("en-NG", { dateStyle: "medium", timeZone: "Africa/Lagos" }).format(d);
+}
+
+/** Small amounts (research costs a few cents) keep 4 decimals so they are not shown as $0.00. */
+export function formatUsdPrecise(amount: string | number, locale: Locale): string {
+  return new Intl.NumberFormat(locale === "yo" ? "en-NG" : "en-NG", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 4,
+  }).format(Number(amount));
+}

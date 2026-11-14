@@ -13,7 +13,7 @@ export type PageKey =
   | "monetisation"
   | "settings";
 
-export type PlaceholderKey = Exclude<PageKey, "overview" | "settings">;
+export type PlaceholderKey = Exclude<PageKey, "overview" | "settings" | "episodes" | "research">;
 
 export type NavGroup = "main" | "content" | "production" | "distribution" | "business" | "system";
 
@@ -32,7 +32,7 @@ export const NAV: { key: PageKey; href: string; group: NavGroup; phase: number }
   { key: "settings", href: "/settings", group: "system", phase: 2 },
 ];
 
-export const BUILT_PAGES: PageKey[] = ["overview", "settings"];
+export const BUILT_PAGES: PageKey[] = ["overview", "episodes", "research", "settings"];
 
 export function phaseOf(key: PageKey): number {
   return NAV.find((n) => n.key === key)!.phase;

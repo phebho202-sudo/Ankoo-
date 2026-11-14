@@ -126,3 +126,107 @@ export type User = {
   role: string;
   preferred_language: "en" | "yo";
 };
+
+// ---- Phase 3: discovery and research
+export type Channel = {
+  id: string;
+  platform: string;
+  external_id: string;
+  title: string;
+  handle: string | null;
+  authorisation_basis: "research_only" | "licensed";
+  authorisation_note: string;
+  authorised_by: string;
+  authorised_at: string;
+  is_active: boolean;
+  is_sample: boolean;
+  episode_count: number;
+  last_scanned_at: string | null;
+};
+
+export type EpisodeStatus = "discovered" | "researched" | "archived";
+
+export type EpisodeSummary = {
+  id: string;
+  channel_id: string;
+  channel_title: string;
+  platform: string;
+  external_id: string;
+  title: string;
+  published_at: string;
+  duration_seconds: number | null;
+  url: string;
+  thumbnail_url: string | null;
+  has_captions: boolean | null;
+  status: EpisodeStatus;
+  is_sample: boolean;
+  possible_duplicate_of_id: string | null;
+  has_transcript: boolean;
+};
+
+export type ReportStatus = "pending" | "completed" | "failed" | "blocked";
+export type TopicStatus = "proposed" | "approved" | "rejected";
+
+export type TopicItem = {
+  id: string;
+  report_id: string;
+  title: string;
+  description: string;
+  audience_fit: string | null;
+  lesson_angle: string | null;
+  status: TopicStatus;
+  decided_by: string | null;
+  decided_at: string | null;
+  decision_note: string | null;
+  is_sample: boolean;
+};
+
+export type ReportSummary = {
+  id: string;
+  episode_id: string | null;
+  subject: string;
+  status: ReportStatus;
+  provider: string | null;
+  model: string | null;
+  is_sample: boolean;
+  cost_usd: string;
+  overlap_flagged: boolean;
+  max_verbatim_overlap_words: number;
+  used_transcript: boolean;
+  error: string | null;
+  job_id: string | null;
+  requested_by: string;
+  created_at: string;
+  topic_count: number;
+};
+
+export type ReportDetail = ReportSummary & {
+  summary: string | null;
+  key_concepts: { name: string; explanation: string }[];
+  nigerian_context: string | null;
+  cautions: string[];
+  input_tokens: number;
+  output_tokens: number;
+  topics: TopicItem[];
+};
+
+export type EpisodeDetail = EpisodeSummary & {
+  description: string;
+  transcript: {
+    language: string;
+    source: "licensor_provided" | "owner_entered" | "official_api";
+    permission_reference: string;
+    word_count: number;
+    added_by: string;
+    created_at: string;
+  } | null;
+  reports: ReportSummary[];
+};
+
+export type JobInfo = {
+  id: string;
+  task_name: string;
+  status: "queued" | "running" | "succeeded" | "failed" | "blocked";
+  error: string | null;
+  result: Record<string, unknown> | null;
+};
