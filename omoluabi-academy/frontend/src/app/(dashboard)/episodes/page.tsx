@@ -5,6 +5,7 @@ import type { Channel, EpisodeSummary, Overview } from "@/lib/api";
 import { fmt, formatDate, formatDateTime, formatDuration } from "@/lib/i18n/format";
 import { getI18n } from "@/lib/i18n/server";
 import { authedFetch } from "@/lib/session";
+import { ChannelBasisForm } from "@/components/RightsForms";
 import { AddChannelForm, ScanButton } from "./ChannelForms";
 
 export const dynamic = "force-dynamic";
@@ -76,6 +77,9 @@ export default async function EpisodesPage({
                     {!c.is_active && <Badge tone="red">{e.paused}</Badge>}
                   </div>
                   <p className="mt-1 text-sm text-charcoal">“{c.authorisation_note}”</p>
+                  <div className="mt-1">
+                    <ChannelBasisForm t={t.rights} channelId={c.id} current={c.authorisation_basis} labels={e} />
+                  </div>
                   <p className="mt-1 text-xs text-charcoal-400">
                     {fmt(e.videoCount, { n: c.episode_count })} ·{" "}
                     {c.last_scanned_at

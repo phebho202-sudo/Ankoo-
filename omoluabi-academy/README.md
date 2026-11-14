@@ -4,7 +4,7 @@ Practical business education in natural Nigerian Yoruba. This is the software th
 the academy's research, rights management, Yoruba scripting, voice and video production,
 publishing and monetisation, with a human approval gate at every risky step.
 
-> **Status: Phase 3 (discovery and research) complete, awaiting owner approval before Phase 4.**
+> **Status: Phase 4 (rights management) complete, awaiting owner approval before Phase 5.**
 > See [`docs/PHASE_STATUS.md`](docs/PHASE_STATUS.md) for what works, what doesn't yet, and test results.
 
 ## Safety rules built into the platform
@@ -18,6 +18,7 @@ publishing and monetisation, with a human approval gate at every risky step.
 | Replaceable services | Every external service sits behind an interface in `app/adapters/base.py` |
 | Capped retries | Worker retries are bounded by `TASK_MAX_RETRIES` (max 10) |
 | Safe production start | The API refuses to start in production with default passwords or a weak automation token |
+| No adaptation without verified rights | `require_rights()` gate: a licence must be verified by the owner against the uploaded signed document, be in force, and grant every needed right ("unclear" always blocks). Research-only channels and sample episodes can never be adapted or published. Every decision is recorded (`app/services/rights.py`). |
 | Never exceed the spending limit | Each paid call reserves its worst-case cost first, under a database lock, and is blocked if the monthly limit would be exceeded (`app/services/budget.py`) |
 | No duplicate videos | Unique (platform, video ID) in the database, plus re-upload detection by content fingerprint |
 | No copying the source | Research is written in our own words, and any run of 12+ words copied from the source flags the report and blocks approval of its topics |
@@ -26,8 +27,7 @@ publishing and monetisation, with a human approval gate at every risky step.
 | No early auto-publishing | Automatic publishing cannot be switched on until the publishing pipeline exists and 10 videos are owner-approved |
 | Secure owner login | scrypt-hashed passwords, 5-attempt lockout, expiring sessions stored only as hashes, httpOnly cookies |
 
-Rights verification, budget limits, duplicate prevention and publishing gates are added in
-Phases 3–8, as specified.
+Publishing gates and automatic publishing rules arrive in Phase 8, as specified.
 
 ## Layout
 

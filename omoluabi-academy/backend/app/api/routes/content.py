@@ -130,7 +130,9 @@ class ChannelIn(BaseModel):
 
 
 class ChannelPatch(BaseModel):
-    is_active: bool
+    is_active: bool | None = None
+    authorisation_basis: AuthorisationBasis | None = None
+    authorisation_note: str | None = Field(default=None, max_length=2000)
 
 
 @router.get("/channels")
@@ -168,7 +170,12 @@ def patch_channel(
     ch = db.get(SourceChannel, channel_id)
     if ch is None:
         raise NotFoundError("Channel not found")
-    discovery.set_channel_active(db, ch, body.is_active, p.actor)
+    if body.is_active is not None:
+        discovery.set_channel_active(db, ch, body.is_active, p.actor)
+    if body.authorisation_basis is not None:
+        discovery.set_channel_basis(
+            db, ch, body.authorisation_basis, body.authorisation_note or "", p.actor
+        )
     return channel_out(ch)
 
 

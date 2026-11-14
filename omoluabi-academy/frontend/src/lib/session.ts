@@ -18,12 +18,14 @@ export async function getSessionToken(): Promise<string | undefined> {
 export async function authedFetch<T>(path: string, init?: RequestInit): Promise<ApiResult<T>> {
   const token = await getSessionToken();
   if (!token) redirect("/login");
+  // JSON bodies are strings; FormData (file uploads) must keep its own multipart header.
+  const isJson = typeof init?.body === "string";
   const result = await fetchJson<T>(path, {
     ...init,
     headers: {
       ...(init?.headers ?? {}),
       Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
+      ...(isJson ? { "Content-Type": "application/json" } : {}),
     },
   });
   if (!result.ok && result.httpStatus === 401) redirect("/login?expired=1");

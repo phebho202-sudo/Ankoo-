@@ -151,6 +151,39 @@ spend plus open reservations plus this estimate stays within the monthly limit. 
 call the reservation is replaced by the actual cost (or released on failure). Paid jobs are
 never retried automatically.
 
+### Rights management (Phase 4)
+
+| Table | Purpose | Key rules |
+|---|---|---|
+| `licences` | The owner's record of a signed agreement | Reference, licensor, `effective_from`, **required** `expires_at`. Four rights (`translation`, `adaptation`, `commercial`, `distribution`), each `granted` / `not_granted` / `unclear`. Permitted platforms and languages, territory, attribution. Signed document (storage key, SHA-256, size, type). Status `draft` → `verified` → `revoked`. |
+| `licence_episodes` | Scope | A licence covers a whole channel (`licences.channel_id`) and/or specific episodes. |
+| `rights_checks` | Every rights decision made | Episode, purpose, platform, allowed, licence used, reasons, who, when. |
+
+**Verification** is a deliberate owner act. It requires the document, a scope, no
+`unclear` right, platforms when distribution is granted, a future expiry, and an explicit
+"I have checked every detail against the signed document" confirmation. Any material edit,
+scope change or new document returns the licence to `draft`. A revoked licence can't be edited.
+
+**The gate.** `check_rights(episode, purpose, platform)` returns *allowed* only when:
+* the channel's basis is `licensed` (research-only channels never qualify),
+* for publishing, the episode is not sample data and the platform is permitted,
+* at least one covering licence is verified, in force (not expired, not yet effective, or
+  revoked), permits Yoruba, and grants every right the purpose needs
+  (adaptation: translation + adaptation; publish: + commercial + distribution).
+
+Otherwise it returns machine-readable reasons, which the dashboard shows in English or
+Yoruba. `require_rights()` raises on refusal; Phases 5–8 call it before scripting,
+production and every upload, so an expired or revoked licence stops the pipeline.
+
+**Monitoring.** The `beat` scheduler runs `rights.expiry_sweep` daily at 06:10 Lagos time.
+It writes `licence.expiring_soon` once, 30 days before expiry, and `licence.expired` once
+on expiry. The Overview and Rights pages show the counts.
+
+**Originality** (`app/services/originality.py`): the longest word-for-word run shared
+between a text and each source's description and permitted transcript, with the copied
+passage quoted. 12+ words is flagged. It's used by research, by the Rights page's
+checker, and later by Yoruba scripts.
+
 Later phases add: source channels, episodes, licences and rights, research reports,
 scripts and revisions, pronunciation dictionary, voice/video assets, publications,
 platform accounts and tokens, budgets and spend, and monetisation tables.

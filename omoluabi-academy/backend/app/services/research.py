@@ -7,7 +7,6 @@ needs verified rights (Phase 4). The owner approves or rejects each proposed top
 
 from __future__ import annotations
 
-import re
 from decimal import Decimal
 from typing import Any
 
@@ -28,12 +27,11 @@ from app.models import (
     Transcript,
     TranscriptSource,
 )
-from app.services import audit, budget
+from app.services import audit, budget, originality
 
 MAX_TRANSCRIPT_CHARS = 200_000  # rejected at entry, so nothing is ever silently truncated
 MAX_OUTPUT_TOKENS = 8000
-OVERLAP_FLAG_WORDS = 12  # a run this long copied from the source is flagged for review
-_NGRAM = 6
+OVERLAP_FLAG_WORDS = originality.FLAG_WORDS
 
 SYSTEM_PROMPT = """\
 You are the research analyst for OMỌLÚÀBÍ BUSINESS ACADEMY, which teaches practical business \
@@ -168,25 +166,8 @@ def save_transcript(
 
 
 # ---------------------------------------------------------------- overlap check
-def _words(text: str) -> list[str]:
-    return re.findall(r"[a-z0-9']+", text.lower())
-
-
-def longest_verbatim_overlap(source: str, generated: str) -> int:
-    """Length in words of the longest run in ``generated`` copied from ``source`` (>= 6)."""
-    src = _words(source)
-    if len(src) < _NGRAM:
-        return 0
-    grams = {tuple(src[i : i + _NGRAM]) for i in range(len(src) - _NGRAM + 1)}
-    gen = _words(generated)
-    best = run = 0
-    for i in range(len(gen) - _NGRAM + 1):
-        if tuple(gen[i : i + _NGRAM]) in grams:
-            run += 1
-            best = max(best, run + _NGRAM - 1)
-        else:
-            run = 0
-    return best
+# (implemented in app.services.originality; re-exported for existing callers)
+longest_verbatim_overlap = originality.longest_verbatim_overlap
 
 
 def _report_text(r: ReportOut) -> str:

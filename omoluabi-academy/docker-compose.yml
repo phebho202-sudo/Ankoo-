@@ -66,6 +66,15 @@ services:
       migrate: { condition: service_completed_successfully }
       redis: { condition: service_healthy }
 
+  beat:
+    # Scheduler for periodic jobs (daily licence-expiry check). Run exactly one.
+    build: ./backend
+    command: ["celery", "-A", "app.worker.celery_app", "beat", "-l", "info", "--schedule", "/tmp/celerybeat-schedule"]
+    environment: *backend-env
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+      redis: { condition: service_healthy }
+
   frontend:
     build: ./frontend
     environment:

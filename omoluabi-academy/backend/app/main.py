@@ -6,7 +6,7 @@ from collections.abc import Awaitable, Callable
 from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.routes import auth, content, health, overview, system
+from app.api.routes import auth, content, health, overview, rights, system
 from app.api.routes import settings as settings_routes
 from app.core.config import get_settings
 from app.core.errors import install_error_handlers
@@ -55,6 +55,7 @@ def create_app() -> FastAPI:
     app.include_router(auth.router)
     app.include_router(content.router)
     app.include_router(overview.router)
+    app.include_router(rights.router)
     app.include_router(settings_routes.router)
     app.include_router(system.router)
     log.info("api started", extra={"context": {"provider_mode": settings.provider_mode.value}})

@@ -44,7 +44,16 @@ describe("dictionaries", () => {
     const same = [...enLeaves].filter(([p, v]) => yoLeaves.get(p) === v).map(([p]) => p);
     // Only proper names and technical terms may stay identical.
     expect(same.sort()).toEqual(
-      ["common.appName", "common.english", "common.yoruba", "overview.api"].sort(),
+      [
+        "common.appName",
+        "common.english",
+        "common.yoruba",
+        "overview.api",
+        "rights.platformNames.youtube",
+        "rights.platformNames.facebook",
+        "rights.platformNames.instagram",
+        "rights.platformNames.tiktok",
+      ].sort(),
     );
   });
 
@@ -52,7 +61,7 @@ describe("dictionaries", () => {
     for (const item of NAV) {
       expect(en.nav[item.key]).toBeTruthy();
       expect(yo.nav[item.key]).toBeTruthy();
-      if (!["overview", "settings", "episodes", "research"].includes(item.key)) {
+      if (!["overview", "settings", "episodes", "research", "rights"].includes(item.key)) {
         const k = item.key as keyof typeof en.pages;
         expect(yo.pages[k].safeguards.length).toBe(en.pages[k].safeguards.length);
       }

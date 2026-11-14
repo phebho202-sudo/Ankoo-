@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { StatusPill } from "@/components/StatusPill";
 import { Alert, Card, PageHeader } from "@/components/ui";
 import { getReadiness, type Overview } from "@/lib/api";
@@ -110,7 +111,23 @@ export default async function OverviewPage() {
             </ul>
           </Card>
 
-          <Card title={o.recent} className="lg:col-span-3">
+          <Card title={o.rightsCard}>
+            <dl className="grid grid-cols-2 gap-3">
+              {(["active", "draft", "expiring_soon", "expired"] as const).map((k) => (
+                <div key={k} className="rounded-md bg-cream-50 px-3 py-2">
+                  <dt className="text-xs text-charcoal-400">{t.rights.summary[k]}</dt>
+                  <dd className={`text-xl font-semibold tabular-nums ${(k === "expiring_soon" || k === "expired") && ov.data.rights[k] > 0 ? "text-red-800" : "text-navy"}`}>
+                    {ov.data.rights[k]}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+            <Link href="/rights" className="mt-3 inline-block text-sm text-navy underline decoration-gold underline-offset-4">
+              {t.nav.rights} →
+            </Link>
+          </Card>
+
+          <Card title={o.recent} className="lg:col-span-2">
             {ov.data.recent_activity.length === 0 ? (
               <p className="text-sm text-charcoal-400">{o.noActivity}</p>
             ) : (

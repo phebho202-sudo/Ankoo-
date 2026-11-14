@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ResearchRequestForm, TranscriptForm } from "@/components/ResearchForms";
+import { RightsCheckForm } from "@/components/RightsForms";
 import { Alert, Badge, Card, PageHeader } from "@/components/ui";
-import type { EpisodeDetail } from "@/lib/api";
+import type { EpisodeDetail, RightsCheckRow } from "@/lib/api";
+import { describeReason } from "@/lib/rights";
 import { fmt, formatDate, formatDateTime, formatDuration, formatUsdPrecise } from "@/lib/i18n/format";
 import { getI18n } from "@/lib/i18n/server";
 import { authedFetch } from "@/lib/session";
@@ -13,7 +15,11 @@ export default async function EpisodePage({ params }: { params: Promise<{ id: st
   const { id } = await params;
   const { locale, t } = await getI18n();
   const e = t.episodes;
-  const r = await authedFetch<EpisodeDetail>(`/api/v1/episodes/${encodeURIComponent(id)}`);
+  const [r, checks] = await Promise.all([
+    authedFetch<EpisodeDetail>(`/api/v1/episodes/${encodeURIComponent(id)}`),
+    authedFetch<{ checks: RightsCheckRow[] }>(`/api/v1/rights/checks?episode_id=${encodeURIComponent(id)}&limit=1`),
+  ]);
+  const last = checks.ok ? checks.data.checks[0] : undefined;
   if (!r.ok && r.httpStatus === 404) notFound();
   if (!r.ok) return <Alert tone="error">{t.common.unreachable}</Alert>;
   const ep = r.data;
@@ -80,6 +86,28 @@ export default async function EpisodePage({ params }: { params: Promise<{ id: st
           </Card>
         </div>
 
+        <div className="space-y-5">
+        <Card title={t.nav.rights}>
+          {last ? (
+            <div className={`mb-3 rounded-md border px-3 py-2 text-xs ${last.allowed ? "border-emerald-300 bg-emerald-50 text-emerald-900" : "border-red-300 bg-red-50 text-red-900"}`}>
+              <p className="font-semibold">
+                {last.allowed ? "✓" : "✕"} {t.rights.purposes[last.purpose]}
+                {last.platform ? ` · ${(t.rights.platformNames as Record<string, string>)[last.platform] ?? last.platform}` : ""}
+              </p>
+              {!last.allowed && (
+                <ul className="mt-1 list-disc pl-4">
+                  {last.reasons.map((x, i) => (
+                    <li key={i}>{describeReason(x, t.rights)}</li>
+                  ))}
+                </ul>
+              )}
+              <p className="mt-1 opacity-75">{fmt(t.rights.lastCheck, { when: formatDateTime(last.checked_at, locale) })}</p>
+            </div>
+          ) : (
+            <p className="mb-3 text-sm text-charcoal-400">{t.rights.noChecks}</p>
+          )}
+          <RightsCheckForm t={t.rights} episodeId={ep.id} />
+        </Card>
         <Card title={e.research}>
           <p className="mb-3 text-sm text-charcoal-400">{e.researchHelp}</p>
           <ResearchRequestForm episodeId={ep.id} labels={{ start: e.runResearch }} jobLabels={t.jobs} />
@@ -101,6 +129,7 @@ export default async function EpisodePage({ params }: { params: Promise<{ id: st
             ))}
           </ul>
         </Card>
+        </div>
       </div>
     </>
   );

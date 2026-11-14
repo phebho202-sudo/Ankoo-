@@ -98,6 +98,7 @@ export type Overview = {
   recent_activity: AuditEntry[];
   providers: ProviderStatus[];
   setup_checklist: { key: string; done: boolean }[];
+  rights: Record<"active" | "draft" | "expiring_soon" | "expired" | "revoked" | "not_yet_effective", number>;
 };
 
 export type SettingKind = "decimal" | "int" | "bool" | "choice";
@@ -229,4 +230,68 @@ export type JobInfo = {
   status: "queued" | "running" | "succeeded" | "failed" | "blocked";
   error: string | null;
   result: Record<string, unknown> | null;
+};
+
+// ---- Phase 4: rights
+export type GrantState = "granted" | "not_granted" | "unclear";
+export type RightName = "translation" | "adaptation" | "commercial" | "distribution";
+export type LicenceState = "draft" | "active" | "expired" | "revoked" | "not_yet_effective";
+export type Reason = { code: string; [k: string]: unknown };
+
+export type LicenceSummary = {
+  id: string;
+  licence_reference: string;
+  licensor_name: string;
+  status: "draft" | "verified" | "revoked";
+  state: LicenceState;
+  effective_from: string;
+  expires_at: string;
+  translation: GrantState;
+  adaptation: GrantState;
+  commercial: GrantState;
+  distribution: GrantState;
+  permitted_platforms: string[];
+  permitted_languages: string[];
+  channel_id: string | null;
+  channel_title: string | null;
+  episode_count: number;
+  has_document: boolean;
+  verified_by: string | null;
+  verified_at: string | null;
+  updated_at: string;
+};
+
+export type LicenceDetail = LicenceSummary & {
+  licensor_contact: string | null;
+  description: string | null;
+  signed_on: string | null;
+  territory: string | null;
+  attribution_required: boolean;
+  attribution_text: string | null;
+  episodes: { id: string; title: string; is_sample: boolean }[];
+  document: { filename: string; size: number; sha256: string; content_type: string } | null;
+  problems: string[];
+  revoked_by: string | null;
+  revoked_at: string | null;
+  revoked_reason: string | null;
+  created_by: string;
+};
+
+export type RightsSummary = Record<"active" | "draft" | "expiring_soon" | "expired" | "revoked" | "not_yet_effective", number>;
+
+export type RightsDecision = {
+  allowed: boolean;
+  purpose: "adaptation" | "publish";
+  platform: string | null;
+  licence_id: string | null;
+  reasons: Reason[];
+  is_sample: boolean;
+};
+
+export type RightsCheckRow = RightsDecision & { id: string; episode_id: string | null; checked_by: string; checked_at: string };
+
+export type OriginalityResult = {
+  flag_words: number;
+  flagged: boolean;
+  matches: { episode_id: string; episode_title: string; used_transcript: boolean; words: number; excerpt: string; flagged: boolean }[];
 };

@@ -98,6 +98,7 @@ Source of truth: `frontend/src/lib/i18n/dictionaries.ts`. Regenerate this file a
 | `overview.checklist.youtube_key` | YouTube Data API key added | A ti fi kọ́kọ́rọ́ YouTube Data API kún un | |
 | `overview.checklist.live_mode` | Live mode switched on | A ti tan ipò gidi | |
 | `overview.providers` | Service providers | Àwọn olùpèsè iṣẹ́ | |
+| `overview.rightsCard` | Licences | Àwọn ìwé àṣẹ | |
 | `overview.capability.llm` | Language model | Ẹ̀rọ èdè | |
 | `overview.capability.tts` | Voice (TTS) | Ohùn (TTS) | |
 | `overview.capability.avatar` | Avatar presenter | Olùkọ́ avatar | |
@@ -254,6 +255,126 @@ Source of truth: `frontend/src/lib/i18n/dictionaries.ts`. Regenerate this file a
 | `research.sampleNote` | Sample output: written offline without a language model, to test the workflow only. | Èsì àpẹẹrẹ: a kọ ọ́ láìlo ẹ̀rọ èdè, fún ìdánwò ètò iṣẹ́ nìkan. | |
 | `research.problem` | Problem | Ìṣòro | |
 | `research.back` | Back to research | Padà sí ìwádìí | |
+| `rights.subtitle` | Licences for adapting source material. A licensed adaptation is blocked unless a verified, current licence grants every right it needs. | Ìwé àṣẹ fún ṣíṣe àtúnṣe ohun orísun. A ó dí àtúnṣe tí ó nílò ìwé àṣẹ lọ́nà àyàfi tí ìwé àṣẹ tí a fìdí rẹ̀ múlẹ̀, tí kò sì tíì parí, bá fúnni ní gbogbo ẹ̀tọ́ tí ó nílò. | |
+| `rights.disclaimer` | This system records and enforces the licence details you enter. It does not judge whether a contract is valid. Have a lawyer review any licence before you rely on it. | Sístẹ́mù yìí ń kọ àlàyé ìwé àṣẹ tí o tẹ̀ sí i sílẹ̀, ó sì ń mú un ṣẹ. Kò lè sọ bóyá àdéhùn kan bófin mu. Jẹ́ kí agbẹjọ́rò ṣàyẹ̀wò ìwé àṣẹ kí o tó gbẹ́kẹ̀lé e. | |
+| `rights.summary.active` | Active | Ó ń ṣiṣẹ́ | |
+| `rights.summary.draft` | Drafts | Àkọ́pamọ́ | |
+| `rights.summary.expiring_soon` | Expiring within 30 days | Yóò parí láàrin ọjọ́ 30 | |
+| `rights.summary.expired` | Expired | Ó ti parí | |
+| `rights.summary.revoked` | Revoked | A ti fagi lé e | |
+| `rights.licences` | Licences | Àwọn ìwé àṣẹ | |
+| `rights.none` | No licences recorded. | Kò sí ìwé àṣẹ tí a kọ sílẹ̀. | |
+| `rights.newLicence` | Record a licence | Kọ ìwé àṣẹ sílẹ̀ | |
+| `rights.colReference` | Reference | Nọ́ńbà | |
+| `rights.colLicensor` | Licensor | Olùfúnni-láṣẹ | |
+| `rights.colScope` | Covers | Ohun tí ó bò | |
+| `rights.colRights` | Rights | Àwọn ẹ̀tọ́ | |
+| `rights.colPlatforms` | Platforms | Àwọn ìkànnì | |
+| `rights.colExpires` | Expires | Ọjọ́ ìparí | |
+| `rights.colState` | State | Ipò | |
+| `rights.state.draft` | Draft (not verified) | Àkọ́pamọ́ (a kò tíì fìdí rẹ̀ múlẹ̀) | |
+| `rights.state.active` | Active | Ó ń ṣiṣẹ́ | |
+| `rights.state.expired` | Expired | Ó ti parí | |
+| `rights.state.revoked` | Revoked | A ti fagi lé e | |
+| `rights.state.not_yet_effective` | Not yet in force | Kò tíì bẹ̀rẹ̀ | |
+| `rights.wholeChannel` | Whole channel: {channel} | Gbogbo ikanni: {channel} | |
+| `rights.episodesCount` | {n} episodes | Ìpín {n} | |
+| `rights.noScope` | Nothing yet | Kò sí nǹkan síbẹ̀ | |
+| `rights.rightNames.translation` | Translation | Ìtumọ̀ | |
+| `rights.rightNames.adaptation` | Adaptation | Àtúnṣe | |
+| `rights.rightNames.commercial` | Commercial use | Lílò fún òwò | |
+| `rights.rightNames.distribution` | Distribution | Ìpínkiri | |
+| `rights.grant.granted` | Granted | A fún wa | |
+| `rights.grant.not_granted` | Not granted | A kò fún wa | |
+| `rights.grant.unclear` | Unclear | Kò ṣe kedere | |
+| `rights.platformNames.youtube` | YouTube | YouTube | |
+| `rights.platformNames.facebook` | Facebook | Facebook | |
+| `rights.platformNames.instagram` | Instagram | Instagram | |
+| `rights.platformNames.tiktok` | TikTok | TikTok | |
+| `rights.form.details` | Licence details | Àlàyé ìwé àṣẹ | |
+| `rights.form.reference` | Licence reference | Nọ́ńbà ìwé àṣẹ | |
+| `rights.form.licensor` | Licensor (rights holder) | Olùfúnni-láṣẹ (olóhun ẹ̀tọ́) | |
+| `rights.form.contact` | Licensor contact | Ọ̀nà láti kàn sí olùfúnni-láṣẹ | |
+| `rights.form.description` | Notes | Àkíyèsí | |
+| `rights.form.signedOn` | Signed on | Ọjọ́ tí a fọwọ́ sí i | |
+| `rights.form.effectiveFrom` | In force from | Yóò bẹ̀rẹ̀ láti | |
+| `rights.form.expiresAt` | Expires on | Yóò parí ní | |
+| `rights.form.rights` | Rights granted | Àwọn ẹ̀tọ́ tí a fúnni | |
+| `rights.form.rightsHelp` | Choose “Unclear” if the document does not say plainly. Unclear always blocks. | Yan “Kò ṣe kedere” bí ìwé náà kò bá sọ ọ́ ní gbangba. “Kò ṣe kedere” máa ń dí i lọ́nà nígbà gbogbo. | |
+| `rights.form.platforms` | Permitted platforms | Àwọn ìkànnì tí a gbà láàyè | |
+| `rights.form.languages` | Permitted languages (codes, comma-separated) | Àwọn èdè tí a gbà láàyè (kóòdù, pẹ̀lú kọ́mà láàrin wọn) | |
+| `rights.form.territory` | Territory | Agbègbè | |
+| `rights.form.attributionRequired` | The licensor must be credited | A gbọ́dọ̀ dárúkọ olùfúnni-láṣẹ | |
+| `rights.form.attributionText` | Credit text | Ọ̀rọ̀ ìdárúkọ | |
+| `rights.form.save` | Save licence | Fi ìwé àṣẹ pamọ́ | |
+| `rights.form.saved` | Saved. | A ti fi pamọ́. | |
+| `rights.form.editResets` | Changing a verified licence returns it to draft until you verify it again. | Yíyí ìwé àṣẹ tí a ti fìdí rẹ̀ múlẹ̀ padà yóò dá a padà sí àkọ́pamọ́ títí tí o ó fi tún fìdí rẹ̀ múlẹ̀. | |
+| `rights.form.failed` | Could not save: {msg} | A kò lè fi pamọ́: {msg} | |
+| `rights.document` | Signed document | Ìwé tí a fọwọ́ sí | |
+| `rights.noDocument` | No document uploaded. | A kò tíì gbé ìwé kankan sókè. | |
+| `rights.upload` | Upload signed licence (PDF, PNG or JPEG, up to 10 MB) | Gbé ìwé àṣẹ tí a fọwọ́ sí sókè (PDF, PNG tàbí JPEG, kò ju 10 MB lọ) | |
+| `rights.uploadButton` | Upload | Gbé e sókè | |
+| `rights.uploaded` | Document uploaded. | A ti gbé ìwé náà sókè. | |
+| `rights.openDocument` | Open document | Ṣí ìwé náà | |
+| `rights.fingerprint` | SHA-256 fingerprint | Àmì ìdánimọ̀ SHA-256 | |
+| `rights.scope` | What this licence covers | Ohun tí ìwé àṣẹ yìí bò | |
+| `rights.scopeChannel` | Whole channel | Gbogbo ikanni | |
+| `rights.scopeNoChannel` | No whole channel | Kì í ṣe gbogbo ikanni | |
+| `rights.scopeEpisodes` | Specific episodes | Àwọn ìpín pàtó | |
+| `rights.saveScope` | Save coverage | Fi ohun tí ó bò pamọ́ | |
+| `rights.verification` | Verification | Ìfìdímúlẹ̀ | |
+| `rights.problemsTitle` | Before this licence can be verified: | Kí a tó lè fìdí ìwé àṣẹ yìí múlẹ̀: | |
+| `rights.problems.document_missing` | Upload the signed document. | Gbé ìwé tí a fọwọ́ sí sókè. | |
+| `rights.problems.scope_missing` | Choose the channel or episodes it covers. | Yan ikanni tàbí àwọn ìpín tí ó bò. | |
+| `rights.problems.translation_unclear` | Translation rights are marked unclear. | Ẹ̀tọ́ ìtumọ̀ kò ṣe kedere. | |
+| `rights.problems.adaptation_unclear` | Adaptation rights are marked unclear. | Ẹ̀tọ́ àtúnṣe kò ṣe kedere. | |
+| `rights.problems.commercial_unclear` | Commercial rights are marked unclear. | Ẹ̀tọ́ òwò kò ṣe kedere. | |
+| `rights.problems.distribution_unclear` | Distribution rights are marked unclear. | Ẹ̀tọ́ ìpínkiri kò ṣe kedere. | |
+| `rights.problems.platforms_missing` | Distribution is granted but no platform is listed. | A fúnni ní ẹ̀tọ́ ìpínkiri ṣùgbọ́n kò sí ìkànnì kankan tí a kọ sílẹ̀. | |
+| `rights.problems.languages_missing` | List at least one permitted language. | Kọ èdè kan ó kéré tán tí a gbà láàyè. | |
+| `rights.problems.already_expired` | The expiry date has passed. | Ọjọ́ ìparí ti kọjá. | |
+| `rights.problems.attribution_text_missing` | Credit is required but no credit text is given. | A gbọ́dọ̀ dárúkọ olùfúnni-láṣẹ ṣùgbọ́n kò sí ọ̀rọ̀ ìdárúkọ. | |
+| `rights.confirm` | I have checked every detail above against the signed document. | Mo ti fi gbogbo àlàyé òkè yìí wé ìwé tí a fọwọ́ sí. | |
+| `rights.verify` | Verify licence | Fìdí ìwé àṣẹ múlẹ̀ | |
+| `rights.verifiedBy` | Verified by {who} on {when} | {who} ló fìdí rẹ̀ múlẹ̀ ní {when} | |
+| `rights.revoke` | Revoke licence | Fagi lé ìwé àṣẹ | |
+| `rights.revokeReason` | Reason for revoking | Ìdí tí a fi ń fagi lé e | |
+| `rights.revokedBy` | Revoked by {who} on {when}: {reason} | {who} ló fagi lé e ní {when}: {reason} | |
+| `rights.back` | Back to rights | Padà sí ẹ̀tọ́ | |
+| `rights.check` | Check rights for an episode | Ṣàyẹ̀wò ẹ̀tọ́ fún ìpín kan | |
+| `rights.checkHelp` | Every check is recorded in the audit trail. | A ń kọ àyẹ̀wò kọ̀ọ̀kan sínú àkọsílẹ̀ àyẹ̀wò. | |
+| `rights.episode` | Episode | Ìpín | |
+| `rights.purpose` | Use | Ìlò | |
+| `rights.purposes.adaptation` | Adapt into Yoruba | Ṣe àtúnṣe sí Yorùbá | |
+| `rights.purposes.publish` | Publish | Tẹ̀ ẹ́ jáde | |
+| `rights.platform` | Platform | Ìkànnì | |
+| `rights.runCheck` | Check | Ṣàyẹ̀wò | |
+| `rights.allowed` | Allowed. Licence {licence} covers this use. | A gbà á láàyè. Ìwé àṣẹ {licence} bo ìlò yìí. | |
+| `rights.denied` | Not allowed: | A kò gbà á láàyè: | |
+| `rights.reasons.no_licence` | No licence covers this episode. | Kò sí ìwé àṣẹ tí ó bo ìpín yìí. | |
+| `rights.reasons.research_only_channel` | The channel “{channel}” is authorised for research only. | A fún ikanni “{channel}” láṣẹ fún ìwádìí nìkan. | |
+| `rights.reasons.sample_episode` | Sample (test) episodes can never be published. | A kò lè tẹ ìpín àpẹẹrẹ (ìdánwò) jáde láé. | |
+| `rights.reasons.licence_draft` | Licence {licence} has not been verified. | A kò tíì fìdí ìwé àṣẹ {licence} múlẹ̀. | |
+| `rights.reasons.licence_revoked` | Licence {licence} was revoked. | A ti fagi lé ìwé àṣẹ {licence}. | |
+| `rights.reasons.licence_expired` | Licence {licence} has expired. | Ìwé àṣẹ {licence} ti parí. | |
+| `rights.reasons.licence_not_yet_effective` | Licence {licence} is not in force yet. | Ìwé àṣẹ {licence} kò tíì bẹ̀rẹ̀. | |
+| `rights.reasons.right_missing` | Licence {licence}: {right} is “{state}”. | Ìwé àṣẹ {licence}: {right} jẹ́ “{state}”. | |
+| `rights.reasons.language_not_permitted` | Licence {licence} does not permit Yoruba. | Ìwé àṣẹ {licence} kò gba Yorùbá láàyè. | |
+| `rights.reasons.platform_not_permitted` | Licence {licence} does not permit {platform}. | Ìwé àṣẹ {licence} kò gba {platform} láàyè. | |
+| `rights.reasons.platform_unknown` | Choose a platform. | Yan ìkànnì kan. | |
+| `rights.reasons.episode_missing` | Episode not found. | A kò rí ìpín náà. | |
+| `rights.lastCheck` | Last check: {when} | Àyẹ̀wò ìkẹyìn: {when} | |
+| `rights.noChecks` | Not checked yet. | A kò tíì ṣàyẹ̀wò rẹ̀. | |
+| `rights.originality` | Originality check | Àyẹ̀wò àìdàkọ | |
+| `rights.originalityHelp` | Paste a draft (for example an original lesson script) to see whether any of it repeats source wording. Runs of {n}+ words are flagged. | Lẹ àkọsílẹ̀ kan síbí (fún àpẹẹrẹ àkọsílẹ̀ ẹ̀kọ́ tuntun) láti mọ̀ bóyá ó tún ọ̀rọ̀ orísun sọ. A ó sàmì sí ọ̀rọ̀ {n} tàbí jù bẹ́ẹ̀ lọ tí ó tẹ̀lé ara wọn. | |
+| `rights.originalityText` | Draft text | Àkọsílẹ̀ | |
+| `rights.runOriginality` | Check originality | Ṣàyẹ̀wò àìdàkọ | |
+| `rights.originalityClear` | No copied passages found. | A kò rí ọ̀rọ̀ kankan tí a dà kọ. | |
+| `rights.originalityFlagged` | Copied wording found. Rewrite these passages: | A rí ọ̀rọ̀ tí a dà kọ. Tún àwọn apá wọ̀nyí kọ: | |
+| `rights.originalityMatch` | {words} words from “{title}” | Ọ̀rọ̀ {words} láti inú “{title}” | |
+| `rights.noTranscriptCaveat` | (description only: no transcript held) | (àlàyé nìkan: kò sí àkọsílẹ̀ ọ̀rọ̀) | |
+| `rights.changeBasis` | Change basis | Yí ìdí padà | |
+| `rights.changeBasisNote` | Reason for the change (e.g. licence reference) | Ìdí fún àyípadà náà (fún àpẹẹrẹ nọ́ńbà ìwé àṣẹ) | |
 | `settings.title` | System settings | Ètò sístẹ́mù | |
 | `settings.subtitle` | Limits and rules the platform must obey. Every change is recorded in the audit trail. | Àwọn òpin àti òfin tí sístẹ́mù gbọ́dọ̀ tẹ̀lé. A ń kọ gbogbo àyípadà sínú àkọsílẹ̀ àyẹ̀wò. | |
 | `settings.categories.budget` | Budget and cost control | Ìṣúná àti ìṣàkóso ìnáwó | |

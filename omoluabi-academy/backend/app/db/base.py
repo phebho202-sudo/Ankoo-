@@ -29,3 +29,10 @@ class TimestampMixin:
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=utcnow, onupdate=utcnow, nullable=False
     )
+
+
+def aware(dt: datetime | None) -> datetime | None:
+    """SQLite returns naive datetimes; treat them as UTC so comparisons work everywhere."""
+    if dt is not None and dt.tzinfo is None:
+        return dt.replace(tzinfo=UTC)
+    return dt

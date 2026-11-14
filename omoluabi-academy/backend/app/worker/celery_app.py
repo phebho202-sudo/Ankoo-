@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from celery import Celery
+from celery.schedules import crontab
 
 from app.core.config import get_settings
 from app.core.logging import configure_logging
@@ -12,7 +13,7 @@ celery_app = Celery(
     "omoluabi",
     broker=settings.redis_url,
     backend=settings.redis_url,
-    include=["app.worker.tasks.system", "app.worker.tasks.content"],
+    include=["app.worker.tasks.system", "app.worker.tasks.content", "app.worker.tasks.rights"],
 )
 celery_app.conf.update(
     task_acks_late=True,  # a crashed worker does not lose the job
@@ -25,4 +26,11 @@ celery_app.conf.update(
     timezone="Africa/Lagos",
     enable_utc=True,
     broker_connection_retry_on_startup=True,
+    beat_schedule={
+        # 06:10 Lagos time daily (run by the `beat` service).
+        "rights-expiry-sweep": {
+            "task": "rights.expiry_sweep",
+            "schedule": crontab(hour=6, minute=10),
+        },
+    },
 )

@@ -84,10 +84,10 @@ const check = (name, cond) => { results.push(`${cond ? 'PASS' : 'FAIL'}  ${name}
   await page.waitForSelector('main h1:has-text("Àkópọ̀")');
   check('overview in Yoruba shows new limit', (await page.textContent('main')).includes('70.00'));
   await page.screenshot({ path: `${SP}/p2-overview-yo.png`, fullPage: true });
-  await page.click('nav a[href="/rights"]');
-  await page.waitForSelector('main h1:has-text("Ìṣàkóso ẹ̀tọ́")');
+  await page.click('nav a[href="/scripts"]');  // still a placeholder (Phase 5)
+  await page.waitForSelector('main h1:has-text("Àkọsílẹ̀ Yorùbá")');
   check('placeholder page shows no fake data', (await page.textContent('main')).includes('A kò fi dátà àpẹẹrẹ hàn'));
-  await page.screenshot({ path: `${SP}/p2-rights-yo.png` });
+  await page.screenshot({ path: `${SP}/p2-placeholder-yo.png` });
 
   // Mobile
   const m = await browser.newContext({ ...devices['iPhone 13'], storageState: await ctx.storageState() });

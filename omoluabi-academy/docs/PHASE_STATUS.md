@@ -4,14 +4,67 @@
 |---|---|
 | 1. Project foundation | Complete. Approved 2026-11-14. |
 | 2. Brand and administration | Complete. Approved 2026-11-14. |
-| 3. Discovery and research | **Complete in sample mode. Awaiting owner approval and API keys.** |
-| 4. Rights management | Not started |
+| 3. Discovery and research | Complete in sample mode. Approved 2026-11-14 (API keys pending). |
+| 4. Rights management | **Complete. Awaiting owner approval.** |
 | 5. Yoruba content engine | Not started |
 | 6. Voice and avatar | Not started |
 | 7. Video production | Not started |
 | 8. Publishing | Not started |
 | 9. Monetisation | Not started |
 | 10. Deployment | Not started |
+
+---
+
+## Phase 4: Rights management (2026-11-14)
+
+### Delivered
+| Area | What exists |
+|---|---|
+| Licence records | Everything the brief requires: source identification (a whole channel or specific episodes), licence reference plus the uploaded signed document (PDF/PNG/JPEG, checked by file signature, SHA-256 fingerprint), translation, adaptation, commercial and distribution rights, permitted platforms, and a **required expiry date**. Also licensor contact, territory, permitted languages and attribution. |
+| "Unclear" is never permission | Each right is granted / not granted / unclear. Unclear blocks verification and use. |
+| Owner verification | Lists exactly what is missing, then needs an explicit confirmation against the signed document. Edits, scope changes and new documents send it back to draft. Revocation needs a reason. Everything is audited. |
+| The rights gate | `check_rights` / `require_rights` refuse when permission is absent, unverified, expired, not yet in force, revoked, missing a needed right, not covering Yoruba or the platform, or when the channel is research-only. Sample episodes can never be published. Every decision is stored (`rights_checks`) and audited. |
+| Expiry monitoring | Daily scheduled sweep (new `beat` service): one warning 30 days before expiry, one notice on expiry. Counts are on Overview. |
+| Original content safeguard | Shared originality service. A checker on the Rights page quotes any copied passage (grouped by passage) and names its sources. |
+| Channel basis | You can switch a channel between research only and licensed, with a recorded reason. |
+| Dashboard | **Rights** page (counts, legal disclaimer, licence table with rights badges, rights checker, originality checker), **record licence** page, **licence** page (edit, document upload/download, coverage, verification, revocation), a **rights card** on every episode, and a licence summary on **Overview**. English and Yorùbá. |
+
+### Test results
+* **Backend:** 164 passed on PostgreSQL 16 (95% coverage); SQLite mode passes too. Lint clean. Migration upgrade, downgrade and drift checked.
+  The rights tests cover every refusal reason, multiple licences, channel-wide coverage,
+  verification problems, edits resetting verification, document validation, the expiry
+  sweep (including the scheduled task) and the API.
+* **Frontend:** typecheck clean; 29 unit tests (including every refusal and problem code in
+  both languages); build OK.
+* **Browser tests on the real stack:** Phase 4 **19/19**, Phase 3 **18/18**, Phase 2 **19/19**.
+
+### Failures found and fixed
+1. **Edited licence showed its old values after saving (and could re-save them).** React
+   resets a form to its original values after submission. The licence and coverage forms
+   now keep what you entered. A browser check confirms the saved value is shown.
+2. **Coverage changes didn't update the licence's last-changed time** (only the link
+   table changed). Fixed, with a test.
+3. **Licence dates came back in mixed timezones** from the API. Now always UTC.
+4. **The originality checker repeated the same passage** once per source. Now grouped.
+5. A small document showed as "0 KB". Small files now show bytes.
+6. Test-script issues (waiting on hidden page data, duplicate matches). Fixed in the tests,
+   not the app.
+
+### Needs your action
+* **Have a lawyer review any licence** before you rely on it. The system enforces what you
+  record; it cannot judge a contract.
+* For each licensed source (for example any agreement covering Alex Hormozi's episodes),
+  record the licence with the signed document, set what it covers, switch the channel to
+  "Licensed", and verify it.
+* Yoruba review of the new wording (YORUBA_UI_REVIEW.md, regenerated).
+
+### Known limitations
+* The coverage picker lists the latest 100 episodes. For larger channels, use whole-channel
+  coverage or ask for a searchable picker.
+* Expiry warnings appear in the audit trail and on Overview and Rights. Email/push alerts
+  are part of monitoring in Phase 10.
+* Licences cover Yoruba by language code. Territory is recorded but not enforced
+  (publishing platforms don't let us restrict by country reliably).
 
 ---
 

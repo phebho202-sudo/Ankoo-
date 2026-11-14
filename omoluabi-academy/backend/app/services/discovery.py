@@ -95,6 +95,30 @@ def set_channel_active(db: Session, ch: SourceChannel, active: bool, actor: str)
     )
 
 
+def set_channel_basis(
+    db: Session, ch: SourceChannel, basis: AuthorisationBasis, note: str, actor: str
+) -> None:
+    """Change why we may use a channel. A new note is required, and the change is audited."""
+    note = note.strip()
+    if basis == ch.authorisation_basis:
+        return
+    if len(note) < MIN_NOTE_LENGTH:
+        raise AppError(
+            f"Explain the change (at least {MIN_NOTE_LENGTH} characters), "
+            "e.g. the licence reference"
+        )
+    old = ch.authorisation_basis
+    ch.authorisation_basis, ch.authorisation_note = basis, note
+    audit.record(
+        db,
+        actor=actor,
+        action="channel.basis_changed",
+        entity_type="channel",
+        entity_id=ch.id,
+        details={"old": old.value, "new": basis.value, "note": note},
+    )
+
+
 @dataclass
 class ScanResult:
     new: int = 0

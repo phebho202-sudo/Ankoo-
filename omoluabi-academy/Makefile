@@ -1,5 +1,5 @@
 # Common developer commands. Run `make help`.
-.PHONY: help owner e2e setup backend-setup frontend-setup migrate api worker web test lint up down
+.PHONY: help owner e2e beat setup backend-setup frontend-setup migrate api worker web test lint up down
 
 help:
 	@grep -E '^[a-z-]+:.*?## ' $(MAKEFILE_LIST) | awk -F':.*?## ' '{printf "  %-16s %s\n", $$1, $$2}'
@@ -18,14 +18,17 @@ migrate: ## Apply database migrations
 owner: ## Create the owner login (prompts for email and password)
 	@read -p "Owner email: " email; cd backend && .venv/bin/python -m app.cli create-owner --email "$$email"
 
-e2e: ## Browser test of the running dashboard (needs E2E_EMAIL, E2E_PASSWORD; dev data only)
-	node frontend/e2e/dashboard.e2e.cjs
+e2e: ## Browser tests of the running dashboard (needs E2E_EMAIL, E2E_PASSWORD; dev data only)
+	node frontend/e2e/dashboard.e2e.cjs && node frontend/e2e/phase3.e2e.cjs && node frontend/e2e/phase4.e2e.cjs
 
 api: ## Run the API with auto-reload on :8000
 	cd backend && .venv/bin/uvicorn app.main:app --reload --port 8000
 
 worker: ## Run a Celery worker
 	cd backend && .venv/bin/celery -A app.worker.celery_app worker -l info --concurrency 2
+
+beat: ## Run the scheduler (daily licence-expiry check)
+	cd backend && .venv/bin/celery -A app.worker.celery_app beat -l info
 
 web: ## Run the admin dashboard on :3000
 	cd frontend && npm run dev

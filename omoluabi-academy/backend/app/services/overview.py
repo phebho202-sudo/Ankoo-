@@ -15,6 +15,7 @@ from app.core.config import ProviderMode, Settings
 from app.db.base import utcnow
 from app.models import AuditLog, JobRun, JobStatus
 from app.services import audit
+from app.services import rights as rights_service
 from app.services import settings as settings_service
 
 
@@ -76,4 +77,5 @@ def build_overview(db: Session, settings: Settings) -> dict[str, Any]:
         "recent_activity": [audit_entry_out(e) for e in recent],
         "providers": providers,
         "setup_checklist": checklist,
+        "rights": rights_service.summary(db),
     }

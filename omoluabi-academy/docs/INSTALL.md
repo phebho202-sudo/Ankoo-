@@ -30,8 +30,8 @@ dashboard with your own email and password (step 4).
 ```bash
 docker compose up --build
 ```
-This starts PostgreSQL, Redis, runs database migrations, then starts the API, the worker
-and the dashboard.
+This starts PostgreSQL, Redis, runs database migrations, then starts the API, the worker,
+the scheduler and the dashboard.
 
 | Service | URL |
 |---|---|
@@ -112,10 +112,11 @@ make frontend-setup
 cp frontend/.env.example frontend/.env.local
 ```
 
-### 5. Run (three terminals)
+### 5. Run (four terminals)
 ```bash
 make api       # http://localhost:8000
 make worker    # background jobs
+make beat      # scheduler: daily licence-expiry check
 make web       # http://localhost:3000
 ```
 

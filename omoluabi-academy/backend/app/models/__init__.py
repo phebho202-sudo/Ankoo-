@@ -14,6 +14,7 @@ from app.models.content import (
     TranscriptSource,
 )
 from app.models.job import JobRun, JobStatus
+from app.models.rights import PLATFORMS, Grant, Licence, LicenceStatus, RightsCheck
 from app.models.setting import SystemSetting
 from app.models.user import AuthSession, User
 
@@ -22,6 +23,11 @@ __all__ = [
     "AuthSession",
     "AuthorisationBasis",
     "Episode",
+    "Grant",
+    "Licence",
+    "LicenceStatus",
+    "PLATFORMS",
+    "RightsCheck",
     "EpisodeStatus",
     "JobRun",
     "JobStatus",
