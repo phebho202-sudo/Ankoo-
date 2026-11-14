@@ -1,0 +1,76 @@
+# Local development stack. Production hardening is covered in Phase 10.
+name: omoluabi
+
+x-backend-env: &backend-env
+  APP_ENV: ${APP_ENV:-development}
+  LOG_FORMAT: json
+  PROVIDER_MODE: ${PROVIDER_MODE:-sample}
+  DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-omoluabi}:${POSTGRES_PASSWORD:-omoluabi}@postgres:5432/${POSTGRES_DB:-omoluabi}
+  REDIS_URL: redis://redis:6379/0
+  CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000}
+  ADMIN_API_TOKEN: ${ADMIN_API_TOKEN:?Set ADMIN_API_TOKEN in .env (see docs/INSTALL.md)}
+  LOCAL_STORAGE_PATH: /app/var/storage
+  ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+  ELEVENLABS_API_KEY: ${ELEVENLABS_API_KEY:-}
+  YOUTUBE_API_KEY: ${YOUTUBE_API_KEY:-}
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-omoluabi}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-omoluabi}
+      POSTGRES_DB: ${POSTGRES_DB:-omoluabi}
+    volumes: [pgdata:/var/lib/postgresql/data]
+    ports: ["127.0.0.1:5432:5432"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER}"]
+      interval: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes: [redisdata:/data]
+    ports: ["127.0.0.1:6379:6379"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      retries: 10
+
+  migrate:
+    build: ./backend
+    command: ["alembic", "upgrade", "head"]
+    environment: *backend-env
+    depends_on:
+      postgres: { condition: service_healthy }
+
+  api:
+    build: ./backend
+    environment: *backend-env
+    volumes: [storage:/app/var/storage]
+    ports: ["127.0.0.1:8000:8000"]
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+      redis: { condition: service_healthy }
+
+  worker:
+    build: ./backend
+    command: ["celery", "-A", "app.worker.celery_app", "worker", "-l", "info", "--concurrency", "2"]
+    environment: *backend-env
+    volumes: [storage:/app/var/storage]
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+      redis: { condition: service_healthy }
+
+  frontend:
+    build: ./frontend
+    environment:
+      BACKEND_URL: http://api:8000
+    ports: ["127.0.0.1:3000:3000"]
+    depends_on: [api]
+
+volumes:
+  pgdata:
+  redisdata:
+  storage:

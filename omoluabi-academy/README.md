@@ -1,0 +1,59 @@
+# OMỌLÚÀBÍ BUSINESS ACADEMY — Content Operations Platform
+
+Practical business education in natural Nigerian Yoruba. This is the software that will run
+the academy's research, rights management, Yoruba scripting, voice and video production,
+publishing and monetisation, with a human approval gate at every risky step.
+
+> **Status: Phase 1 (foundation) complete, awaiting owner approval before Phase 2.**
+> See [`docs/PHASE_STATUS.md`](docs/PHASE_STATUS.md) for what works, what doesn't yet, and test results.
+
+## Safety rules built into the platform
+
+| Rule | Where it is enforced today |
+|---|---|
+| Never fabricate API connections | `PROVIDER_MODE=live` never falls back to sample adapters; missing keys raise `provider_not_configured` (`app/adapters/registry.py`) |
+| Sample output is never real | Every adapter result carries `is_sample`; sample publisher never reports `confirmed=True` |
+| No hard-coded keys | All secrets come from environment variables as `SecretStr`; log redaction for secret-like keys |
+| Complete audit trail | Hash-chained `audit_logs`, append-only enforced by PostgreSQL triggers; `GET /api/v1/system/audit/verify` |
+| Replaceable services | Every external service sits behind an interface in `app/adapters/base.py` |
+| Capped retries | Worker retries are bounded by `TASK_MAX_RETRIES` (max 10) |
+| Safe production start | The API refuses to start in production with default passwords or a weak admin token |
+
+Rights verification, budget limits, duplicate prevention and publishing gates are added in
+Phases 3–8, as specified.
+
+## Layout
+
+```
+omoluabi-academy/
+├── backend/            FastAPI + SQLAlchemy + Alembic + Celery (Python 3.12+)
+│   ├── app/adapters/   provider interfaces, offline sample adapters, local storage
+│   ├── app/api/        HTTP routes
+│   ├── app/core/       config, logging, errors
+│   ├── app/models/     database models
+│   ├── app/services/   business logic (audit trail so far)
+│   ├── app/worker/     Celery app and tasks
+│   ├── alembic/        database migrations
+│   └── tests/          pytest suite
+├── frontend/           Next.js + TypeScript + Tailwind admin dashboard
+├── docs/               installation, architecture, phase status
+├── docker-compose.yml  full local stack
+└── Makefile            common commands
+```
+
+## Quick start
+
+See **[docs/INSTALL.md](docs/INSTALL.md)**. Short version with Docker:
+
+```bash
+cd omoluabi-academy
+cp .env.example .env    # then set ADMIN_API_TOKEN
+docker compose up --build
+# Dashboard: http://localhost:3000   API docs: http://localhost:8000/docs
+```
+
+## Documentation
+
+- [Installation guide](docs/INSTALL.md)
+- [Architecture and database schema](docs/ARCHITECTURE.md)
+- [Phase status, test results and known limitations](docs/PHASE_STATUS.md)
