@@ -522,6 +522,81 @@ Source of truth: `frontend/src/lib/i18n/dictionaries.ts`. Regenerate this file a
 | `forbidden.title` | Not available | Kò sí fún ọ | |
 | `forbidden.body` | This page is for the academy owner. Your account can work on Yoruba scripts. | Ojú-ìwé yìí wà fún ọ̀gá ilé-ẹ̀kọ́ nìkan. Àkáǹtì rẹ lè ṣiṣẹ́ lórí àkọsílẹ̀ Yorùbá. | |
 | `forbidden.go` | Go to Yoruba scripts | Lọ sí àkọsílẹ̀ Yorùbá | |
+| `voice.subtitle` | One original Nigerian male business educator, with one consistent voice and look. Narration is made only from approved scripts, after a Yoruba speaker has passed a pronunciation test of the exact voice. | Olùkọ́ òwò kan ọmọ Nàìjíríà tí a ṣẹ̀dá, pẹ̀lú ohùn kan àti ìrísí kan náà nígbà gbogbo. A ń gba ohùn sílẹ̀ láti inú àkọsílẹ̀ tí a fọwọ́ sí nìkan, lẹ́yìn tí ẹni tó gbọ́ Yorùbá bá ti yege àyẹ̀wò ìpè ohùn náà. | |
+| `voice.presenter` | Presenter | Olùkọ́ | |
+| `voice.name` | Presenter name (an original character) | Orúkọ olùkọ́ (ẹ̀dá ìtàn tí a ṣẹ̀dá) | |
+| `voice.description` | About the presenter | Nípa olùkọ́ náà | |
+| `voice.voiceId` | Voice ID (from your ElevenLabs account) | ID ohùn (láti inú àkáǹtì ElevenLabs rẹ) | |
+| `voice.voiceModel` | Voice model (leave blank for the default) | Ẹ̀rọ ohùn (fi sílẹ̀ ní òfo fún àtilẹ̀wá) | |
+| `voice.stability` | Stability (0 to 1) | Ìdúróṣinṣin (0 sí 1) | |
+| `voice.similarity` | Similarity (0 to 1) | Ìjọra (0 sí 1) | |
+| `voice.voiceHelp` | Choose a voice you own or may use commercially. Never clone a real person's voice without their written consent. | Yan ohùn tí ó jẹ́ tìrẹ tàbí tí o ní àṣẹ láti lò fún òwò. Má ṣe ṣe ẹ̀dà ohùn ènìyàn gidi láìsí àṣẹ wọn ní kíkọ. | |
+| `voice.declarations` | Declarations | Àwọn ìkéde | |
+| `voice.declVoice` | The voice is original or licensed for commercial use, and is not a clone of a real person made without consent. | Ohùn náà jẹ́ tuntun tàbí ó ní àṣẹ fún lílò ní òwò, kì í sì í ṣe ẹ̀dà ohùn ènìyàn gidi tí a ṣe láìsí àṣẹ. | |
+| `voice.declPortrait` | The portrait is original (commissioned or AI-generated for us) or licensed, and does not show a real person. | Àwòrán náà jẹ́ tuntun (a sanwó fún un tàbí a fi ẹ̀rọ ṣe é fún wa) tàbí ó ní àṣẹ, kò sì fi ènìyàn gidi hàn. | |
+| `voice.declPerson` | The presenter is a fictional character, not an imitation of any real person. | Olùkọ́ náà jẹ́ ẹ̀dá ìtàn, kì í ṣe àfarawé ènìyàn gidi kankan. | |
+| `voice.save` | Save presenter | Fi olùkọ́ pamọ́ | |
+| `voice.saved` | Saved. | A ti fi pamọ́. | |
+| `voice.changeResets` | Changing the voice or portrait cancels approval and needs a new pronunciation test. | Yíyí ohùn tàbí àwòrán padà yóò fagi lé ìfọwọ́sí, yóò sì nílò àyẹ̀wò ìpè tuntun. | |
+| `voice.portrait` | Portrait | Àwòrán | |
+| `voice.noPortrait` | No portrait yet: videos show the academy's brand card instead of a face. | Kò sí àwòrán síbẹ̀: fídíò yóò fi àmì ilé-ẹ̀kọ́ hàn dípò ojú. | |
+| `voice.uploadPortrait` | Upload portrait (PNG or JPEG, up to 5 MB) | Gbé àwòrán sókè (PNG tàbí JPEG, kò ju 5 MB lọ) | |
+| `voice.upload` | Upload | Gbé e sókè | |
+| `voice.status.draft` | Not approved | A kò tíì fọwọ́ sí i | |
+| `voice.status.approved` | Approved | A fọwọ́ sí i | |
+| `voice.problems.voice_missing` | Set a voice. | Yan ohùn kan. | |
+| `voice.problems.declarations_missing` | Confirm all three declarations. | Fìdí àwọn ìkéde mẹ́tẹ̀ẹ̀ta múlẹ̀. | |
+| `voice.problems.pronunciation_test_not_passed` | A Yoruba reviewer must pass a pronunciation test of this exact voice. | Olùyẹ̀wò Yorùbá gbọ́dọ̀ yege àyẹ̀wò ìpè ohùn yìí gan-an. | |
+| `voice.approve` | Approve presenter | Fọwọ́ sí olùkọ́ | |
+| `voice.approvedBy` | Approved by {who} on {when}. | {who} ló fọwọ́ sí i ní {when}. | |
+| `voice.tests` | Pronunciation tests | Àyẹ̀wò ìpè | |
+| `voice.testHelp` | A short Yoruba passage with tone pairs (owó, ọwọ́, ọ̀wọ̀), dotted letters, naira amounts and your dictionary terms. A Yoruba reviewer listens and rates it. Narration is blocked until a test of the current voice passes. | Àyọkà Yorùbá kúkúrú pẹ̀lú ọ̀rọ̀ tí ohùn wọn yàtọ̀ (owó, ọwọ́, ọ̀wọ̀), lẹ́tà onídòtí ìsàlẹ̀, iye owó náírà àti àwọn ọ̀rọ̀ inú ìwé atúmọ̀ rẹ. Olùyẹ̀wò Yorùbá yóò gbọ́ ọ, yóò sì fún un ní máàkì. A kò ní gba ohùn sílẹ̀ títí tí àyẹ̀wò ohùn ìsinsìnyí yóò fi yege. | |
+| `voice.runTest` | Record a test | Gba àyẹ̀wò sílẹ̀ | |
+| `voice.noTests` | No tests yet. | Kò sí àyẹ̀wò síbẹ̀. | |
+| `voice.testStatus.generating` | Recording… | À ń gbà á sílẹ̀… | |
+| `voice.testStatus.awaiting_review` | Waiting for a reviewer | Ó ń dúró de olùyẹ̀wò | |
+| `voice.testStatus.passed` | Passed | Ó yege | |
+| `voice.testStatus.failed` | Failed | Kò yege | |
+| `voice.testStatus.blocked` | Stopped | Ó dúró | |
+| `voice.passage` | What it reads | Ohun tí ó kà | |
+| `voice.checks.tones` | Tones are right (owó, ọwọ́ and ọ̀wọ̀ sound different) | Ohùn tọ̀nà (owó, ọwọ́ àti ọ̀wọ̀ dún yàtọ̀) | |
+| `voice.checks.dotted_letters` | Ẹ, ọ and ṣ are pronounced correctly | A pe ẹ, ọ àti ṣ dáadáa | |
+| `voice.checks.numbers_naira` | Naira amounts and numbers are read correctly in Yoruba | A ka iye owó náírà àti nọ́ńbà dáadáa ní Yorùbá | |
+| `voice.checks.terms` | Dictionary terms are said as the dictionary says | A pe àwọn ọ̀rọ̀ inú ìwé atúmọ̀ bí ìwé atúmọ̀ ṣe sọ | |
+| `voice.checks.natural_pace` | Pace and rhythm sound natural | Ìyára àti ìlù ọ̀rọ̀ dún bí àdámọ́ | |
+| `voice.notes` | Notes (required if anything fails) | Àkíyèsí (ó pọn dandan bí nǹkan kan kò bá yege) | |
+| `voice.submitRating` | Save rating | Fi máàkì pamọ́ | |
+| `voice.olderVoice` | Recorded with an earlier voice setting | A gbà á sílẹ̀ pẹ̀lú ètò ohùn àtijọ́ | |
+| `voice.production` | Narration and presenter assets | Ohùn àti àwọn ohun èlò olùkọ́ | |
+| `voice.productionHelp` | Hybrid format (default, low cost): the presenter portrait with gentle motion, the narration, captions re-timed to the voice, and Yoruba slides. A lip-synced avatar needs a licensed provider and avatar minutes in the budget. | Ọ̀nà àdàpọ̀ (àtilẹ̀wá, owó kékeré): àwòrán olùkọ́ pẹ̀lú ìṣísẹ̀ díẹ̀, ohùn, àkọlé ìsàlẹ̀ tí a tún ṣe sí ohùn, àti àwọn ojú-ìwé Yorùbá. Avatar tó ń sọ̀rọ̀ nílò olùpèsè tó ní àṣẹ àti ìṣẹ́jú avatar nínú ìṣúná. | |
+| `voice.readyScripts` | Approved scripts | Àkọsílẹ̀ tí a fọwọ́ sí | |
+| `voice.noReady` | No approved scripts yet. | Kò sí àkọsílẹ̀ tí a fọwọ́ sí síbẹ̀. | |
+| `voice.produce` | Produce narration | Gba ohùn sílẹ̀ | |
+| `voice.runs` | Production runs | Àwọn iṣẹ́ ìṣẹ̀dá | |
+| `voice.noRuns` | No runs yet. | Kò sí iṣẹ́ síbẹ̀. | |
+| `voice.runStatus.queued` | Queued | Ó ń dúró | |
+| `voice.runStatus.running` | Producing… | À ń ṣe é… | |
+| `voice.runStatus.completed` | Completed | Ó ti parí | |
+| `voice.runStatus.failed` | Failed | Kò yọrí | |
+| `voice.runStatus.blocked` | Stopped | Ó dúró | |
+| `voice.cost` | Cost | Owó | |
+| `voice.characters` | {n} characters | Lẹ́tà {n} | |
+| `voice.length` | Length | Gígùn | |
+| `voice.back` | Back to voice production | Padà sí ìṣẹ̀dá ohùn | |
+| `voice.narration` | Narration | Ohùn ìsọ̀rọ̀ | |
+| `voice.waveform` | Waveform | Àwòrán ìró | |
+| `voice.presenterClip` | Presenter clip (hybrid) | Fídíò olùkọ́ (àdàpọ̀) | |
+| `voice.segments` | Segments | Àwọn apá | |
+| `voice.slides` | Slides | Àwọn ojú-ìwé | |
+| `voice.captions` | Captions (timed to the narration) | Àkọlé ìsàlẹ̀ (tí a ṣe sí ohùn) | |
+| `voice.captionsYo` | Yoruba (.srt) | Yorùbá (.srt) | |
+| `voice.captionsEn` | English (.srt) | Gẹ̀ẹ́sì (.srt) | |
+| `voice.costBreakdown` | Cost of this run | Owó iṣẹ́ yìí | |
+| `voice.tts` | Voice | Ohùn | |
+| `voice.avatar` | Avatar | Avatar | |
+| `voice.total` | Total | Àpapọ̀ | |
+| `voice.sampleNote` | Sample audio: a test tone made offline, not a real voice. | Ohùn àpẹẹrẹ: ìró ìdánwò tí a ṣe láìlo ẹ̀rọ ohùn, kì í ṣe ohùn gidi. | |
+| `voice.ownerOnly` | Only the owner can change the presenter or start production. | Ọ̀gá nìkan ló lè yí olùkọ́ padà tàbí bẹ̀rẹ̀ ìṣẹ̀dá. | |
 | `settings.title` | System settings | Ètò sístẹ́mù | |
 | `settings.subtitle` | Limits and rules the platform must obey. Every change is recorded in the audit trail. | Àwọn òpin àti òfin tí sístẹ́mù gbọ́dọ̀ tẹ̀lé. A ń kọ gbogbo àyípadà sínú àkọsílẹ̀ àyẹ̀wò. | |
 | `settings.categories.budget` | Budget and cost control | Ìṣúná àti ìṣàkóso ìnáwó | |

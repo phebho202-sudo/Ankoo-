@@ -9,7 +9,8 @@ Nothing in the software creates accounts or buys anything.
 |---|---|---|---|
 | YouTube Data API v3 | Finding public videos on channels you authorise | Free (10,000 quota units/day) | 3 |
 | Claude API (Anthropic) | Research reports and topic proposals | Pay as you go. See [COSTS.md](COSTS.md). | 3 |
-| ElevenLabs, avatar, Meta, TikTok, Cloudflare R2 | Later phases | Documented when built | 6–10 |
+| ElevenLabs | Presenter voice (Yoruba narration) | Per character; depends on your plan. See [COSTS.md](COSTS.md). | 6 |
+| Avatar provider, Meta, TikTok, Cloudflare R2 | Later phases | Documented when built | 7–10 |
 
 Keys go in environment variables (`backend/.env` for a native install, `.env` for Docker),
 **never** in code and never in the dashboard. Restart the API and worker after changing them.
@@ -56,7 +57,41 @@ Requests use **server-side refusal fallback**: if Claude declines a request on s
 grounds, the API retries once on a fallback model within the same call. If every model
 declines, the report is marked **Blocked** and no content is invented.
 
-## 3. Switch to live mode
+## 3. ElevenLabs voice (presenter narration)
+
+**Not verified from this environment.** The build machine could not reach elevenlabs.io,
+so the integration follows ElevenLabs' long-standing public API (`POST
+/v1/text-to-speech/{voice_id}`, `xi-api-key` header). Its live behaviour, and whether your
+chosen model speaks Yoruba well, must be confirmed on your account. That is exactly what
+the pronunciation test is for.
+
+1. Create an account at https://elevenlabs.io and choose a plan. Check on their site which
+   models list **Yoruba** as a supported language.
+2. **Choose an original or licensed voice** that suits a warm, professional Nigerian male
+   teacher, for example one designed with ElevenLabs' voice design, or a library voice whose
+   terms allow commercial use. **Do not clone any real person's voice without their written
+   consent.**
+3. Create an API key and put it in your environment file: `ELEVENLABS_API_KEY=...`
+4. Set:
+   * `ELEVENLABS_MODEL`: the Yoruba-capable model from step 1 (default
+     `eleven_multilingual_v2`; change it if ElevenLabs recommends another for Yoruba).
+   * `ELEVENLABS_USD_PER_1K_CHARS`: your plan's real cost per 1,000 characters (default
+     0.30, a placeholder). The budget guard and every cost record use this number.
+5. In the dashboard (**Voice production**): enter the voice ID, tick the three
+   declarations, upload the presenter portrait, then **Record a test**. A Yoruba reviewer
+   listens and rates tones, dotted letters, naira amounts, dictionary terms and pace.
+   Narration is blocked until a test of the exact voice settings passes. Approve the presenter.
+
+**Portrait:** upload an original image of the presenter, commissioned or AI-generated
+for the academy, that does not depict a real person. Without one, videos use the
+academy's brand card instead of a face.
+
+**Avatar (lip-synced presenter):** not connected. The default **hybrid** format (portrait
+with gentle motion, narration, captions and Yoruba slides) costs nothing beyond the voice.
+A licensed avatar provider can be added later. `budget.max_avatar_minutes_per_month`
+(default 0) already caps its use.
+
+## 4. Switch to live mode
 
 ```
 PROVIDER_MODE=live
@@ -69,7 +104,7 @@ Restart the API and the worker. Then check **Overview → Service providers**:
 Channels and episodes created in sample mode stay labelled **SAMPLE**. They cannot be
 scanned with the live provider, and sample and real data never mix.
 
-## 4. Before the first real research report
+## 5. Before the first real research report
 
 * Check **System settings → Monthly spending limit** (default $50). The research job
   reserves its worst-case cost first and is **blocked** if that would exceed the limit.

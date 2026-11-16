@@ -5,7 +5,7 @@ The platform records the **actual** cost of every paid call against its job, and
 Overview page shows real month-to-date spend. Your Anthropic and Google invoices are the
 authoritative bill.
 
-## Built so far (Phases 1–5)
+## Built so far (Phases 1–6)
 
 | Item | Cost |
 |---|---|
@@ -20,12 +20,21 @@ authoritative bill.
 | Same 8-minute script on `claude-sonnet-5-5` / `claude-haiku-5-5` | ≈ $0.08 / ≈ $0.004 |
 | Worst case reserved per script (budget guard) | ≈ $0.41, up to ≈ $0.75 with the longest allowed transcript (16,000-token output cap, priced at the most expensive known rate) |
 
+| ElevenLabs narration, 8-minute lesson (~6,000 characters) | **≈ $1.80** at the placeholder rate of $0.30 per 1,000 characters. **Set your real rate** (`ELEVENLABS_USD_PER_1K_CHARS`); subscription plans are usually cheaper per character. |
+| ElevenLabs narration, short (~700 characters) | ≈ $0.21 |
+| Pronunciation test (~420 characters) | ≈ $0.13 per test |
+| Hybrid presenter video, slides, waveform, captions | **$0**. Rendered locally with FFmpeg. |
+| Lip-synced avatar | Not connected. Capped at 0 minutes until you raise `budget.max_avatar_minutes_per_month`. |
+
 These script figures assume Yoruba with full tone marks uses noticeably more tokens than
 English. Check the real cost on each script's version history after your first live runs.
 
 **Example month:** 60 research reports + 20 lessons (each revised once) + 20 shorts on
-Opus 5.5 ≈ **$3–$9 + $6.40 + $0.80 ≈ $10–$16**, well inside the initial USD 35–70 software
-target. That leaves most of the budget for voice (Phase 6) and hosting (Phase 10).
+Opus 5.5 ≈ **$10–$16** for writing, plus voice for the same 20 lessons + 20 shorts + a few
+tests (~136,000 characters) ≈ **$41 at the placeholder rate**. That's **≈ $51–$57** before
+hosting (Phase 10): inside the USD 35–70 target, but voice is now the biggest line. Ways to
+stay lean if needed: a subscription plan with a lower per-character rate, fewer full
+lessons and more shorts, or a cheaper writing model (your decision).
 
 ## Safety controls in place
 

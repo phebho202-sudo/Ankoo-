@@ -14,6 +14,15 @@ from app.models.content import (
     TranscriptSource,
 )
 from app.models.job import JobRun, JobStatus
+from app.models.production import (
+    MediaAsset,
+    PresenterProfile,
+    PresenterStatus,
+    ProductionRun,
+    PronunciationTest,
+    RunStatus,
+    VoiceTestStatus,
+)
 from app.models.rights import PLATFORMS, Grant, Licence, LicenceStatus, RightsCheck
 from app.models.scripts import (
     GlossaryTerm,
@@ -30,6 +39,13 @@ from app.models.setting import SystemSetting
 from app.models.user import AuthSession, User
 
 __all__ = [
+    "MediaAsset",
+    "PresenterProfile",
+    "PresenterStatus",
+    "ProductionRun",
+    "PronunciationTest",
+    "RunStatus",
+    "VoiceTestStatus",
     "GlossaryTerm",
     "LanguageReview",
     "PronunciationEntry",

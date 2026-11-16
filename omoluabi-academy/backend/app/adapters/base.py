@@ -101,9 +101,22 @@ class AudioResult:
 
 class TTSProvider(Provider):
     capability = Capability.TTS
+    model: str = ""
 
     @abc.abstractmethod
-    def synthesize(self, *, text: str, voice_id: str, language: str = "yo") -> AudioResult: ...
+    def synthesize(
+        self,
+        *,
+        text: str,
+        voice_id: str,
+        language: str = "yo",
+        model: str | None = None,
+        settings: dict[str, Any] | None = None,
+    ) -> AudioResult: ...
+
+    @abc.abstractmethod
+    def estimate_cost(self, characters: int) -> Decimal:
+        """Cost of synthesising this many characters (used before and after each job)."""
 
 
 # ---------------------------------------------------------------- Avatar

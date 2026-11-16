@@ -34,7 +34,7 @@
 | Capability | Interface | Planned live provider | Phase |
 |---|---|---|---|
 | `llm` | `LLMProvider.complete()` | Claude API (official `anthropic` SDK) | **3 (built)** |
-| `tts` | `TTSProvider.synthesize()` | ElevenLabs (Yoruba-capable) | 6 |
+| `tts` | `TTSProvider.synthesize()` / `estimate_cost()` | ElevenLabs (`httpx`; Yoruba support to be confirmed per account) | **6 (built)** |
 | `avatar` | `AvatarProvider.render()` | licensed avatar API (when affordable) | 6 |
 | `storage` | `StorageProvider.put/get/...` | local filesystem now, Cloudflare R2 later | 1 / 10 |
 | `video_source` | `VideoSourceProvider.resolve_channel()` / `list_channel_videos()` | YouTube Data API v3 (`httpx`) | **3 (built)** |
@@ -217,6 +217,33 @@ is estimated from syllables (4.2/s). Phase 6 passes real per-segment audio durat
 pronunciation and their own account only), and the optional automation token (owner
 reads and jobs; never approvals, edits or reviews). Deactivating a user or changing a
 password ends their other sessions.
+
+### Voice and presenter (Phase 6)
+
+| Table | Purpose |
+|---|---|
+| `presenter_profiles` | The one presenter: name, description, voice (provider, ID, model, settings), portrait (storage key and SHA-256), three owner declarations, approval. |
+| `pronunciation_tests` | A recorded Yoruba test passage for a specific `voice_config_hash`, with per-check ratings, notes, reviewer, cost. |
+| `production_runs` | Voice production of one approved script version: status, TTS characters and cost, avatar seconds and cost, total, measured per-segment durations. |
+| `media_assets` | Every produced file: kind, storage key, MIME type, size, SHA-256, duration, sample flag. |
+
+**Pipeline** (`app/services/voice.py`, `media.py`): checks first (script approved at its
+latest version; presenter approved and unchanged; pronunciation test passed for this voice;
+rights for adaptations; storage limit; FFmpeg and fonts present). Then the budget
+reservation (characters × rate). Then, per segment: approved pronunciations applied as
+text substitutions (works with any TTS provider), synthesised, decoded to WAV. Segments
+are joined with 0.35 s pauses, EBU R128 levelled (−16 LUFS) to MP3, and given a waveform.
+English and Yoruba captions are **re-timed to the measured segment durations**. Then a 1920×1080
+Yoruba slide per segment, and the hybrid presenter clip (portrait with a slow push-in, H.264,
+720p). Every asset is stored with a fingerprint, and the actual cost is recorded on the run
+and the job.
+
+**Robustness:** every FFmpeg command runs with a timeout sized to its work and no stdin.
+Portraits are decoded on upload, so a corrupt image is refused before it can stall a render.
+
+**Fonts:** FFmpeg's text rendering misplaces stacked Yoruba marks with Noto Sans. DejaVu
+Sans renders them correctly (tested), so it is used for all rendered text and installed in
+the Docker image.
 
 Later phases add: source channels, episodes, licences and rights, research reports,
 scripts and revisions, pronunciation dictionary, voice/video assets, publications,

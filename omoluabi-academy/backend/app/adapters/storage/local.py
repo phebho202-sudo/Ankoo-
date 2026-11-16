@@ -33,6 +33,18 @@ class LocalStorage(StorageProvider):
             detail=f"root={self.root} writable={writable}",
         )
 
+    def local_path(self, key: str) -> Path:
+        """Filesystem path of a stored object (lets the API serve media with range requests)."""
+        return self._path(key)
+
+    def put_file(self, key: str, src: Path, content_type: str) -> str:
+        path = self._path(key)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        tmp = path.with_suffix(path.suffix + ".part")
+        tmp.write_bytes(src.read_bytes())
+        tmp.replace(path)
+        return f"local://{key}"
+
     def put(self, key: str, data: bytes, content_type: str) -> str:
         path = self._path(key)
         path.parent.mkdir(parents=True, exist_ok=True)

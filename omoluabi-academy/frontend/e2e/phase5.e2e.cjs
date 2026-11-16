@@ -86,7 +86,8 @@ const card = (page, title) => page.locator('section', { has: page.locator(`h2:te
   await login(page, REVIEWER, tempPassword);
   check('reviewer lands on scripts', page.url().endsWith('/scripts'));
   const navLinks = await page.locator('nav[aria-label=Main] a').allInnerTexts();
-  check('reviewer menu shows only Yoruba scripts', navLinks.length === 1 && navLinks[0].includes('Yoruba scripts'));
+  // Reviewers see only language work: scripts, and voice (to rate pronunciation tests).
+  check('reviewer menu shows only language work', navLinks.length === 2 && navLinks[0].includes('Yoruba scripts') && navLinks[1].includes('Voice production'));
   await page.goto(BASE + '/rights');
   check('owner page refused for reviewer', (await page.locator('main h1').innerText()).includes('Not available'));
 

@@ -57,12 +57,24 @@ def _youtube(s: Settings) -> Provider:
     return YouTubeDataAPI(api_key=s.youtube_api_key.get_secret_value())
 
 
+def _elevenlabs(s: Settings) -> Provider:
+    from app.adapters.elevenlabs import ElevenLabsTTS
+
+    assert s.elevenlabs_api_key is not None  # noqa: S101 (guarded by is_configured)
+    return ElevenLabsTTS(
+        s.elevenlabs_api_key.get_secret_value(),
+        model=s.elevenlabs_model,
+        usd_per_1k_chars=s.elevenlabs_usd_per_1k_chars,
+    )
+
+
 def _default_live() -> dict[
     Capability, tuple[Callable[[Settings], bool], Callable[[Settings], Provider]]
 ]:
     return {
         Capability.LLM: (lambda s: s.anthropic_api_key is not None, _claude),
         Capability.VIDEO_SOURCE: (lambda s: s.youtube_api_key is not None, _youtube),
+        Capability.TTS: (lambda s: s.elevenlabs_api_key is not None, _elevenlabs),
     }
 
 

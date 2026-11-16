@@ -139,7 +139,18 @@ class SampleTTS(TTSProvider):
     def status(self) -> ProviderStatus:
         return _status(self.capability, self.name)
 
-    def synthesize(self, *, text: str, voice_id: str, language: str = "yo") -> AudioResult:
+    def estimate_cost(self, characters: int) -> Decimal:
+        return Decimal("0")
+
+    def synthesize(
+        self,
+        *,
+        text: str,
+        voice_id: str,
+        language: str = "yo",
+        model: str | None = None,
+        settings: dict[str, Any] | None = None,
+    ) -> AudioResult:
         duration = max(0.5, round(len(text) * self.seconds_per_char, 2))
         frames = int(duration * self.sample_rate)
         buf = io.BytesIO()

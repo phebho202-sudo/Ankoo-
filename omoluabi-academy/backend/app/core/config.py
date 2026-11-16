@@ -8,6 +8,7 @@ never silently faked.
 
 from __future__ import annotations
 
+from decimal import Decimal
 from enum import StrEnum
 from functools import lru_cache
 
@@ -52,6 +53,10 @@ class Settings(BaseSettings):
     anthropic_effort: str = Field(default="medium", pattern="^(low|medium|high|xhigh|max)$")
     elevenlabs_api_key: SecretStr | None = None
     youtube_api_key: SecretStr | None = None
+    # ElevenLabs: model and price are settings because Yoruba support and your plan's rate
+    # must be confirmed on your own ElevenLabs account (see docs/API_SETUP.md).
+    elevenlabs_model: str = "eleven_multilingual_v2"
+    elevenlabs_usd_per_1k_chars: Decimal = Field(default=Decimal("0.30"), ge=0, le=10)
     r2_account_id: str | None = None
     r2_access_key_id: SecretStr | None = None
     r2_secret_access_key: SecretStr | None = None

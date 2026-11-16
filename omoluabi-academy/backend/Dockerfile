@@ -1,8 +1,9 @@
 FROM python:3.12-slim AS base
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PIP_NO_CACHE_DIR=1
-# FFmpeg is required by the video pipeline (Phase 7).
+# FFmpeg renders audio, slides and video. DejaVu Sans is the font tested to place
+# Yoruba stacked tone marks correctly in FFmpeg text rendering.
 RUN apt-get update \
- && apt-get install -y --no-install-recommends ffmpeg curl \
+ && apt-get install -y --no-install-recommends ffmpeg curl fonts-dejavu-core \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 WORKDIR /app

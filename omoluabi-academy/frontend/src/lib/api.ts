@@ -353,3 +353,71 @@ export type ScriptDetail = ScriptSummary & {
 export type GlossaryTerm = { id: string; english: string; yoruba: string; notes: string | null; status: "proposed" | "approved"; approved_by: string | null };
 export type PronEntry = { id: string; written: string; spoken: string; category: string; notes: string | null; status: "proposed" | "approved"; approved_by: string | null };
 export type TeamMember = { id: string; email: string; display_name: string; role: string; is_active: boolean; last_login_at: string | null };
+
+// ---- Phase 6: voice & presenter
+export type Presenter = {
+  id: string;
+  name: string;
+  description: string;
+  voice_provider: string;
+  voice_id: string;
+  voice_model: string;
+  voice_settings: Record<string, number>;
+  has_portrait: boolean;
+  portrait_sha256: string | null;
+  voice_is_original_or_licensed: boolean;
+  portrait_is_original_or_licensed: boolean;
+  not_a_real_person: boolean;
+  status: "draft" | "approved";
+  approved_by: string | null;
+  approved_at: string | null;
+  voice_config_hash: string;
+  passed_test_id: string | null;
+  problems: string[];
+  updated_at: string;
+};
+
+export type VoiceTest = {
+  id: string;
+  status: "generating" | "awaiting_review" | "passed" | "failed" | "blocked";
+  passage: { id: string; text: string; checks: string[] }[];
+  audio_asset_id: string | null;
+  ratings: Record<string, boolean>;
+  notes: string | null;
+  reviewed_by: string | null;
+  reviewed_at: string | null;
+  provider: string | null;
+  characters: number;
+  cost_usd: string;
+  is_sample: boolean;
+  error: string | null;
+  job_id: string | null;
+  voice_config_hash: string;
+  created_at: string;
+  checks: string[];
+};
+
+export type Asset = { id: string; kind: string; position: number; mime_type: string; size_bytes: number; sha256: string; duration_seconds: number | null; is_sample: boolean };
+
+export type ProductionRun = {
+  id: string;
+  script_id: string;
+  script_revision: number;
+  video_format: string;
+  status: "queued" | "running" | "completed" | "failed" | "blocked";
+  tts_provider: string | null;
+  tts_characters: number;
+  tts_cost_usd: string;
+  avatar_seconds: number;
+  avatar_cost_usd: string;
+  total_cost_usd: string;
+  duration_seconds: number;
+  is_sample: boolean;
+  error: string | null;
+  job_id: string | null;
+  requested_by: string;
+  created_at: string;
+  finished_at: string | null;
+  segment_durations?: number[];
+  assets?: Asset[];
+};

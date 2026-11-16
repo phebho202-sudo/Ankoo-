@@ -87,3 +87,35 @@ def good_report(**overrides: Any) -> dict[str, Any]:
     }
     r.update(overrides)
     return r
+
+
+class FakeLiveTTS:
+    """Behaves like a paid TTS provider (is_sample=False) but returns local test audio."""
+
+    name = "fake-live-tts"
+    is_sample = False
+    model = "fake-model"
+
+    def __init__(self, rate: str = "0.30", fail_after: int | None = None) -> None:
+        from app.adapters.sample import SampleTTS
+
+        self._sample = SampleTTS()
+        self.rate = Decimal(rate)
+        self.calls: list[dict[str, Any]] = []
+        self.fail_after = fail_after
+
+    def estimate_cost(self, characters: int) -> Decimal:
+        return (Decimal(characters) * self.rate / 1000).quantize(Decimal("0.0001"))
+
+    def synthesize(self, *, text, voice_id, language="yo", model=None, settings=None):
+        from dataclasses import replace
+
+        if self.fail_after is not None and len(self.calls) >= self.fail_after:
+            raise ProviderError("ElevenLabs error 500")
+        self.calls.append(
+            {"text": text, "voice_id": voice_id, "model": model, "settings": settings}
+        )
+        res = self._sample.synthesize(text=text, voice_id=voice_id)
+        return replace(
+            res, provider=self.name, is_sample=False, cost_usd=self.estimate_cost(len(text))
+        )

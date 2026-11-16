@@ -6,12 +6,59 @@
 | 2. Brand and administration | Complete. Approved 2026-11-14. |
 | 3. Discovery and research | Complete in sample mode. Approved 2026-11-14 (API keys pending). |
 | 4. Rights management | Complete. Approved 2026-11-16. |
-| 5. Yoruba content engine | **Complete in sample mode. Awaiting owner approval.** |
-| 6. Voice and avatar | Not started |
+| 5. Yoruba content engine | Complete in sample mode. Approved 2026-11-16. |
+| 6. Voice and avatar | **Complete in sample mode. Awaiting owner approval and an ElevenLabs account.** |
 | 7. Video production | Not started |
 | 8. Publishing | Not started |
 | 9. Monetisation | Not started |
 | 10. Deployment | Not started |
+
+---
+
+## Phase 6: Voice and presenter (2026-11-16)
+
+### Delivered
+| Requirement | What exists |
+|---|---|
+| A consistent original Nigerian male business educator | One presenter profile (name, voice, portrait), locked when approved. Owner declarations that the voice and portrait are original or licensed and depict no real person. Changing either cancels approval. The face itself must come from you: I cannot generate a portrait without a paid image service, and a placeholder brand card is used until you upload one. |
+| Test Yoruba pronunciation before large-scale generation | A test passage covering tone minimal pairs (owó/ọwọ́/ọ̀wọ̀, ọkọ/ọkọ̀/ọkọ́, igbá/ìgbà/ìgbá), dotted letters, naira amounts, your dictionary terms and natural pace. A Yoruba reviewer rates each check. **Narration is blocked until the current exact voice configuration passes.** |
+| Voice narration | Per-segment synthesis with your approved pronunciations applied, joined and loudness-levelled. ElevenLabs adapter built; sample mode uses a local test tone. |
+| Presenter video | **Hybrid (default, cheapest):** portrait with gentle motion over the narration (H.264). Full avatar is refused until a licensed avatar provider is connected, and is capped by avatar minutes (0 by default). |
+| Audio waveform | Gold-on-navy waveform image. |
+| Captions | English and Yoruba SRT re-timed to the measured narration, segment by segment. |
+| Supporting educational graphics | A 1920×1080 Yoruba slide per segment in the brand colours, with correct tone marks. |
+| Cost per job | Every test and run records characters and actual cost. Budget reserved before any paid call. Avatar minutes and storage limits enforced. |
+| Dashboard | **Voice production** page (presenter, declarations, portrait, pronunciation tests with player and rating, approved scripts, runs) and **run** page (presenter clip, narration, waveform, slides, per-segment audio, captions, cost). Reviewers can rate tests. Both languages. |
+
+### Test results
+* **Backend:** 228 passed on PostgreSQL 16 (94% coverage); SQLite mode passes too. Lint clean. Migration checked.
+  The pipeline tests run real FFmpeg. ElevenLabs is tested against a simulated server.
+* **Frontend:** typecheck clean; 33 unit tests; build OK.
+* **Browser tests on the real stack:** Phase 6 **15/15**, Phase 5 **20/20**, Phase 4 **19/19**, Phase 3 **18/18**, Phase 2 **19/19**.
+
+### Failures found and fixed
+1. **Yoruba tone marks missing on rendered slides.** FFmpeg with Noto Sans dropped or
+   misplaced stacked marks (Ẹ̀kọ́ became Ẹkọ). Compared fonts side by side and switched to
+   DejaVu Sans, which renders every combination correctly. It is now in the Docker image.
+2. **A corrupt portrait could freeze a production job for 10 minutes.** FFmpeg looping a
+   broken image retries endlessly. Portraits are now decoded on upload. The render uses a
+   cleaned copy, and every FFmpeg call has a timeout sized to its work and no stdin.
+3. **Each production asset was listed twice** (linked to its run two ways). Fixed.
+4. Test-script issues (an unapplied test edit, a heading-match race, Unicode forms). Fixed in tests.
+
+### Needs your action
+1. **ElevenLabs account and key.** Confirm on their site which model supports Yoruba, choose
+   an original or licensed voice, and set your real per-character rate (API_SETUP.md §3).
+2. **A presenter portrait,** original or licensed (commissioned or AI-generated for the
+   academy), not depicting a real person.
+3. **Run a pronunciation test with a fluent Yoruba reviewer** before any real narration.
+4. Decide later whether a lip-synced avatar is worth its cost. Hybrid is the default.
+
+### Known limitations
+* **ElevenLabs is not verified live, and Yoruba quality is unknown** until the first real test.
+* Slides show the Yoruba narration text. Richer diagrams per segment are a possible later addition.
+* The waveform is a still image. Animated waveforms belong to Phase 7 video composition.
+* Avatar provider: none connected (by design for cost).
 
 ---
 
