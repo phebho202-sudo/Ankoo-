@@ -673,6 +673,103 @@ Source of truth: `frontend/src/lib/i18n/dictionaries.ts`. Regenerate this file a
 | `videos.reject` | Reject | Kọ̀ ọ́ | |
 | `videos.decided` | {who} decided on {when}. | {who} ló pinnu ní {when}. | |
 | `videos.sampleNote` | Sample video: a test tone and placeholder text. It can be reviewed, but never counts toward automatic publishing. | Fídíò àpẹẹrẹ: ìró ìdánwò àti ọ̀rọ̀ àpẹẹrẹ. A lè ṣàyẹ̀wò rẹ̀, ṣùgbọ́n a kò ní kà á mọ́ ìgbéjáde aládàáṣe. | |
+| `accounts.subtitle` | Connect the academy's YouTube channel, Facebook Page, Instagram account and TikTok account. Tokens are stored encrypted and never shown. During the trial, uploads are private, unlisted or drafts. | So ikanni YouTube, ojú-ìwé Facebook, àkáǹtì Instagram àti àkáǹtì TikTok ilé-ẹ̀kọ́ náà pọ̀. A ń tọ́jú àwọn kọ́kọ́rọ́ ìwọlé ní ìpamọ́ àṣírí, a kì í sì í fi wọ́n hàn. Nígbà ìdánwò, ìgbéjáde jẹ́ ti àṣírí, aláìfarahàn tàbí àkọpamọ́. | |
+| `accounts.sampleMode` | Test mode: real sign-in is switched off. Sample accounts publish nothing: uploads are only simulated. | Ipò ìdánwò: ìwọlé gidi ti wà ní pípa. Àkáǹtì àpẹẹrẹ kò ní gbé nǹkan jáde: àfarawé ìgbéjáde nìkan ni. | |
+| `accounts.providers.google` | YouTube (Google sign-in) | YouTube (ìwọlé Google) | |
+| `accounts.providers.meta` | Facebook and Instagram (Meta sign-in) | Facebook àti Instagram (ìwọlé Meta) | |
+| `accounts.providers.tiktok` | TikTok | TikTok | |
+| `accounts.notes.google` | Uploads are private or unlisted during the trial. Each upload uses about 2,050 of the 10,000 free daily API units. | Ìgbéjáde jẹ́ ti àṣírí tàbí aláìfarahàn nígbà ìdánwò. Ìgbéjáde kọ̀ọ̀kan ń lo nǹkan bí 2,050 nínú 10,000 ìpín API ọ̀fẹ́ lójoojúmọ́. | |
+| `accounts.notes.meta` | Facebook Reels are uploaded as drafts during the trial. Instagram has no private or draft upload, so it is used only after automatic publishing is unlocked, you allow public uploads, and public video hosting is set up. | A ń gbé Facebook Reels sókè gẹ́gẹ́ bí àkọpamọ́ nígbà ìdánwò. Instagram kò ní ìgbéjáde àṣírí tàbí àkọpamọ́, nítorí náà a ó lò ó lẹ́yìn tí ìtẹ̀jáde aládàáṣe bá ṣí sílẹ̀ nìkan, tí o gba ìgbéjáde fún gbogbo ènìyàn láàyè, tí a sì ṣètò ibi ìpamọ́ fídíò tí gbogbo ènìyàn lè dé. | |
+| `accounts.notes.tiktok` | Videos arrive in your TikTok inbox as drafts. You add the final caption and post them in the TikTok app. | Fídíò yóò dé àpótí TikTok rẹ gẹ́gẹ́ bí àkọpamọ́. Ìwọ ni yóò kọ àkọlé ìkẹyìn, tí yóò sì gbé e jáde nínú áàpù TikTok. | |
+| `accounts.connect` | Connect | So pọ̀ | |
+| `accounts.connectSample` | Add a sample account | Fi àkáǹtì àpẹẹrẹ kún un | |
+| `accounts.disconnect` | Disconnect | Já a kúrò | |
+| `accounts.notConfigured` | Not set up yet. Add these to the server's environment (see API_SETUP.md): | A kò tíì ṣètò rẹ̀. Fi àwọn wọ̀nyí kún àyíká sáfà (wo API_SETUP.md): | |
+| `accounts.noEncryption` | TOKEN_ENCRYPTION_KEY is not set. Accounts cannot be connected until it is, because tokens are always stored encrypted. | A kò tíì ṣètò TOKEN_ENCRYPTION_KEY. A kò lè so àkáǹtì pọ̀ títí tí a ó fi ṣe é, nítorí pé a máa ń fi kọ́kọ́rọ́ ìwọlé pamọ́ ní àṣírí nígbà gbogbo. | |
+| `accounts.redirect` | Redirect URI to register with the platform: | Àdírẹ́sì ìpadàbọ̀ láti forúkọ sílẹ̀ lórí ìkànnì náà: | |
+| `accounts.status.connected` | Connected | Ó ti so pọ̀ | |
+| `accounts.status.expired` | Reconnect needed | Ó nílò ìsopọ̀ tuntun | |
+| `accounts.status.disconnected` | Disconnected | A ti já a kúrò | |
+| `accounts.expires` | Access expires {when} | Àṣẹ ìwọlé yóò parí ní {when} | |
+| `accounts.noExpiry` | No expiry date | Kò ní ọjọ́ ìparí | |
+| `accounts.refreshable` | Renews automatically | Ó ń sọ ara rẹ̀ dọ̀tun fúnra rẹ̀ | |
+| `accounts.lastError` | Last problem: {msg} | Ìṣòro tó kẹ́yìn: {msg} | |
+| `accounts.noAccounts` | No accounts connected yet. | Kò sí àkáǹtì tí a ti so pọ̀ síbẹ̀. | |
+| `accounts.connected` | Connected: {n} account(s). | A ti so àkáǹtì {n} pọ̀. | |
+| `accounts.connectFailed` | The connection failed: {msg} | Ìsopọ̀ kò yọrí: {msg} | |
+| `accounts.platformNames.youtube` | YouTube | YouTube | |
+| `accounts.platformNames.facebook` | Facebook | Facebook | |
+| `accounts.platformNames.instagram` | Instagram | Instagram | |
+| `accounts.platformNames.tiktok` | TikTok | TikTok | |
+| `calendar.subtitle` | Schedule approved videos and follow every upload and its log. Nothing is published publicly during the trial. | Ṣètò ìgbéjáde fídíò tí a fọwọ́ sí, kí o sì máa tẹ̀lé ìgbéjáde kọ̀ọ̀kan àti àkọsílẹ̀ rẹ̀. A kò ní gbé nǹkan jáde fún gbogbo ènìyàn nígbà ìdánwò. | |
+| `calendar.paused` | Publishing is paused | Ìtẹ̀jáde ti dúró | |
+| `calendar.pauseReason` | Reason: {reason} | Ìdí: {reason} | |
+| `calendar.resume` | Resume publishing | Tẹ̀síwájú ìtẹ̀jáde | |
+| `calendar.pause` | Pause publishing | Dá ìtẹ̀jáde dúró | |
+| `calendar.running` | Publishing is running | Ìtẹ̀jáde ń lọ lọ́wọ́ | |
+| `calendar.trial` | Trial period: {n} of {required} real videos approved. Uploads are private, unlisted or drafts. | Àkókò ìdánwò: o ti fọwọ́ sí fídíò gidi {n} nínú {required}. Ìgbéjáde jẹ́ ti àṣírí, aláìfarahàn tàbí àkọpamọ́. | |
+| `calendar.unlocked` | Automatic publishing is on. | Ìtẹ̀jáde aládàáṣe ti tàn. | |
+| `calendar.publicAllowed` | Public uploads are allowed. | A ti gba ìgbéjáde fún gbogbo ènìyàn láàyè. | |
+| `calendar.sentToday` | {n} of {limit} uploads today | Ìgbéjáde {n} nínú {limit} lónìí | |
+| `calendar.runNow` | Send due uploads now | Fi ìgbéjáde tí àkókò rẹ̀ tó ránṣẹ́ báyìí | |
+| `calendar.queued` | Started. Refresh in a moment to see the result. | A ti bẹ̀rẹ̀. Tún ojú-ìwé ṣe láìpẹ́ láti rí àbájáde. | |
+| `calendar.schedule` | Schedule an upload | Ṣètò ìgbéjáde kan | |
+| `calendar.video` | Approved video | Fídíò tí a fọwọ́ sí | |
+| `calendar.noApproved` | No approved videos yet. Approve a video on the Video production page. | Kò sí fídíò tí a fọwọ́ sí síbẹ̀. Fọwọ́ sí fídíò kan ní ojú-ìwé Ìṣẹ̀dá fídíò. | |
+| `calendar.destination` | Destination | Ibi tí yóò lọ | |
+| `calendar.account` | Account | Àkáǹtì | |
+| `calendar.noAccount` | No connected account for this destination. | Kò sí àkáǹtì tí a so pọ̀ fún ibí. | |
+| `calendar.when` | Date and time (Lagos) | Ọjọ́ àti àkókò (Èkó) | |
+| `calendar.whenHelp` | Leave empty to upload at the next run (within 5 minutes). | Fi sílẹ̀ ní òfo láti gbé e sókè ní ìgbà tó ń bọ̀ (láàrin ìṣẹ́jú 5). | |
+| `calendar.visibility` | Visibility | Ìrísí | |
+| `calendar.visibilities.private` | Private | Àṣírí | |
+| `calendar.visibilities.unlisted` | Unlisted | Aláìfarahàn | |
+| `calendar.visibilities.public` | Public | Gbogbo ènìyàn | |
+| `calendar.visibilities.draft` | Draft | Àkọpamọ́ | |
+| `calendar.title` | Title | Àkọlé | |
+| `calendar.description` | Description | Àpèjúwe | |
+| `calendar.scheduleButton` | Schedule | Ṣètò rẹ̀ | |
+| `calendar.scheduled` | Scheduled. | A ti ṣètò rẹ̀. | |
+| `calendar.unavailable` | Not available now | Kò sí ní àrọ́wọ́tó báyìí | |
+| `calendar.doesNotFit` | The video does not fit here | Fídíò náà kò bá ibí mu | |
+| `calendar.upcoming` | Upcoming | Èyí tó ń bọ̀ | |
+| `calendar.history` | History | Ìtàn | |
+| `calendar.noUpcoming` | Nothing scheduled. | Kò sí ohun tí a ṣètò. | |
+| `calendar.noHistory` | No uploads yet. | Kò sí ìgbéjáde síbẹ̀. | |
+| `calendar.status.scheduled` | Scheduled | A ti ṣètò rẹ̀ | |
+| `calendar.status.uploading` | Uploading… | À ń gbé e sókè… | |
+| `calendar.status.retrying` | Will retry | A ó tún gbìyànjú | |
+| `calendar.status.uploaded` | Uploaded (confirmed) | A ti gbé e sókè (ìkànnì fìdí rẹ̀ múlẹ̀) | |
+| `calendar.status.unconfirmed` | Not confirmed | A kò fìdí rẹ̀ múlẹ̀ | |
+| `calendar.status.simulated` | Simulated (sample) | Àfarawé (àpẹẹrẹ) | |
+| `calendar.status.failed` | Failed | Kò yọrí | |
+| `calendar.status.blocked` | Stopped | Ó dúró | |
+| `calendar.status.cancelled` | Cancelled | A fagi lé e | |
+| `calendar.mode.owner` | scheduled by you | ìwọ lo ṣètò rẹ̀ | |
+| `calendar.mode.auto` | scheduled automatically | ètò aládàáṣe | |
+| `calendar.cancel` | Cancel | Fagi lé e | |
+| `calendar.details` | Details and log | Àlàyé àti àkọsílẹ̀ | |
+| `calendar.back` | Back to the calendar | Padà sí kàlẹ́ńdà | |
+| `calendar.nextTry` | Next try {when} | Ìgbìyànjú tó kàn: {when} | |
+| `calendar.log` | Publishing log | Àkọsílẹ̀ ìtẹ̀jáde | |
+| `calendar.attempt` | Attempt {n} | Ìgbìyànjú {n} | |
+| `calendar.outcomes.started` | Started | Ó ti bẹ̀rẹ̀ | |
+| `calendar.outcomes.confirmed` | Confirmed by the platform | Ìkànnì ti fìdí rẹ̀ múlẹ̀ | |
+| `calendar.outcomes.simulated` | Simulated: nothing was sent | Àfarawé: a kò fi nǹkan ránṣẹ́ | |
+| `calendar.outcomes.transient_error` | Temporary problem (will retry) | Ìṣòro ìgbà díẹ̀ (a ó tún gbìyànjú) | |
+| `calendar.outcomes.permanent_error` | Refused by the platform | Ìkànnì kọ̀ ọ́ | |
+| `calendar.outcomes.auth_error` | Account permission refused | Ìkànnì kọ àṣẹ àkáǹtì | |
+| `calendar.outcomes.unconfirmed` | Sent, not confirmed | A fi ránṣẹ́, a kò fìdí rẹ̀ múlẹ̀ | |
+| `calendar.outcomes.unknown_error` | Interrupted | Ó dáwọ́ dúró láàrin | |
+| `calendar.outcomes.blocked` | Stopped by a check | Àyẹ̀wò kan dá a dúró | |
+| `calendar.outcomes.deferred` | Moved to tomorrow (daily limit) | A sún un sí ọ̀la (òpin ojoojúmọ́) | |
+| `calendar.warnings.captions_not_uploaded` | Captions were not uploaded | A kò gbé àkọlé ìsàlẹ̀ sókè | |
+| `calendar.warnings.thumbnail_not_set` | Custom thumbnail not set (needs a verified YouTube channel) | A kò lè fi àwòrán àfihàn tiwa sí i (ó nílò ikanni YouTube tí a ti fìdí rẹ̀ múlẹ̀) | |
+| `calendar.unconfirmedHelp` | The platform did not confirm this upload, so it is never sent again automatically. Check the platform and record what you found. | Ìkànnì náà kò fìdí ìgbéjáde yìí múlẹ̀, nítorí náà a kò ní fi ránṣẹ́ mọ́ fúnra wa. Yẹ ìkànnì náà wò, kí o sì kọ ohun tí o rí sílẹ̀. | |
+| `calendar.onPlatform` | It is on the platform | Ó wà lórí ìkànnì náà | |
+| `calendar.notOnPlatform` | It is not there | Kò sí níbẹ̀ | |
+| `calendar.url` | Link (optional) | Ìjápọ̀ (kò pọn dandan) | |
+| `calendar.open` | Open on the platform | Ṣí i lórí ìkànnì náà | |
 | `settings.title` | System settings | Ètò sístẹ́mù | |
 | `settings.subtitle` | Limits and rules the platform must obey. Every change is recorded in the audit trail. | Àwọn òpin àti òfin tí sístẹ́mù gbọ́dọ̀ tẹ̀lé. A ń kọ gbogbo àyípadà sínú àkọsílẹ̀ àyẹ̀wò. | |
 | `settings.categories.budget` | Budget and cost control | Ìṣúná àti ìṣàkóso ìnáwó | |
@@ -687,7 +784,7 @@ Source of truth: `frontend/src/lib/i18n/dictionaries.ts`. Regenerate this file a
 | `settings.range` | Allowed: {min} to {max} | Ohun tí a gbà: {min} sí {max} | |
 | `settings.confirmIncrease` | I approve raising this spending limit | Mo fọwọ́ sí i pé kí a gbé òpin ìnáwó yìí sókè | |
 | `settings.needsConfirmation` | Raising a spending limit needs your explicit approval. Tick the box to confirm. | Gbígbé òpin ìnáwó sókè nílò ìfọwọ́sí rẹ. Fi àmì sí àpótí náà láti fìdí rẹ̀ múlẹ̀. | |
-| `settings.autoPublishBlocked` | Automatic publishing stays off until the publishing system is built and you have approved the first 10 videos. | Ìtẹ̀jáde aládàáṣe yóò wà ní pípa títí tí a ó fi kọ́ ètò ìtẹ̀jáde, tí o sì fọwọ́ sí fídíò mẹ́wàá àkọ́kọ́. | |
+| `settings.autoPublishBlocked` | Automatic publishing unlocks after you approve 10 real videos (or the number you set) and connect a real platform account. Public uploads can be allowed only after that. | Ìtẹ̀jáde aládàáṣe yóò ṣí sílẹ̀ lẹ́yìn tí o bá fọwọ́ sí fídíò gidi mẹ́wàá (tàbí iye tí o yàn), tí o sì so àkáǹtì ìkànnì gidi kan pọ̀. Lẹ́yìn náà nìkan ni a lè gba ìgbéjáde fún gbogbo ènìyàn láàyè. | |
 | `settings.invalid` | This value was not accepted: {msg} | A kò gba iye yìí: {msg} | |
 | `settings.failed` | The change could not be saved: {msg} | A kò lè fi àyípadà náà pamọ́: {msg} | |
 | `settings.on` | On | Títàn | |
@@ -707,6 +804,11 @@ Source of truth: `frontend/src/lib/i18n/dictionaries.ts`. Regenerate this file a
 | `settings.labels.publishing.default_visibility` | Default upload visibility | Ìrísí ìgbéjáde àtilẹ̀wá | |
 | `settings.labels.production.default_video_format` | Default video format | Ọ̀nà fídíò àtilẹ̀wá | |
 | `settings.labels.production.min_long_form_seconds` | Shortest long-form lesson | Ẹ̀kọ́ gígùn tí ó kúrú jù | |
+| `settings.labels.publishing.paused` | Publishing paused | Ìtẹ̀jáde dúró | |
+| `settings.labels.publishing.allow_public` | Allow public uploads | Gba ìgbéjáde fún gbogbo ènìyàn láàyè | |
+| `settings.labels.publishing.daily_limit` | Uploads per day | Ìgbéjáde lójoojúmọ́ | |
+| `settings.labels.publishing.auto_hour` | Automatic upload hour (Lagos) | Wákàtí ìgbéjáde aládàáṣe (Èkó) | |
+| `settings.labels.publishing.youtube_daily_quota_units` | YouTube API units per day | Ìpín API YouTube lójoojúmọ́ | |
 | `settings.labels.discovery.max_videos_per_scan` | Videos per channel scan | Fídíò fún ìwádìí ikanni kọ̀ọ̀kan | |
 | `settings.help.budget.monthly_limit_usd` | Maximum total provider spend per calendar month. | Àpapọ̀ owó tó pọ̀ jù tí a lè ná lórí àwọn olùpèsè ní oṣù kan. | |
 | `settings.help.budget.alert_threshold_percent` | Alert the owner when monthly spend reaches this share of the limit. | Kìlọ̀ fún ọ̀gá nígbà tí ìnáwó oṣù bá dé ìpín yìí nínú òpin. | |
@@ -719,6 +821,11 @@ Source of truth: `frontend/src/lib/i18n/dictionaries.ts`. Regenerate this file a
 | `settings.help.publishing.default_visibility` | Visibility for new uploads. Public is not allowed during the trial period. | Ìrísí fún fídíò tuntun. A kò gbà á láàyè fún gbogbo ènìyàn nígbà ìdánwò. | |
 | `settings.help.production.default_video_format` | Default presenter format. Hybrid is the low-cost default. | Ọ̀nà olùkọ́ àtilẹ̀wá. Àdàpọ̀ ni èyí tí owó rẹ̀ kéré. | |
 | `settings.help.production.min_long_form_seconds` | A real lesson shorter than this cannot become a long-form video (educational value gate). | Ẹ̀kọ́ gidi tí ó kúrú ju èyí lọ kò lè di fídíò ẹ̀kọ́ gígùn (àyẹ̀wò iye ẹ̀kọ́). | |
+| `settings.help.publishing.paused` | Stops all uploads. Set automatically when a rights check, a quality check or an account permission fails; resume after fixing the cause. | Ó dá gbogbo ìgbéjáde dúró. Ó máa ń tàn fúnra rẹ̀ bí àyẹ̀wò àṣẹ, àyẹ̀wò dídára tàbí àṣẹ àkáǹtì bá kùnà; tẹ̀síwájú lẹ́yìn tí o bá ti tún ìdí rẹ̀ ṣe. | |
+| `settings.help.publishing.allow_public` | Only possible once automatic publishing is unlocked. | Ó ṣeé ṣe lẹ́yìn tí ìtẹ̀jáde aládàáṣe bá ṣí sílẹ̀ nìkan. | |
+| `settings.help.publishing.daily_limit` | Most uploads per day across all platforms. | Iye ìgbéjáde tó pọ̀ jùlọ lójoojúmọ́ lórí gbogbo ìkànnì. | |
+| `settings.help.publishing.auto_hour` | When automatically scheduled uploads go out. | Àkókò tí ìgbéjáde aládàáṣe máa ń lọ. | |
+| `settings.help.publishing.youtube_daily_quota_units` | An upload with captions and thumbnail uses about 2,050 units. | Ìgbéjáde kan pẹ̀lú àkọlé àti àwòrán àfihàn ń lo nǹkan bí ìpín 2,050. | |
 | `settings.help.discovery.max_videos_per_scan` | Most videos recorded per channel scan. Each 50 videos use about 2 of YouTube's 10,000 free daily quota units. | Iye fídíò tó pọ̀ jùlọ tí a ó kọ sílẹ̀ nínú ìwádìí ikanni kan. Fídíò 50 kọ̀ọ̀kan ń lo nǹkan bí 2 nínú 10,000 ìpín ọ̀fẹ́ YouTube lójoojúmọ́. | |
 | `settings.audit` | Audit trail | Àkọsílẹ̀ àyẹ̀wò | |
 | `settings.auditSubtitle` | Every login, change and job, newest first. Entries cannot be edited or deleted. | Gbogbo ìwọlé, àyípadà àti iṣẹ́, láti tuntun jùlọ. A kò lè ṣàtúnṣe tàbí pa àkọsílẹ̀ rẹ́. | |

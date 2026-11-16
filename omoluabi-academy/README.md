@@ -24,14 +24,15 @@ publishing and monetisation, with a human approval gate at every risky step.
 | Original presenter | One presenter profile, locked when approved. Owner declarations that the voice and portrait are original or licensed and depict no real person. Changing voice or portrait cancels approval. |
 | Least privilege | Language reviewer accounts can reach only scripts, vocabulary and pronunciation. Owner-only areas refuse them. |
 | Never exceed the spending limit | Each paid call reserves its worst-case cost first, under a database lock, and is blocked if the monthly limit would be exceeded (`app/services/budget.py`) |
-| No duplicate videos | Unique (platform, video ID) in the database, plus re-upload detection by content fingerprint |
+| No duplicate videos | One live publication per video file (SHA-256) per destination, enforced in code and by a unique database index; interrupted uploads resume their own session; unconfirmed uploads are never re-sent automatically. The same lesson version is never rendered twice. |
 | No copying the source | Research is written in our own words, and any run of 12+ words copied from the source flags the report and blocks approval of its topics |
 | Permitted transcripts only | No scraping. A transcript needs a recorded source and permission reference. |
 | Owner approval for spending | Raising any spending limit needs explicit owner confirmation, recorded as `budget.limit_increase_approved` |
-| No early auto-publishing | Automatic publishing cannot be switched on until the publishing pipeline exists and 10 videos are owner-approved |
+| No early auto-publishing | Automatic publishing unlocks only after the owner approves 10 real videos (sample videos never count) and connects a real account. Until then uploads are private, unlisted or drafts. Public uploads need a second owner switch. |
+| Automatic stop | Publishing pauses itself when a rights check, a quality check or an account permission fails, and waits for the owner to resume |
+| Every video approved by the owner | Rendered videos wait for the owner's six-point review; only approved videos can be scheduled |
 | Secure owner login | scrypt-hashed passwords, 5-attempt lockout, expiring sessions stored only as hashes, httpOnly cookies |
 
-Publishing gates and automatic publishing rules arrive in Phase 8, as specified.
 
 ## Layout
 

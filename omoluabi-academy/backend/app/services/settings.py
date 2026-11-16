@@ -126,6 +126,49 @@ DEFINITIONS: dict[str, SettingDef] = {
             choices=("private", "unlisted"),
         ),
         SettingDef(
+            "publishing.paused",
+            "publishing",
+            "bool",
+            False,
+            "Stop all uploads. Set automatically when a rights check, a quality check or an "
+            "account permission fails; you resume it after fixing the cause.",
+        ),
+        SettingDef(
+            "publishing.allow_public",
+            "publishing",
+            "bool",
+            False,
+            "Allow public uploads. Only possible once automatic publishing is unlocked.",
+        ),
+        SettingDef(
+            "publishing.daily_limit",
+            "publishing",
+            "int",
+            3,
+            "Most uploads per day across all platforms.",
+            Decimal("1"),
+            Decimal("20"),
+        ),
+        SettingDef(
+            "publishing.auto_hour",
+            "publishing",
+            "int",
+            18,
+            "Hour (Lagos time) for automatically scheduled uploads.",
+            Decimal("0"),
+            Decimal("23"),
+            unit="h",
+        ),
+        SettingDef(
+            "publishing.youtube_daily_quota_units",
+            "publishing",
+            "int",
+            10000,
+            "YouTube API units per day (an upload with captions and thumbnail uses about 2,050).",
+            Decimal("2050"),
+            Decimal("1000000"),
+        ),
+        SettingDef(
             "discovery.max_videos_per_scan",
             "discovery",
             "int",
@@ -194,6 +237,42 @@ def _effective(d: SettingDef, stored: SystemSetting | None) -> Any:
     return stored.value if stored is not None else coerce(d, d.default)
 
 
+def _check_auto_publish_unlock(db: Session) -> None:
+    """Automatic publishing needs the owner to have approved the required number of real
+    videos, and at least one real connected account."""
+    from app.models import AccountStatus, PlatformAccount
+    from app.services import videos
+
+    required = int(get_value(db, "publishing.required_approved_videos"))
+    approved = videos.approved_count(db)
+    accounts = db.execute(
+        select(PlatformAccount).where(
+            PlatformAccount.status == AccountStatus.CONNECTED,
+            PlatformAccount.is_sample.is_(False),
+        )
+    ).first()
+    problems = []
+    if approved < required:
+        problems.append("approved_videos")
+    if accounts is None:
+        problems.append("connected_account")
+    if problems:
+        raise BlockedByPolicyError(
+            f"Automatic publishing unlocks after you approve {required} real videos "
+            f"({approved} so far) and connect a real platform account",
+            details={"approved": approved, "required": required, "missing": problems},
+        )
+
+
+def _set_raw(db: Session, key: str, value: Any, actor: str) -> None:
+    d = _get_def(key)
+    row = db.get(SystemSetting, key)
+    if row is None:
+        db.add(SystemSetting(key=key, value=value, description=d.description, updated_by=actor))
+    else:
+        row.value, row.updated_by = value, actor
+
+
 def get_value(db: Session, key: str) -> Any:
     d = _get_def(key)
     return _effective(d, db.get(SystemSetting, key))
@@ -242,12 +321,15 @@ def update_setting(
             details={"key": key, "old": old, "new": new, "requires": "confirm_increase"},
         )
     if key == "publishing.auto_publish_enabled" and new is True:
-        # The publishing pipeline (Phase 8) is not built, so no video can have been approved.
-        # This gate is replaced by a real count of owner-approved videos in Phase 8.
-        raise BlockedByPolicyError(
-            "Automatic publishing cannot be enabled until the publishing pipeline exists and "
-            "the required number of videos has been reviewed and approved by the owner"
-        )
+        _check_auto_publish_unlock(db)
+    if key == "publishing.allow_public" and new is True:
+        if not get_value(db, "publishing.auto_publish_enabled"):
+            raise BlockedByPolicyError(
+                "Public uploads can only be allowed after automatic publishing is unlocked"
+            )
+    if key == "publishing.auto_publish_enabled" and new is False and actor != "system":
+        # Switching automation off also withdraws permission for public uploads.
+        _set_raw(db, "publishing.allow_public", False, actor)
 
     if row is None:
         row = SystemSetting(key=key, value=new, description=d.description, updated_by=actor)

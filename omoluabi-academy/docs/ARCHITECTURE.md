@@ -265,6 +265,27 @@ with drawtext. Each output is probed (`ffprobe`) and checked. Any failure marks 
 have changed) and needs every checklist item. `videos.approved_count()` counts approved
 non-sample renders. Phase 8 uses it to unlock automatic publishing.
 
+### Publishing (Phase 8)
+
+| Table | Purpose |
+|---|---|
+| `platform_accounts` | A connected YouTube channel, Facebook Page, Instagram account or TikTok account: OAuth provider, platform ID, **encrypted** access and refresh tokens, expiry, scopes, status (connected / expired / disconnected), sample flag. Unique per (platform, external ID). |
+| `oauth_states` | One-time OAuth `state` and PKCE verifier, valid 15 minutes. |
+| `publications` | One scheduled upload: video and destination, file SHA-256, title/description/tags, visibility, time, status, attempts, next attempt, resume token (upload session), platform ID and URL, warnings, approval mode (owner/auto). **Partial unique index** on (destination, SHA-256) for live statuses. |
+| `publish_attempts` | The publishing log: one row per attempt with outcome, HTTP status and message. |
+
+**Adapters** (`app/adapters/publishers/`): `OAuthClient` (authorize URL, code exchange,
+refresh, identities) and `PublisherProvider` (upload, verify) per platform. Errors are
+`PublishError(transient, auth, resume_token)`, which the service turns into retries, account
+expiry or failure. Sample mode uses `SamplePublisher`, which mirrors each platform's options
+and never claims a confirmed upload.
+
+**Service** (`app/services/publishing.py`): scheduling policy, platform captions, `run_due`
+(called every 5 minutes by `publishing.dispatch`), `process` (preflight checks → upload →
+outcome), `recheck_unconfirmed`, `auto_schedule` (hourly, only after the unlock), and
+`pause`/`resume`. The row is committed as *uploading* before the network call, so a worker
+crash can never cause a silent second upload: stale *uploading* rows become *not confirmed*.
+
 Later phases add: source channels, episodes, licences and rights, research reports,
 scripts and revisions, pronunciation dictionary, voice/video assets, publications,
 platform accounts and tokens, budgets and spend, and monetisation tables.

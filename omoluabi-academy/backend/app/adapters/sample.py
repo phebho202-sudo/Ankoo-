@@ -35,6 +35,7 @@ from app.adapters.base import (
     SourceVideoPage,
     TTSProvider,
     VideoSourceProvider,
+    Visibility,
 )
 
 SAMPLE_NOTE = "Offline sample adapter: no network, no cost. Output is not real."
@@ -239,6 +240,19 @@ class SamplePublisher(PublisherProvider):
     name = "sample-publisher"
     platform = "sample"
     is_sample = True
+    supported_visibilities = (Visibility.PRIVATE, Visibility.UNLISTED, Visibility.DRAFT)
+    # The same choices the real platform offers, so test mode follows the real rules.
+    PLATFORM_VISIBILITIES = {
+        "youtube": (Visibility.PRIVATE, Visibility.UNLISTED, Visibility.PUBLIC),
+        "facebook": (Visibility.DRAFT, Visibility.PUBLIC),
+        "instagram": (Visibility.PUBLIC,),
+        "tiktok": (Visibility.DRAFT,),
+    }
+
+    def __init__(self, platform: str = "sample") -> None:
+        self.platform = platform
+        if platform in self.PLATFORM_VISIBILITIES:
+            self.supported_visibilities = self.PLATFORM_VISIBILITIES[platform]
 
     def status(self) -> ProviderStatus:
         return _status(self.capability, self.name)

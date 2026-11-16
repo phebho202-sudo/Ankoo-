@@ -72,7 +72,7 @@ const check = (name, cond) => { results.push(`${cond ? 'PASS' : 'FAIL'}  ${name}
   await ap.locator('select[name=value]').selectOption('true');
   await ap.locator('button[type=submit]').click();
   await ap.locator('[role=alert]').waitFor();
-  check('auto-publish cannot be enabled', (await ap.locator('[role=alert]').textContent()).includes('first 10 videos'));
+  check('auto-publish cannot be enabled', (await ap.locator('[role=alert]').textContent()).includes('approve 10 real videos'));
   await page.screenshot({ path: `${SP}/p2-settings-en.png`, fullPage: true });
 
   // Switch to Yoruba
@@ -84,8 +84,8 @@ const check = (name, cond) => { results.push(`${cond ? 'PASS' : 'FAIL'}  ${name}
   await page.waitForSelector('main h1:has-text("Àkópọ̀")');
   check('overview in Yoruba shows new limit', (await page.textContent('main')).includes('70.00'));
   await page.screenshot({ path: `${SP}/p2-overview-yo.png`, fullPage: true });
-  await page.click('nav a[href="/calendar"]');  // still a placeholder (Phase 8)
-  await page.waitForSelector('main h1:has-text("Kàlẹ́ńdà ìtẹ̀jáde")');
+  await page.click('nav a[href="/analytics"]');  // still a placeholder (Phase 9)
+  await page.waitForSelector('main h1:has-text("Ìtúpalẹ̀ ìṣirò")');
   check('placeholder page shows no fake data', (await page.textContent('main')).includes('A kò fi dátà àpẹẹrẹ hàn'));
   await page.screenshot({ path: `${SP}/p2-placeholder-yo.png` });
 

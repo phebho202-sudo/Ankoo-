@@ -8,10 +8,71 @@
 | 4. Rights management | Complete. Approved 2026-11-16. |
 | 5. Yoruba content engine | Complete in sample mode. Approved 2026-11-16. |
 | 6. Voice and avatar | Complete in sample mode. Approved 2026-11-16 (ElevenLabs account pending). |
-| 7. Video production | **Complete in sample mode (2026-11-16).** |
-| 8. Publishing | Not started |
+| 7. Video production | Complete in sample mode (2026-11-16). |
+| 8. Publishing | **Complete in sample mode (2026-11-17). Platform apps and accounts pending.** |
 | 9. Monetisation | Not started |
 | 10. Deployment | Not started |
+
+---
+
+## Phase 8: Publishing (2026-11-17)
+
+### Delivered
+| Requirement | What exists |
+|---|---|
+| YouTube integration | Google OAuth with PKCE and offline access; resumable upload (category Education, Yoruba language, made-for-kids false, **synthetic-media disclosure on**); Yoruba captions upload; custom thumbnail (warning only if the channel cannot use one); confirmation by reading the video back. Shorts use the vertical video with "#Shorts". |
+| Meta integration | Facebook Login; long-lived token; every Page and its linked Instagram professional account. Facebook Reels uploaded as **drafts** during the trial. Instagram Reels (container, processing check, publish) built, but **unavailable until the unlock** because Instagram has no private or draft mode. |
+| TikTok integration | Login Kit OAuth; Content Posting API **inbox (draft)** upload with TikTok's chunking rules and status check. |
+| OAuth authentication and token refresh | One-time `state` (15 minutes) and PKCE verifier stored server-side; tokens **encrypted** (Fernet, `TOKEN_ENCRYPTION_KEY`), never logged or returned; refresh 5 minutes before expiry; a refused refresh marks the account *Reconnect needed* and stops publishing. |
+| Scheduled publishing | Calendar with Lagos time; the `beat` service sends due uploads every 5 minutes (or **Send due uploads now**); daily upload limit; YouTube quota guard. |
+| Retry logic | Temporary failures retried at 5, 10, 20… minutes up to the retry limit, **continuing the same upload session**; permanent failures not retried. |
+| Upload confirmation | *Uploaded* only after the platform confirms. Otherwise *Not confirmed*, never re-sent automatically; re-checked with the platform, or resolved by you. |
+| Duplicate detection | One live publication per video file per destination (code + unique database index). |
+| Publishing logs | Every attempt: time, outcome, HTTP status, message. Everything also in the audit trail. |
+| Platform-specific captions | Title and description per destination (length limits, Yoruba first, English line, AI disclosure, "education only", licence credit, hashtags), editable before scheduling. |
+| Private/draft/test first | Trial period: private, unlisted or draft only. Test mode: sample accounts; uploads are *Simulated* and nothing leaves the server. |
+| Automatic publishing after 10 approved videos | The setting is accepted only when 10 **real** videos are owner-approved and a real account is connected; then approved videos are scheduled automatically. Public uploads need a second switch, accepted only after the unlock. |
+| Automatic stop | Rights check failure, quality check failure (unapproved, failed check, or file changed since approval) or account permission failure **pauses all publishing** with an alert, until you resume. |
+| Dashboard | **Social accounts** (connect, sample accounts, status, expiry, redirect URIs, disconnect) and **Publishing calendar** (running/paused state, trial status, schedule form, upcoming, history, per-upload log and confirmation). English and Yoruba. Owner only. |
+
+### Test results
+* **Backend:** 279 passed on PostgreSQL 16; also passes in SQLite mode. Lint clean. Migration up/down checked.
+  Adapters are tested against simulated platform servers: OAuth exchange and refresh,
+  resumable upload and resume, error classification, TikTok chunking, Facebook drafts,
+  Instagram flow. Service tests cover OAuth token refresh, publishing retries, duplicate upload
+  prevention (including the database index), unconfirmed uploads, daily limits, automatic stop
+  on rights/quality/account failures, the unlock and automatic scheduling.
+* **Frontend:** typecheck clean; 35 unit tests; build OK.
+* **Browser tests on the real stack:** Phase 8 **22/22** (run twice in a row), Phase 7 **23/23**,
+  Phase 6 **15/15**, Phase 5 **20/20**, Phase 4 **19/19**, Phase 3 **18/18**, Phase 2 **19/19**.
+
+### Failures found and fixed
+1. **Retry back-off used the wall clock instead of the scheduler's time,** so waiting times
+   were miscalculated in a delayed run. Fixed and tested.
+2. **Sample accounts accepted visibilities the real platform does not offer** (for example a
+   private Instagram upload). Sample publishers now mirror each platform's real options.
+3. **Identical sample videos were refused as duplicates after a simulated upload.** A
+   simulated upload never reaches a platform, so it no longer blocks a later attempt. Real
+   uploads still do.
+4. The Social accounts page briefly showed the old placeholder because the previous
+   dashboard server was still running. Test-environment issue only.
+
+### Needs your action
+1. Generate and safely store **TOKEN_ENCRYPTION_KEY**, and set **PUBLIC_BASE_URL** (API_SETUP.md §6.0).
+2. Create the **Google OAuth client**, the **Meta app** and the **TikTok app** (free, but each
+   is an agreement with that platform), then connect one account at a time.
+3. Upload **one private test video** per platform and check it on the platform.
+4. YouTube: until Google audits the API project, uploads stay private. Plan the audit before
+   you want public uploads.
+
+### Known limitations
+* **Not run against the real platforms** (no accounts exist yet); built to their published
+  APIs and tested against simulated servers.
+* Instagram needs public video hosting (`PUBLIC_MEDIA_BASE_URL`, Phase 10 R2) and a public
+  upload, so it stays unavailable during the trial.
+* TikTok direct posting needs TikTok's audit; drafts are finished in the TikTok app.
+* Meta tokens must be renewed by reconnecting about every 60 days (the dashboard shows the date).
+* Platform rules (lengths, scopes, API versions) change; review PUBLISHING.md periodically.
 
 ---
 

@@ -16,6 +16,7 @@ from __future__ import annotations
 from collections.abc import Callable
 
 from app.adapters import sample
+from app.adapters import sample as sample_adapters
 from app.adapters.base import (
     AvatarProvider,
     Capability,
@@ -68,6 +69,114 @@ def _elevenlabs(s: Settings) -> Provider:
     )
 
 
+# ---------------------------------------------------------------- publishing (Phase 8)
+DESTINATIONS: dict[str, str] = {
+    # destination -> account platform
+    "youtube": "youtube",
+    "youtube_short": "youtube",
+    "facebook_reel": "facebook",
+    "instagram_reel": "instagram",
+    "tiktok": "tiktok",
+}
+OAUTH_FOR_PLATFORM = {
+    "youtube": "google",
+    "facebook": "meta",
+    "instagram": "meta",
+    "tiktok": "tiktok",
+}
+
+
+def configured_oauth(s: Settings) -> list[str]:
+    out = []
+    if s.google_client_id and s.google_client_secret:
+        out.append("google")
+    if s.meta_app_id and s.meta_app_secret:
+        out.append("meta")
+    if s.tiktok_client_key and s.tiktok_client_secret:
+        out.append("tiktok")
+    return out
+
+
+class _PublisherStatus(Provider):
+    capability = Capability.PUBLISHER
+    name = "platform-publishers"
+
+    def __init__(self, providers: list[str]) -> None:
+        self._providers = providers
+
+    def status(self) -> ProviderStatus:
+        return ProviderStatus(
+            self.capability,
+            self.name,
+            False,
+            True,
+            f"OAuth apps configured: {', '.join(self._providers)}. Accounts connect per platform.",
+        )
+
+
+def _publisher_status(s: Settings) -> Provider:
+    return _PublisherStatus(configured_oauth(s))
+
+
+def get_oauth(provider: str, settings: Settings):
+    """The OAuth client for google/meta/tiktok. Never a sample in live mode."""
+    if provider == "google" and "google" in configured_oauth(settings):
+        from app.adapters.publishers.youtube import GoogleOAuth
+
+        return GoogleOAuth(
+            settings.google_client_id, settings.google_client_secret.get_secret_value()
+        )
+    if provider == "meta" and "meta" in configured_oauth(settings):
+        from app.adapters.publishers.meta import MetaOAuth
+
+        return MetaOAuth(
+            settings.meta_app_id,
+            settings.meta_app_secret.get_secret_value(),
+            settings.meta_graph_version,
+        )
+    if provider == "tiktok" and "tiktok" in configured_oauth(settings):
+        from app.adapters.publishers.tiktok import TikTokOAuth
+
+        return TikTokOAuth(
+            settings.tiktok_client_key, settings.tiktok_client_secret.get_secret_value()
+        )
+    hint = {
+        "google": "GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET",
+        "meta": "META_APP_ID and META_APP_SECRET",
+        "tiktok": "TIKTOK_CLIENT_KEY and TIKTOK_CLIENT_SECRET",
+    }.get(provider, provider)
+    raise ProviderNotConfiguredError(f"Platform sign-in is not configured: set {hint}")
+
+
+def get_publisher(destination: str, *, sample: bool, settings: Settings):
+    """Publisher for a destination. Sample accounts always use the offline sample publisher."""
+    from app.adapters.base import PublisherProvider
+
+    platform = DESTINATIONS[destination]
+    if sample:
+        return sample_adapters.SamplePublisher(platform)
+    if settings.provider_mode == ProviderMode.SAMPLE:
+        raise ProviderNotConfiguredError("Real accounts cannot publish while PROVIDER_MODE=sample")
+    pub: PublisherProvider
+    if platform == "youtube":
+        from app.adapters.publishers.youtube import YouTubePublisher
+
+        pub = YouTubePublisher(short=destination == "youtube_short")
+    elif platform == "facebook":
+        from app.adapters.publishers.meta import FacebookReelsPublisher
+
+        pub = FacebookReelsPublisher(settings.meta_graph_version)
+    elif platform == "instagram":
+        from app.adapters.publishers.meta import InstagramReelsPublisher
+
+        pub = InstagramReelsPublisher(settings.meta_graph_version)
+    else:
+        from app.adapters.publishers.tiktok import TikTokInboxPublisher
+
+        pub = TikTokInboxPublisher()
+    return pub
+
+
 def _default_live() -> dict[
     Capability, tuple[Callable[[Settings], bool], Callable[[Settings], Provider]]
 ]:
@@ -75,6 +184,7 @@ def _default_live() -> dict[
         Capability.LLM: (lambda s: s.anthropic_api_key is not None, _claude),
         Capability.VIDEO_SOURCE: (lambda s: s.youtube_api_key is not None, _youtube),
         Capability.TTS: (lambda s: s.elevenlabs_api_key is not None, _elevenlabs),
+        Capability.PUBLISHER: (lambda s: bool(configured_oauth(s)), _publisher_status),
     }
 
 
@@ -88,7 +198,7 @@ _CREDENTIAL_HINT: dict[Capability, str] = {
     Capability.TTS: "ELEVENLABS_API_KEY",
     Capability.AVATAR: "an approved avatar provider key",
     Capability.VIDEO_SOURCE: "YOUTUBE_API_KEY",
-    Capability.PUBLISHER: "platform OAuth connection",
+    Capability.PUBLISHER: "GOOGLE_CLIENT_ID, META_APP_ID or TIKTOK_CLIENT_KEY (with secrets)",
 }
 
 

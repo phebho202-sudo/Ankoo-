@@ -86,7 +86,7 @@ def test_sample_tts_produces_valid_wav():
 def test_sample_publisher_never_claims_confirmed_upload():
     r = SamplePublisher().upload(
         PublishRequest(
-            video_uri="local://v.mp4",
+            video_path="v.mp4",
             title="t",
             description="d",
             tags=[],

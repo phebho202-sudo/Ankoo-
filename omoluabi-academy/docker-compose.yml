@@ -18,6 +18,16 @@ x-backend-env: &backend-env
   ELEVENLABS_MODEL: ${ELEVENLABS_MODEL:-eleven_multilingual_v2}
   ELEVENLABS_USD_PER_1K_CHARS: ${ELEVENLABS_USD_PER_1K_CHARS:-0.30}
   YOUTUBE_API_KEY: ${YOUTUBE_API_KEY:-}
+  TOKEN_ENCRYPTION_KEY: ${TOKEN_ENCRYPTION_KEY:-}
+  PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-http://localhost:3000}
+  GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+  GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+  META_APP_ID: ${META_APP_ID:-}
+  META_APP_SECRET: ${META_APP_SECRET:-}
+  META_GRAPH_VERSION: ${META_GRAPH_VERSION:-v21.0}
+  TIKTOK_CLIENT_KEY: ${TIKTOK_CLIENT_KEY:-}
+  TIKTOK_CLIENT_SECRET: ${TIKTOK_CLIENT_SECRET:-}
+  PUBLIC_MEDIA_BASE_URL: ${PUBLIC_MEDIA_BASE_URL:-}
 
 services:
   postgres:
@@ -69,7 +79,7 @@ services:
       redis: { condition: service_healthy }
 
   beat:
-    # Scheduler for periodic jobs (daily licence-expiry check). Run exactly one.
+    # Scheduler: licence-expiry check, publishing dispatch (5 min), auto-scheduling. Run exactly one.
     build: ./backend
     command: ["celery", "-A", "app.worker.celery_app", "beat", "-l", "info", "--schedule", "/tmp/celerybeat-schedule"]
     environment: *backend-env

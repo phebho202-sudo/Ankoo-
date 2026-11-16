@@ -64,6 +64,21 @@ class Settings(BaseSettings):
 
     task_max_retries: int = Field(default=3, ge=0, le=10)
 
+    # Publishing (Phase 8). OAuth tokens are stored encrypted with TOKEN_ENCRYPTION_KEY
+    # (a Fernet key). Redirect URIs are PUBLIC_BASE_URL + /accounts/callback/<platform>.
+    public_base_url: str = "http://localhost:3000"
+    token_encryption_key: SecretStr | None = None
+    google_client_id: str | None = None
+    google_client_secret: SecretStr | None = None
+    meta_app_id: str | None = None
+    meta_app_secret: SecretStr | None = None
+    meta_graph_version: str = Field(default="v21.0", pattern=r"^v\d+\.\d+$")
+    tiktok_client_key: str | None = None
+    tiktok_client_secret: SecretStr | None = None
+    # Public media URL prefix (R2 public bucket or CDN). Instagram can only fetch videos from
+    # a public URL, so Instagram publishing is unavailable without it.
+    public_media_base_url: str | None = None
+
     @field_validator("cors_origins", mode="before")
     @classmethod
     def _split_origins(cls, value: object) -> object:
@@ -78,6 +93,14 @@ class Settings(BaseSettings):
         "youtube_api_key",
         "r2_access_key_id",
         "r2_secret_access_key",
+        "token_encryption_key",
+        "google_client_secret",
+        "meta_app_secret",
+        "tiktok_client_secret",
+        "google_client_id",
+        "meta_app_id",
+        "tiktok_client_key",
+        "public_media_base_url",
         mode="before",
     )
     @classmethod
@@ -100,6 +123,10 @@ class Settings(BaseSettings):
             problems.append("DATABASE_URL uses the default development password")
         if any(o.startswith("http://localhost") for o in self.cors_origins):
             problems.append("CORS_ORIGINS still points at localhost")
+        if not self.public_base_url.startswith("https://"):
+            problems.append("PUBLIC_BASE_URL must be the dashboard's https:// address")
+        if self.token_encryption_key is None:
+            problems.append("TOKEN_ENCRYPTION_KEY must be set (platform tokens are encrypted)")
         return problems
 
 

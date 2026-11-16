@@ -20,6 +20,7 @@ celery_app = Celery(
         "app.worker.tasks.scripts",
         "app.worker.tasks.voice",
         "app.worker.tasks.video",
+        "app.worker.tasks.publishing",
     ],
 )
 celery_app.conf.update(
@@ -38,6 +39,13 @@ celery_app.conf.update(
         "rights-expiry-sweep": {
             "task": "rights.expiry_sweep",
             "schedule": crontab(hour=6, minute=10),
+        },
+        # Uploads that are due (every 5 minutes) and automatic scheduling (hourly, only
+        # after the unlock). Both do nothing while publishing is paused.
+        "publishing-dispatch": {"task": "publishing.dispatch", "schedule": crontab(minute="*/5")},
+        "publishing-auto-schedule": {
+            "task": "publishing.auto_schedule",
+            "schedule": crontab(minute=7),
         },
     },
 )

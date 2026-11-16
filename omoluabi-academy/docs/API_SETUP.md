@@ -10,7 +10,10 @@ Nothing in the software creates accounts or buys anything.
 | YouTube Data API v3 | Finding public videos on channels you authorise | Free (10,000 quota units/day) | 3 |
 | Claude API (Anthropic) | Research reports and topic proposals | Pay as you go. See [COSTS.md](COSTS.md). | 3 |
 | ElevenLabs | Presenter voice (Yoruba narration) | Per character; depends on your plan. See [COSTS.md](COSTS.md). | 6 |
-| Avatar provider, Meta, TikTok, Cloudflare R2 | Later phases | Documented when built | 7–10 |
+| Google OAuth (YouTube uploads) | Uploading to the academy's own YouTube channel | Free (same daily quota) | 8 |
+| Meta app (Facebook Page, Instagram) | Reels on the academy's Page and Instagram account | Free | 8 |
+| TikTok developer app | Sending drafts to the academy's TikTok inbox | Free | 8 |
+| Avatar provider, Cloudflare R2 | Later | Documented when built | 10 |
 
 Keys go in environment variables (`backend/.env` for a native install, `.env` for Docker),
 **never** in code and never in the dashboard. Restart the API and worker after changing them.
@@ -110,3 +113,68 @@ scanned with the live provider, and sample and real data never mix.
   reserves its worst-case cost first and is **blocked** if that would exceed the limit.
 * Start with one channel and one report. Read the report, check its cost on the report
   page, and compare with the Anthropic Console's usage page the next day.
+
+## 6. Publishing accounts (Phase 8)
+
+Publishing uses **your own** developer apps on each platform. Creating them is free, but
+each one is an agreement with that platform, so you create them yourself. The platform never
+signs up for anything on your behalf.
+
+### 6.0 Token encryption key (required first)
+Platform access tokens are stored encrypted. Generate a key once and keep a safe copy
+(if it is lost, every account must be reconnected):
+```
+python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+```
+```
+TOKEN_ENCRYPTION_KEY=<the key>
+PUBLIC_BASE_URL=https://<your dashboard address>      # e.g. https://admin.omoluabi.ng
+```
+The redirect URI for each platform is shown on **Social accounts** and is
+`PUBLIC_BASE_URL/accounts/callback/<google|meta|tiktok>`.
+
+### 6.1 YouTube (Google OAuth client)
+1. Google Cloud Console → the project that holds your YouTube Data API key → **APIs &
+   Services → OAuth consent screen**: type *External*, add your own Google account as a
+   test user, and add the scopes `youtube.upload`, `youtube.readonly`, `youtube.force-ssl`.
+2. **Credentials → Create credentials → OAuth client ID → Web application**. Add the
+   redirect URI `PUBLIC_BASE_URL/accounts/callback/google`.
+3. Set `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`, restart, then **Social accounts →
+   Connect** and sign in with the Google account that owns the academy's channel.
+
+Notes: while the consent screen is in *Testing*, Google expires refresh tokens after 7 days,
+so you would need to reconnect weekly. To avoid that, publish the consent screen (Google may
+ask for verification of the `youtube.upload` scope). Videos uploaded by an **unverified API
+project are locked to private** by YouTube until the project passes Google's audit. This
+matches the trial period (private uploads) but must be resolved before public publishing.
+Each upload uses about 2,050 of the 10,000 free daily units.
+
+### 6.2 Facebook Page and Instagram (Meta app)
+1. developers.facebook.com → **Create app** (type *Business*). Add **Facebook Login for
+   Business** and set the redirect URI `PUBLIC_BASE_URL/accounts/callback/meta`.
+2. Permissions requested: `pages_show_list`, `pages_read_engagement`, `pages_manage_posts`,
+   `business_management`, `instagram_basic`, `instagram_content_publish`. In development
+   mode they work for app admins and testers; publishing for others needs Meta App Review.
+3. Link the academy's Instagram **professional** account to the Facebook Page.
+4. Set `META_APP_ID` and `META_APP_SECRET`, restart, then **Social accounts → Connect**.
+
+Notes: Meta tokens last about 60 days and cannot be renewed automatically; the platform
+marks the account *Reconnect needed* and pauses publishing when one stops working. Instagram
+has no private or draft upload, and fetches videos from a public address: it is available
+only after the unlock, when you allow public uploads and set `PUBLIC_MEDIA_BASE_URL`
+(public R2 bucket or CDN, Phase 10).
+
+### 6.3 TikTok (developer app)
+1. developers.tiktok.com → **Manage apps → Connect an app**. Add **Login Kit** and the
+   **Content Posting API**, with the redirect URI `PUBLIC_BASE_URL/accounts/callback/tiktok`.
+2. Scopes: `user.info.basic`, `video.upload`.
+3. Set `TIKTOK_CLIENT_KEY` and `TIKTOK_CLIENT_SECRET`, restart, then **Connect**.
+
+Videos go to your TikTok **inbox as drafts**: you add the caption and post them in the app.
+Direct posting needs TikTok's app audit and is not used.
+
+### 6.4 Not verified from this build environment
+The publishing adapters follow each platform's published API and are tested against
+simulated servers. They have **not** been run against the real platforms, because no
+accounts exist yet. Connect one account at a time, upload one private test video, and
+check it on the platform before scheduling more.

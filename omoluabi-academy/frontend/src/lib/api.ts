@@ -469,3 +469,85 @@ export type RenderCandidate = {
   format: "long_form" | "short";
   value_report: ValueReport;
 };
+
+export type PlatformAccount = {
+  id: string;
+  platform: "youtube" | "facebook" | "instagram" | "tiktok";
+  oauth_provider: "google" | "meta" | "tiktok";
+  external_id: string;
+  display_name: string;
+  status: "connected" | "expired" | "disconnected";
+  is_sample: boolean;
+  scopes: string[];
+  token_expires_at: string | null;
+  has_refresh_token: boolean;
+  last_refreshed_at: string | null;
+  last_error: string | null;
+  connected_by: string;
+  created_at: string;
+};
+
+export type AccountsList = {
+  accounts: PlatformAccount[];
+  sample_mode: boolean;
+  oauth_configured: string[];
+  token_encryption_configured: boolean;
+  public_media_configured: boolean;
+  redirect_uris: Record<string, string>;
+};
+
+export type PublicationStatus = "scheduled" | "uploading" | "retrying" | "uploaded" | "unconfirmed" | "simulated" | "failed" | "blocked" | "cancelled";
+
+export type Publication = {
+  id: string;
+  render_id: string;
+  lesson_title: string | null;
+  destination: string;
+  account: { id: string; name: string; platform: string };
+  title: string;
+  visibility: string;
+  scheduled_at: string;
+  next_attempt_at: string | null;
+  status: PublicationStatus;
+  attempts: number;
+  external_id: string | null;
+  external_url: string | null;
+  warnings: string[];
+  approval_mode: "owner" | "auto";
+  is_sample: boolean;
+  error: string | null;
+  created_by: string;
+  published_at: string | null;
+  description?: string;
+  tags?: string[];
+  video_sha256?: string;
+  log?: { number: number; started_at: string; finished_at: string | null; outcome: string; http_status: number | null; message: string | null }[];
+};
+
+export type PublishingOverview = {
+  status: {
+    paused: boolean;
+    pause_reason: string | null;
+    trial_mode: boolean;
+    auto_publish_enabled: boolean;
+    allow_public: boolean;
+    approved_count: number;
+    required_approved: number;
+    daily_limit: number;
+    sent_today: number;
+  };
+  publications: Publication[];
+};
+
+export type PublishOptions = {
+  render_id: string;
+  approved: boolean;
+  destinations: {
+    destination: string;
+    fits: boolean;
+    accounts: { id: string; name: string }[];
+    visibilities: string[];
+    default_visibility: string | null;
+    caption: { title: string; description: string; tags: string[] };
+  }[];
+};

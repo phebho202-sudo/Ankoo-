@@ -222,16 +222,60 @@ class Visibility(enum.StrEnum):
 
 
 @dataclass(frozen=True)
+class TokenSet:
+    access_token: str
+    refresh_token: str | None = None
+    expires_in: int | None = None  # seconds; None = does not expire / unknown
+    scopes: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True)
+class ConnectedIdentity:
+    """One publishable destination found after OAuth (a channel, page, IG account...)."""
+
+    platform: str  # youtube | facebook | instagram | tiktok
+    external_id: str
+    display_name: str
+    access_token: str | None = None  # destination-specific token (e.g. a Facebook Page token)
+    expires_in: int | None = None
+
+
+class OAuthClient(abc.ABC):
+    """Authorisation-code OAuth for one platform family (google, meta, tiktok)."""
+
+    provider: str
+    platforms: tuple[str, ...]
+    uses_pkce: bool = True
+
+    @abc.abstractmethod
+    def authorize_url(self, *, state: str, redirect_uri: str, code_challenge: str) -> str: ...
+
+    @abc.abstractmethod
+    def exchange_code(self, *, code: str, redirect_uri: str, code_verifier: str) -> TokenSet: ...
+
+    @abc.abstractmethod
+    def refresh(self, refresh_token: str) -> TokenSet:
+        """New tokens; raises PublishError(auth=True) when the grant is revoked or expired."""
+
+    @abc.abstractmethod
+    def identities(self, tokens: TokenSet) -> list[ConnectedIdentity]: ...
+
+
+@dataclass(frozen=True)
 class PublishRequest:
-    video_uri: str
+    video_path: Any  # pathlib.Path of the local file
     title: str
     description: str
     tags: list[str]
     visibility: Visibility
-    content_fingerprint: str  # used for duplicate-upload prevention
-    scheduled_for: datetime | None = None
-    captions_uri: str | None = None
-    thumbnail_uri: str | None = None
+    content_fingerprint: str  # sha256 of the video file; duplicate-upload prevention
+    access_token: str = ""
+    account_external_id: str = ""
+    captions_path: Any | None = None
+    captions_language: str = "yo"
+    thumbnail_path: Any | None = None
+    video_url: str | None = None  # public URL, for platforms that fetch (Instagram)
+    resume_token: str | None = None  # continue an interrupted upload instead of re-uploading
 
 
 @dataclass(frozen=True)
@@ -242,11 +286,42 @@ class PublishResult:
     visibility: Visibility
     confirmed: bool  # True only after the platform confirmed the upload
     is_sample: bool
+    warnings: tuple[str, ...] = ()
+
+
+class PublishError(Exception):
+    """A publishing call failed.
+
+    ``transient``: safe to retry later (network, 5xx, rate or quota limits).
+    ``auth``: the token was refused; the account needs reconnecting.
+    ``resume_token``: the upload session to continue on retry (never start a second upload).
+    """
+
+    def __init__(
+        self,
+        message: str,
+        *,
+        transient: bool,
+        auth: bool = False,
+        http_status: int | None = None,
+        resume_token: str | None = None,
+    ) -> None:
+        super().__init__(message)
+        self.message = message
+        self.transient = transient
+        self.auth = auth
+        self.http_status = http_status
+        self.resume_token = resume_token
 
 
 class PublisherProvider(Provider):
     capability = Capability.PUBLISHER
     platform: str
+    supported_visibilities: tuple[Visibility, ...] = (Visibility.PRIVATE,)
 
     @abc.abstractmethod
     def upload(self, request: PublishRequest) -> PublishResult: ...
+
+    def verify(self, external_id: str, access_token: str) -> bool:
+        """Ask the platform whether the upload exists. Default: unknown (False)."""
+        return False

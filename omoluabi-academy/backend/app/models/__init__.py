@@ -25,6 +25,14 @@ from app.models.production import (
     VideoRender,
     VoiceTestStatus,
 )
+from app.models.publishing import (
+    AccountStatus,
+    OAuthState,
+    PlatformAccount,
+    Publication,
+    PublicationStatus,
+    PublishAttempt,
+)
 from app.models.rights import PLATFORMS, Grant, Licence, LicenceStatus, RightsCheck
 from app.models.scripts import (
     GlossaryTerm,
@@ -41,6 +49,12 @@ from app.models.setting import SystemSetting
 from app.models.user import AuthSession, User
 
 __all__ = [
+    "AccountStatus",
+    "OAuthState",
+    "PlatformAccount",
+    "Publication",
+    "PublicationStatus",
+    "PublishAttempt",
     "MediaAsset",
     "PresenterProfile",
     "PresenterStatus",
