@@ -5,7 +5,7 @@ The platform records the **actual** cost of every paid call against its job, and
 Overview page shows real month-to-date spend. Your Anthropic and Google invoices are the
 authoritative bill.
 
-## Built so far (Phases 1–8)
+## Built so far (Phases 1–9)
 
 | Item | Cost |
 |---|---|
@@ -26,6 +26,8 @@ authoritative bill.
 | Hybrid presenter video, slides, waveform, captions | **$0**. Rendered locally with FFmpeg. |
 | Video rendering (16:9 lesson, 9:16 cut, thumbnails, captions) | **$0**. Rendered locally with FFmpeg; uses worker CPU (a few minutes per 8-minute lesson on a small server). |
 | Publishing (YouTube, Facebook, Instagram, TikTok APIs) | **$0**. Free within each platform's quota (YouTube: about 4 uploads a day on the default 10,000 units). |
+| YouTube Analytics import | **$0** (free API). |
+| Paystack | No monthly fee; Paystack charges a fee per successful payment (see their current pricing). The platform records the order amount; Paystack's fee appears on your Paystack statement. |
 | Lip-synced avatar | Not connected. Capped at 0 minutes until you raise `budget.max_avatar_minutes_per_month`. |
 
 These script figures assume Yoruba with full tone marks uses noticeably more tokens than

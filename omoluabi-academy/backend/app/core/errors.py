@@ -98,4 +98,24 @@ def install_error_handlers(app: FastAPI) -> None:
     @app.exception_handler(Exception)
     async def _unhandled(_: Request, exc: Exception) -> JSONResponse:
         log.exception("unhandled error")
+        _alert_server_error(exc)
         return JSONResponse(_body("internal_error", "An internal error occurred"), status_code=500)
+
+
+def _alert_server_error(exc: Exception) -> None:
+    """Tell the owner about unexpected server errors (repeats of the same error are suppressed).
+    Only the error type is sent, never its message, which could contain private data."""
+    try:
+        from app.db import session as db_session
+        from app.services import alerts
+
+        with db_session.get_sessionmaker()() as db:
+            alerts.notify(
+                db,
+                "server_error",
+                f"Unexpected server error: {type(exc).__name__}",
+                key=type(exc).__name__,
+            )
+            db.commit()
+    except Exception:  # noqa: BLE001 (alerting must never break error handling)
+        log.exception("could not record the server-error alert")

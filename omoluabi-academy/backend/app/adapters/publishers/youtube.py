@@ -35,6 +35,9 @@ SCOPES = (
     "https://www.googleapis.com/auth/youtube.readonly",
     # captions.insert needs force-ssl
     "https://www.googleapis.com/auth/youtube.force-ssl",
+    # Phase 9 analytics: views and watch time; revenue only if the channel is monetised.
+    "https://www.googleapis.com/auth/yt-analytics.readonly",
+    "https://www.googleapis.com/auth/yt-analytics-monetary.readonly",
 )
 QUOTA_UPLOAD, QUOTA_CAPTIONS, QUOTA_THUMBNAIL = 1600, 400, 50
 

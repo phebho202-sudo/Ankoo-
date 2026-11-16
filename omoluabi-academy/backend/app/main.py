@@ -10,6 +10,7 @@ from app.api.routes import (
     auth,
     content,
     health,
+    monetisation,
     overview,
     publishing,
     rights,
@@ -73,6 +74,8 @@ def create_app() -> FastAPI:
     app.include_router(voice.router)
     app.include_router(videos.router)
     app.include_router(publishing.router)
+    app.include_router(monetisation.router)
+    app.include_router(monetisation.public)
     app.include_router(settings_routes.router)
     app.include_router(system.router)
     log.info("api started", extra={"context": {"provider_mode": settings.provider_mode.value}})

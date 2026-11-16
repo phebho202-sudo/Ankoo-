@@ -551,3 +551,35 @@ export type PublishOptions = {
     caption: { title: string; description: string; tags: string[] };
   }[];
 };
+
+export type AffiliateLinkRow = { id: string; slug: string; name: string; partner: string; destination_url: string; disclosure_yo: string; disclosure_en: string; commission_note: string | null; active: boolean; clicks: number; public_path: string };
+export type ProductRow = { id: string; name_yo: string; name_en: string; description: string; kind: string; price_minor: number; currency: string; status: "draft" | "active" | "archived"; delivery_note: string | null };
+export type OrderRow = { id: string; reference: string; product_id: string; amount_minor: number; currency: string; provider: string; status: "pending" | "paid" | "failed" | "refunded"; checkout_url: string | null; is_sample: boolean; paid_at: string | null; created_at: string };
+export type SponsorshipRow = { id: string; sponsor_name: string; contact: string | null; deliverables: string; value_minor: number; currency: string; status: "proposed" | "agreed" | "delivered" | "paid" | "cancelled"; next: string[]; contract_reference: string | null; render_ids: string[]; starts_on: string | null; ends_on: string | null; notes: string | null };
+export type RevenueRow = { id: string; source: string; reference: string; amount_minor: number; currency: string; occurred_on: string; description: string; is_estimate: boolean; created_by: string };
+export type MonetisationOverview = {
+  links: AffiliateLinkRow[];
+  products: ProductRow[];
+  orders: OrderRow[];
+  sponsorships: SponsorshipRow[];
+  revenue: RevenueRow[];
+  payments: { provider: string; sample_mode: boolean; configured: boolean; test_key: boolean; webhook_url: string };
+};
+
+export type VideoSummary = { days: number; views: number; watch_hours: string | null; avg_view_seconds: string | null; engagement_rate_percent: string | null; subscribers_gained: number; estimated_revenue_minor: number | null; revenue_complete: boolean; rpm: string | null };
+export type AnalyticsReport = {
+  period: { start: string; end: string; days: number };
+  revenue: Record<string, { total: number; by_source: Record<string, number>; estimated: number }>;
+  cost_usd: string | null;
+  net_usd: string | null;
+  approved_videos: number;
+  cost_per_approved_video_usd: string | null;
+  totals: VideoSummary;
+  videos: (VideoSummary & { publication_id: string; title: string; destination: string; url: string | null })[];
+  monthly: { month: string; revenue: Record<string, number>; cost_usd: string | null }[];
+  affiliates: { id: string; slug: string; name: string; clicks: number; conversions: number; conversion_rate_percent: string | null; revenue: Record<string, number>; epc: Record<string, string | null> }[];
+  orders: { status: string; count: number; amount_minor: number; currency: string }[];
+  sponsorships: { status: string; count: number; value_minor: number; currency: string }[];
+  youtube_revenue_reported: boolean;
+  estimates_included: boolean;
+};

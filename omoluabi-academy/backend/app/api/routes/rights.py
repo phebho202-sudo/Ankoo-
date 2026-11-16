@@ -143,12 +143,16 @@ def _fields(body: LicenceFields) -> dict[str, Any]:
 
 
 @router.get("/summary")
-def summary(_: str = Depends(require_admin), db: Session = Depends(get_db)) -> dict:
+def summary(
+    _: str = Depends(require_admin), db: Session = Depends(get_db, scope="function")
+) -> dict:
     return {"summary": rights.summary(db), "platforms": list(PLATFORMS)}
 
 
 @router.get("/licences")
-def list_licences(_: str = Depends(require_admin), db: Session = Depends(get_db)) -> dict:
+def list_licences(
+    _: str = Depends(require_admin), db: Session = Depends(get_db, scope="function")
+) -> dict:
     rows = db.execute(
         select(Licence)
         .options(selectinload(Licence.episodes), selectinload(Licence.channel))
@@ -159,14 +163,18 @@ def list_licences(_: str = Depends(require_admin), db: Session = Depends(get_db)
 
 @router.post("/licences", status_code=201)
 def create(
-    body: LicenceFields, p: UserPrincipal = Depends(require_user), db: Session = Depends(get_db)
+    body: LicenceFields,
+    p: UserPrincipal = Depends(require_user),
+    db: Session = Depends(get_db, scope="function"),
 ) -> dict:
     return licence_out(rights.create_licence(db, _fields(body), p.actor), full=True)
 
 
 @router.get("/licences/{licence_id}")
 def get_licence(
-    licence_id: str, _: str = Depends(require_admin), db: Session = Depends(get_db)
+    licence_id: str,
+    _: str = Depends(require_admin),
+    db: Session = Depends(get_db, scope="function"),
 ) -> dict:
     return licence_out(_get(db, licence_id), full=True)
 
@@ -176,7 +184,7 @@ def update(
     licence_id: str,
     body: LicenceFields,
     p: UserPrincipal = Depends(require_user),
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db, scope="function"),
 ) -> dict:
     lic = rights.update_licence(db, _get(db, licence_id), _fields(body), p.actor)
     return licence_out(lic, full=True)
@@ -187,7 +195,7 @@ def scope(
     licence_id: str,
     body: ScopeIn,
     p: UserPrincipal = Depends(require_user),
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db, scope="function"),
 ) -> dict:
     lic = rights.set_scope(
         db,
@@ -204,7 +212,7 @@ async def upload_document(
     licence_id: str,
     file: UploadFile = File(...),
     p: UserPrincipal = Depends(require_user),
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db, scope="function"),
 ) -> dict:
     data = await file.read(rights.MAX_DOCUMENT_BYTES + 1)
     lic = rights.attach_document(
@@ -221,7 +229,9 @@ async def upload_document(
 
 @router.get("/licences/{licence_id}/document")
 def download_document(
-    licence_id: str, _: str = Depends(require_admin), db: Session = Depends(get_db)
+    licence_id: str,
+    _: str = Depends(require_admin),
+    db: Session = Depends(get_db, scope="function"),
 ) -> Response:
     lic = _get(db, licence_id)
     if not lic.document_key:
@@ -244,7 +254,7 @@ def verify(
     licence_id: str,
     body: VerifyIn,
     p: UserPrincipal = Depends(require_user),
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db, scope="function"),
 ) -> dict:
     lic = rights.verify_licence(db, _get(db, licence_id), confirmed=body.confirmed, actor=p.actor)
     return licence_out(lic, full=True)
@@ -255,7 +265,7 @@ def revoke(
     licence_id: str,
     body: RevokeIn,
     p: UserPrincipal = Depends(require_user),
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db, scope="function"),
 ) -> dict:
     lic = rights.revoke_licence(db, _get(db, licence_id), reason=body.reason, actor=p.actor)
     return licence_out(lic, full=True)
@@ -263,7 +273,9 @@ def revoke(
 
 @router.post("/check")
 def check(
-    body: CheckIn, actor: str = Depends(require_admin), db: Session = Depends(get_db)
+    body: CheckIn,
+    actor: str = Depends(require_admin),
+    db: Session = Depends(get_db, scope="function"),
 ) -> dict:
     d = rights.check_rights(db, body.episode_id, body.purpose, platform=body.platform, actor=actor)
     return {
@@ -279,7 +291,7 @@ def check(
 @router.get("/checks")
 def recent_checks(
     _: str = Depends(require_admin),
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db, scope="function"),
     episode_id: str | None = None,
     limit: int = Query(20, ge=1, le=100),
 ) -> dict:
@@ -306,7 +318,9 @@ def recent_checks(
 
 @router.post("/originality")
 def originality_check(
-    body: OriginalityIn, _: str = Depends(require_admin), db: Session = Depends(get_db)
+    body: OriginalityIn,
+    _: str = Depends(require_admin),
+    db: Session = Depends(get_db, scope="function"),
 ) -> dict:
     if len(body.text.split()) < 6:
         raise AppError("Paste at least a few sentences to check")

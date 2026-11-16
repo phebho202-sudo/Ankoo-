@@ -157,7 +157,7 @@ class ReviewIn(BaseModel):
 @router.get("/scripts")
 def list_scripts(
     _: Principal = Depends(require_staff_read),
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db, scope="function"),
     status: ScriptStatus | None = None,
     limit: int = Query(50, ge=1, le=200),
 ) -> dict:
@@ -169,7 +169,9 @@ def list_scripts(
 
 @router.post("/scripts", status_code=202)
 def create_script(
-    body: ScriptIn, p: UserPrincipal = Depends(require_owner), db: Session = Depends(get_db)
+    body: ScriptIn,
+    p: UserPrincipal = Depends(require_owner),
+    db: Session = Depends(get_db, scope="function"),
 ) -> dict:
     if body.kind == "original_lesson":
         if not body.topic_id:
@@ -200,7 +202,7 @@ def create_script(
 def get_script(
     script_id: str,
     _: Principal = Depends(require_staff_read),
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db, scope="function"),
     revision: int | None = None,
 ) -> dict:
     s = _get(db, script_id)
@@ -215,7 +217,7 @@ def save_revision(
     script_id: str,
     body: RevisionIn,
     p: UserPrincipal = Depends(require_staff),
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db, scope="function"),
 ) -> dict:
     s = _get(db, script_id)
     rev = scripts.add_human_revision(
@@ -234,7 +236,7 @@ def revise(
     script_id: str,
     body: ReviseIn,
     p: UserPrincipal = Depends(require_staff),
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db, scope="function"),
 ) -> dict:
     s = _get(db, script_id)
     job = scripts.request_revision(db, s, instructions=body.instructions, actor=p.actor)
@@ -245,7 +247,9 @@ def revise(
 
 @router.post("/scripts/{script_id}/submit")
 def submit(
-    script_id: str, p: UserPrincipal = Depends(require_staff), db: Session = Depends(get_db)
+    script_id: str,
+    p: UserPrincipal = Depends(require_staff),
+    db: Session = Depends(get_db, scope="function"),
 ) -> dict:
     s = _get(db, script_id)
     scripts.submit_for_review(db, s, p.actor)
@@ -257,7 +261,7 @@ def review(
     script_id: str,
     body: ReviewIn,
     p: UserPrincipal = Depends(require_staff),
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db, scope="function"),
 ) -> dict:
     s = _get(db, script_id)
     scripts.review(
@@ -273,7 +277,9 @@ def review(
 
 @router.post("/scripts/{script_id}/archive")
 def archive(
-    script_id: str, p: UserPrincipal = Depends(require_owner), db: Session = Depends(get_db)
+    script_id: str,
+    p: UserPrincipal = Depends(require_owner),
+    db: Session = Depends(get_db, scope="function"),
 ) -> dict:
     s = _get(db, script_id)
     scripts.archive(db, s, p.actor)
@@ -291,7 +297,7 @@ def subtitles_srt(
     lang: Literal["yo", "en"] = "yo",
     revision: int | None = None,
     _: Principal = Depends(require_staff_read),
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db, scope="function"),
 ) -> Response:
     s = _get(db, script_id)
     rev = scripts.revision(s, revision)
@@ -309,7 +315,7 @@ def script_text(
     script_id: str,
     revision: int | None = None,
     _: Principal = Depends(require_staff_read),
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db, scope="function"),
 ) -> Response:
     s = _get(db, script_id)
     rev = scripts.revision(s, revision)
@@ -370,7 +376,7 @@ def pron_out(e: PronunciationEntry) -> dict[str, Any]:
 
 @router.get("/glossary")
 def list_glossary(
-    _: Principal = Depends(require_staff_read), db: Session = Depends(get_db)
+    _: Principal = Depends(require_staff_read), db: Session = Depends(get_db, scope="function")
 ) -> dict:
     rows = db.execute(select(GlossaryTerm).order_by(GlossaryTerm.english)).scalars()
     return {"terms": [term_out(t) for t in rows]}
@@ -378,7 +384,9 @@ def list_glossary(
 
 @router.post("/glossary", status_code=201)
 def add_term(
-    body: TermIn, p: UserPrincipal = Depends(require_staff), db: Session = Depends(get_db)
+    body: TermIn,
+    p: UserPrincipal = Depends(require_staff),
+    db: Session = Depends(get_db, scope="function"),
 ) -> dict:
     return term_out(
         scripts.save_term(
@@ -392,7 +400,7 @@ def update_term(
     term_id: str,
     body: TermIn,
     p: UserPrincipal = Depends(require_staff),
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db, scope="function"),
 ) -> dict:
     t = _find(db, GlossaryTerm, term_id)
     return term_out(
@@ -409,7 +417,9 @@ def update_term(
 
 @router.post("/glossary/{term_id}/approve")
 def approve_term(
-    term_id: str, p: UserPrincipal = Depends(require_staff), db: Session = Depends(get_db)
+    term_id: str,
+    p: UserPrincipal = Depends(require_staff),
+    db: Session = Depends(get_db, scope="function"),
 ) -> dict:
     t = _find(db, GlossaryTerm, term_id)
     scripts.approve_entry(db, t, p.actor)
@@ -418,7 +428,9 @@ def approve_term(
 
 @router.delete("/glossary/{term_id}", status_code=204)
 def delete_term(
-    term_id: str, p: UserPrincipal = Depends(require_staff), db: Session = Depends(get_db)
+    term_id: str,
+    p: UserPrincipal = Depends(require_staff),
+    db: Session = Depends(get_db, scope="function"),
 ) -> None:
     t = _find(db, GlossaryTerm, term_id)
     audit.record(
@@ -434,7 +446,7 @@ def delete_term(
 
 @router.get("/pronunciations")
 def list_pronunciations(
-    _: Principal = Depends(require_staff_read), db: Session = Depends(get_db)
+    _: Principal = Depends(require_staff_read), db: Session = Depends(get_db, scope="function")
 ) -> dict:
     rows = db.execute(select(PronunciationEntry).order_by(PronunciationEntry.written)).scalars()
     return {"entries": [pron_out(e) for e in rows]}
@@ -442,7 +454,9 @@ def list_pronunciations(
 
 @router.post("/pronunciations", status_code=201)
 def add_pron(
-    body: PronIn, p: UserPrincipal = Depends(require_staff), db: Session = Depends(get_db)
+    body: PronIn,
+    p: UserPrincipal = Depends(require_staff),
+    db: Session = Depends(get_db, scope="function"),
 ) -> dict:
     return pron_out(
         scripts.save_pronunciation(
@@ -461,7 +475,7 @@ def update_pron(
     entry_id: str,
     body: PronIn,
     p: UserPrincipal = Depends(require_staff),
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db, scope="function"),
 ) -> dict:
     e = _find(db, PronunciationEntry, entry_id)
     return pron_out(
@@ -479,7 +493,9 @@ def update_pron(
 
 @router.post("/pronunciations/{entry_id}/approve")
 def approve_pron(
-    entry_id: str, p: UserPrincipal = Depends(require_staff), db: Session = Depends(get_db)
+    entry_id: str,
+    p: UserPrincipal = Depends(require_staff),
+    db: Session = Depends(get_db, scope="function"),
 ) -> dict:
     e = _find(db, PronunciationEntry, entry_id)
     scripts.approve_entry(db, e, p.actor)
@@ -488,7 +504,9 @@ def approve_pron(
 
 @router.delete("/pronunciations/{entry_id}", status_code=204)
 def delete_pron(
-    entry_id: str, p: UserPrincipal = Depends(require_staff), db: Session = Depends(get_db)
+    entry_id: str,
+    p: UserPrincipal = Depends(require_staff),
+    db: Session = Depends(get_db, scope="function"),
 ) -> None:
     e = _find(db, PronunciationEntry, entry_id)
     audit.record(
@@ -503,7 +521,9 @@ def delete_pron(
 
 
 @router.get("/pronunciations/lexicon.pls")
-def lexicon(_: Principal = Depends(require_staff_read), db: Session = Depends(get_db)) -> Response:
+def lexicon(
+    _: Principal = Depends(require_staff_read), db: Session = Depends(get_db, scope="function")
+) -> Response:
     return Response(
         scripts.pls_lexicon(db).encode("utf-8"),
         media_type="application/pls+xml; charset=utf-8",

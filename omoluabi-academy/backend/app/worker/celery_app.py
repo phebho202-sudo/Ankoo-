@@ -21,6 +21,7 @@ celery_app = Celery(
         "app.worker.tasks.voice",
         "app.worker.tasks.video",
         "app.worker.tasks.publishing",
+        "app.worker.tasks.analytics",
     ],
 )
 celery_app.conf.update(
@@ -43,6 +44,12 @@ celery_app.conf.update(
         # Uploads that are due (every 5 minutes) and automatic scheduling (hourly, only
         # after the unlock). Both do nothing while publishing is paused.
         "publishing-dispatch": {"task": "publishing.dispatch", "schedule": crontab(minute="*/5")},
+        "system-heartbeat": {"task": "system.heartbeat", "schedule": crontab(minute="*/5")},
+        "system-monitor": {"task": "system.monitor", "schedule": crontab(minute="*/15")},
+        "analytics-youtube-sync": {
+            "task": "analytics.youtube_sync",
+            "schedule": crontab(hour=9, minute=20),  # after YouTube's daily data refresh
+        },
         "publishing-auto-schedule": {
             "task": "publishing.auto_schedule",
             "schedule": crontab(minute=7),

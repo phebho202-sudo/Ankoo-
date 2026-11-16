@@ -15,7 +15,7 @@ export function fmt(template: string, vars: Record<string, string | number>): st
   return template.replace(/\{(\w+)\}/g, (m, k: string) => (k in vars ? String(vars[k]) : m));
 }
 
-const INTL_LOCALE: Record<Locale, string> = { en: "en-NG", yo: "yo-NG" };
+export const INTL_LOCALE: Record<Locale, string> = { en: "en-NG", yo: "yo-NG" };
 
 export function formatDateTime(iso: string, locale: Locale): string {
   const date = new Date(iso);

@@ -39,7 +39,9 @@ def user_out(user: User) -> dict[str, Any]:
 
 
 @router.post("/login")
-def login(body: LoginIn, request: Request, db: Session = Depends(get_db)) -> dict[str, Any]:
+def login(
+    body: LoginIn, request: Request, db: Session = Depends(get_db, scope="function")
+) -> dict[str, Any]:
     result = auth.login(
         db,
         email=body.email,
@@ -55,7 +57,9 @@ def login(body: LoginIn, request: Request, db: Session = Depends(get_db)) -> dic
 
 
 @router.post("/logout", status_code=204)
-def logout(p: UserPrincipal = Depends(require_any_user), db: Session = Depends(get_db)) -> None:
+def logout(
+    p: UserPrincipal = Depends(require_any_user), db: Session = Depends(get_db, scope="function")
+) -> None:
     auth.logout(db, p.token)
 
 
@@ -66,7 +70,9 @@ def me(p: UserPrincipal = Depends(require_any_user)) -> dict[str, Any]:
 
 @router.put("/me/language")
 def set_language(
-    body: LanguageIn, p: UserPrincipal = Depends(require_any_user), db: Session = Depends(get_db)
+    body: LanguageIn,
+    p: UserPrincipal = Depends(require_any_user),
+    db: Session = Depends(get_db, scope="function"),
 ) -> dict[str, Any]:
     auth.set_language(db, p.user, body.language)
     return user_out(p.user)
@@ -74,7 +80,9 @@ def set_language(
 
 @router.put("/me/password", status_code=204)
 def change_password(
-    body: PasswordIn, p: UserPrincipal = Depends(require_any_user), db: Session = Depends(get_db)
+    body: PasswordIn,
+    p: UserPrincipal = Depends(require_any_user),
+    db: Session = Depends(get_db, scope="function"),
 ) -> None:
     auth.change_password(
         db, p.user, current=body.current_password, new=body.new_password, keep_token=p.token

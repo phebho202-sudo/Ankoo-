@@ -19,7 +19,9 @@ class SettingUpdate(BaseModel):
 
 
 @router.get("")
-def list_settings(_: str = Depends(require_admin), db: Session = Depends(get_db)) -> dict[str, Any]:
+def list_settings(
+    _: str = Depends(require_admin), db: Session = Depends(get_db, scope="function")
+) -> dict[str, Any]:
     return {"settings": settings_service.list_settings(db)}
 
 
@@ -28,7 +30,7 @@ def update_setting(
     key: str,
     body: SettingUpdate,
     p: UserPrincipal = Depends(require_user),  # only a logged-in owner can change settings
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db, scope="function"),
 ) -> dict[str, Any]:
     value = settings_service.update_setting(
         db, key=key, value=body.value, actor=p.actor, confirm_increase=body.confirm_increase

@@ -31,6 +31,8 @@ publishing and monetisation, with a human approval gate at every risky step.
 | No early auto-publishing | Automatic publishing unlocks only after the owner approves 10 real videos (sample videos never count) and connects a real account. Until then uploads are private, unlisted or drafts. Public uploads need a second owner switch. |
 | Automatic stop | Publishing pauses itself when a rights check, a quality check or an account permission fails, and waits for the owner to resume |
 | Every video approved by the owner | Rendered videos wait for the owner's six-point review; only approved videos can be scheduled |
+| No invented earnings | Revenue comes only from the owner, a verified payment, or the platform's own report (labelled an estimate). YouTube monetisation is never assumed; unreported revenue is shown as not reported, never 0. Currencies are never mixed. |
+| Disclosures | Every affiliate link has Yoruba and English disclosures; videos linked to an agreed sponsorship carry a paid-partnership notice; every caption says the presenter and voice are AI-generated. |
 | Secure owner login | scrypt-hashed passwords, 5-attempt lockout, expiring sessions stored only as hashes, httpOnly cookies |
 
 

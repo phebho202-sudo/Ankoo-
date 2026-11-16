@@ -97,7 +97,9 @@ def publication_out(db: Session, p: Publication, *, full: bool = False) -> dict[
 
 # ---------------------------------------------------------------- accounts
 @router.get("/accounts")
-def list_accounts(_: str = Depends(require_admin), db: Session = Depends(get_db)) -> dict:
+def list_accounts(
+    _: str = Depends(require_admin), db: Session = Depends(get_db, scope="function")
+) -> dict:
     s = get_settings()
     rows = db.execute(select(PlatformAccount).order_by(PlatformAccount.created_at)).scalars()
     return {
@@ -112,7 +114,9 @@ def list_accounts(_: str = Depends(require_admin), db: Session = Depends(get_db)
 
 @router.post("/accounts/connect/{provider}")
 def connect(
-    provider: str, p: UserPrincipal = Depends(require_owner), db: Session = Depends(get_db)
+    provider: str,
+    p: UserPrincipal = Depends(require_owner),
+    db: Session = Depends(get_db, scope="function"),
 ):
     url = publishing.start_connect(db, provider, p.actor, get_settings())
     return {"auth_url": url}
@@ -128,7 +132,7 @@ def callback(
     provider: str,
     body: CallbackIn,
     p: UserPrincipal = Depends(require_owner),
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db, scope="function"),
 ) -> dict:
     accounts = publishing.complete_connect(
         db, provider, code=body.code, state=body.state, actor=p.actor, settings=get_settings()
@@ -138,14 +142,18 @@ def callback(
 
 @router.post("/accounts/sample/{platform}")
 def connect_sample(
-    platform: str, p: UserPrincipal = Depends(require_owner), db: Session = Depends(get_db)
+    platform: str,
+    p: UserPrincipal = Depends(require_owner),
+    db: Session = Depends(get_db, scope="function"),
 ) -> dict:
     return account_out(publishing.connect_sample(db, platform, p.actor, get_settings()))
 
 
 @router.post("/accounts/{account_id}/disconnect")
 def disconnect(
-    account_id: str, p: UserPrincipal = Depends(require_owner), db: Session = Depends(get_db)
+    account_id: str,
+    p: UserPrincipal = Depends(require_owner),
+    db: Session = Depends(get_db, scope="function"),
 ) -> dict:
     acc = db.get(PlatformAccount, account_id)
     if acc is None:
@@ -155,7 +163,9 @@ def disconnect(
 
 # ---------------------------------------------------------------- publishing
 @router.get("/publishing")
-def overview(_: str = Depends(require_admin), db: Session = Depends(get_db)) -> dict:
+def overview(
+    _: str = Depends(require_admin), db: Session = Depends(get_db, scope="function")
+) -> dict:
     now = utcnow()
     pubs = db.execute(
         select(Publication).order_by(Publication.scheduled_at.desc()).limit(200)
@@ -178,7 +188,9 @@ def overview(_: str = Depends(require_admin), db: Session = Depends(get_db)) -> 
 
 
 @router.get("/publishing/options/{render_id}")
-def options(render_id: str, _: str = Depends(require_admin), db: Session = Depends(get_db)):
+def options(
+    render_id: str, _: str = Depends(require_admin), db: Session = Depends(get_db, scope="function")
+):
     """What the owner can choose for one approved video: destinations, accounts, visibility."""
     vr = db.get(VideoRender, render_id)
     if vr is None:
@@ -224,7 +236,9 @@ class ScheduleIn(BaseModel):
 
 @router.post("/publications", status_code=201)
 def schedule(
-    body: ScheduleIn, p: UserPrincipal = Depends(require_owner), db: Session = Depends(get_db)
+    body: ScheduleIn,
+    p: UserPrincipal = Depends(require_owner),
+    db: Session = Depends(get_db, scope="function"),
 ) -> dict:
     pub = publishing.schedule(
         db,
@@ -242,7 +256,9 @@ def schedule(
 
 
 @router.get("/publications/{pub_id}")
-def get_publication(pub_id: str, _: str = Depends(require_admin), db: Session = Depends(get_db)):
+def get_publication(
+    pub_id: str, _: str = Depends(require_admin), db: Session = Depends(get_db, scope="function")
+):
     pub = db.get(Publication, pub_id)
     if pub is None:
         raise NotFoundError("Publication not found")
@@ -250,7 +266,11 @@ def get_publication(pub_id: str, _: str = Depends(require_admin), db: Session = 
 
 
 @router.post("/publications/{pub_id}/cancel")
-def cancel(pub_id: str, p: UserPrincipal = Depends(require_owner), db: Session = Depends(get_db)):
+def cancel(
+    pub_id: str,
+    p: UserPrincipal = Depends(require_owner),
+    db: Session = Depends(get_db, scope="function"),
+):
     pub = db.get(Publication, pub_id)
     if pub is None:
         raise NotFoundError("Publication not found")
@@ -267,7 +287,7 @@ def resolve(
     pub_id: str,
     body: ResolveIn,
     p: UserPrincipal = Depends(require_owner),
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db, scope="function"),
 ):
     pub = db.get(Publication, pub_id)
     if pub is None:
@@ -279,13 +299,17 @@ def resolve(
 
 
 @router.post("/publishing/pause")
-def pause(p: UserPrincipal = Depends(require_owner), db: Session = Depends(get_db)) -> dict:
+def pause(
+    p: UserPrincipal = Depends(require_owner), db: Session = Depends(get_db, scope="function")
+) -> dict:
     settings_service.update_setting(db, key="publishing.paused", value=True, actor=p.actor)
     return {"paused": True}
 
 
 @router.post("/publishing/resume")
-def resume(p: UserPrincipal = Depends(require_owner), db: Session = Depends(get_db)) -> dict:
+def resume(
+    p: UserPrincipal = Depends(require_owner), db: Session = Depends(get_db, scope="function")
+) -> dict:
     publishing.resume(db, p.actor)
     return {"paused": False}
 

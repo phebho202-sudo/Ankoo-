@@ -286,6 +286,22 @@ outcome), `recheck_unconfirmed`, `auto_schedule` (hourly, only after the unlock)
 `pause`/`resume`. The row is committed as *uploading* before the network call, so a worker
 crash can never cause a silent second upload: stale *uploading* rows become *not confirmed*.
 
+### Monetisation and analytics (Phase 9)
+
+| Table | Purpose |
+|---|---|
+| `affiliate_links`, `affiliate_clicks` | Partner links with Yoruba/English disclosures; clicks with source and referrer host only. |
+| `products`, `orders` | Digital products (minor units + currency) and checkouts (Paystack reference, status, sample flag). |
+| `sponsorships` | Sponsor, deliverables, value, status, agreement reference, linked videos. |
+| `revenue_entries` | Every amount earned: source, unique reference per source, minor units, currency, date, estimate flag, who recorded it. |
+| `video_metrics` | Daily platform figures per publication; revenue is NULL when not reported. |
+
+Adapters: `app/adapters/analytics.py` (YouTube Analytics v2) and `app/adapters/payments.py`
+(Paystack, Sample). Services: `monetisation.py` and `analytics.py` (pure calculation
+functions plus the database report). The public `/go/<slug>` route (no login) counts a click
+through `/api/v1/public/go/<slug>` and redirects. The Paystack webhook is
+`/api/v1/payments/paystack/webhook` (signature-checked, idempotent).
+
 Later phases add: source channels, episodes, licences and rights, research reports,
 scripts and revisions, pronunciation dictionary, voice/video assets, publications,
 platform accounts and tokens, budgets and spend, and monetisation tables.

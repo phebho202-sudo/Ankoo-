@@ -8,7 +8,7 @@ Rules:
   be mistaken for a working connection.
 
 Live adapters so far: Claude (LLM) and the YouTube Data API (video source), both Phase 3.
-ElevenLabs/avatar arrive in Phase 6, publishers in Phase 8, R2 in Phase 10.
+ElevenLabs (Phase 6), publishers (Phase 8) and Cloudflare R2 storage (Phase 10) followed.
 """
 
 from __future__ import annotations
@@ -213,8 +213,25 @@ def register_live(
 def _storage(settings: Settings) -> StorageProvider:
     if settings.storage_backend == "local":
         return LocalStorage(settings.local_storage_path)
-    raise ProviderNotConfiguredError(
-        "Cloudflare R2 storage adapter is not implemented yet; use STORAGE_BACKEND=local"
+    missing = [
+        name
+        for name, value in (
+            ("R2_ACCOUNT_ID", settings.r2_account_id),
+            ("R2_ACCESS_KEY_ID", settings.r2_access_key_id),
+            ("R2_SECRET_ACCESS_KEY", settings.r2_secret_access_key),
+            ("R2_BUCKET", settings.r2_bucket),
+        )
+        if not value
+    ]
+    if missing:
+        raise ProviderNotConfiguredError(f"STORAGE_BACKEND=r2 needs {', '.join(missing)}")
+    from app.adapters.storage.r2 import R2Storage
+
+    return R2Storage(
+        account_id=settings.r2_account_id,
+        access_key_id=settings.r2_access_key_id.get_secret_value(),
+        secret_access_key=settings.r2_secret_access_key.get_secret_value(),
+        bucket=settings.r2_bucket,
     )
 
 

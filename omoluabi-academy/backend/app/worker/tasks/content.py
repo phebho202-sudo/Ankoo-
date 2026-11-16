@@ -41,6 +41,16 @@ def _run(job_id: str, body: Callable[..., tuple[JobStatus, dict]]) -> dict:
             job = db.get(JobRun, job_id)
             job.status, job.error = JobStatus.FAILED, type(exc).__name__
         job.finished_at = utcnow()
+        if job.status == JobStatus.FAILED and not job.is_sample:
+            from app.services import alerts
+
+            alerts.notify(
+                db,
+                "job_failed",
+                f"Background job failed: {job.task_name} ({job.error})",
+                {"job_id": job.id},
+                key=f"{job.task_name}:{job.error}",
+            )
         audit.record(
             db,
             actor="worker",

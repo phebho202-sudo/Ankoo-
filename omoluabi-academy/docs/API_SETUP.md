@@ -13,6 +13,7 @@ Nothing in the software creates accounts or buys anything.
 | Google OAuth (YouTube uploads) | Uploading to the academy's own YouTube channel | Free (same daily quota) | 8 |
 | Meta app (Facebook Page, Instagram) | Reels on the academy's Page and Instagram account | Free | 8 |
 | TikTok developer app | Sending drafts to the academy's TikTok inbox | Free | 8 |
+| Paystack | Selling digital products | Per-transaction fee charged by Paystack | 9 |
 | Avatar provider, Cloudflare R2 | Later | Documented when built | 10 |
 
 Keys go in environment variables (`backend/.env` for a native install, `.env` for Docker),
@@ -178,3 +179,19 @@ The publishing adapters follow each platform's published API and are tested agai
 simulated servers. They have **not** been run against the real platforms, because no
 accounts exist yet. Connect one account at a time, upload one private test video, and
 check it on the platform before scheduling more.
+
+## 7. Payments: Paystack (Phase 9)
+
+1. Create a Paystack account (paystack.com) for the business. This is an agreement with
+   Paystack and needs business verification before live payments.
+2. **Start with the test secret key** (Settings → API Keys & Webhooks → Test Secret Key):
+   `PAYSTACK_SECRET_KEY=sk_test_...`. No real money moves with a test key.
+3. Register the webhook URL: your public API address + `/api/v1/payments/paystack/webhook`.
+4. Put a product on sale, create a payment link from the Monetisation page, pay it with a
+   Paystack test card, and check that the order shows *Paid* and the revenue appears once.
+
+## 8. YouTube Analytics (Phase 9)
+
+No new key. After Phase 9, reconnect the YouTube account once (Social accounts → Connect)
+so Google asks for the analytics permissions. Revenue appears only if your channel is in
+the YouTube Partner Programme; otherwise it is shown as *Not reported*.

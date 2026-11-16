@@ -65,7 +65,9 @@ def _enqueue(job_id: str, render_id: str) -> None:
 
 
 @router.get("/videos")
-def list_videos(_: str = Depends(require_admin), db: Session = Depends(get_db)) -> dict:
+def list_videos(
+    _: str = Depends(require_admin), db: Session = Depends(get_db, scope="function")
+) -> dict:
     rows = db.execute(select(VideoRender).order_by(VideoRender.created_at.desc()).limit(100))
     required = int(settings_service.get_value(db, "publishing.required_approved_videos"))
     return {
@@ -77,7 +79,9 @@ def list_videos(_: str = Depends(require_admin), db: Session = Depends(get_db)) 
 
 
 @router.get("/videos/candidates")
-def list_candidates(_: str = Depends(require_admin), db: Session = Depends(get_db)) -> dict:
+def list_candidates(
+    _: str = Depends(require_admin), db: Session = Depends(get_db, scope="function")
+) -> dict:
     out = []
     for run, report in videos.candidates(db):
         script = db.get(Script, run.script_id)
@@ -99,7 +103,9 @@ class RenderIn(BaseModel):
 
 @router.post("/videos", status_code=202)
 def request_render(
-    body: RenderIn, actor: str = Depends(require_admin), db: Session = Depends(get_db)
+    body: RenderIn,
+    actor: str = Depends(require_admin),
+    db: Session = Depends(get_db, scope="function"),
 ) -> dict:
     vr, job = videos.request_render(db, run_id=body.run_id, actor=actor)
     db.commit()
@@ -108,7 +114,9 @@ def request_render(
 
 
 @router.get("/videos/{render_id}")
-def get_video(render_id: str, _: str = Depends(require_admin), db: Session = Depends(get_db)):
+def get_video(
+    render_id: str, _: str = Depends(require_admin), db: Session = Depends(get_db, scope="function")
+):
     vr = db.get(VideoRender, render_id)
     if vr is None:
         raise NotFoundError("Video not found")
@@ -126,7 +134,7 @@ def decide(
     render_id: str,
     body: DecisionIn,
     p: UserPrincipal = Depends(require_owner),
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db, scope="function"),
 ) -> dict:
     vr = db.get(VideoRender, render_id)
     if vr is None:

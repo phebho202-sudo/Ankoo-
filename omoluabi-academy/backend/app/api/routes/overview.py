@@ -16,14 +16,16 @@ router = APIRouter(prefix="/api/v1", tags=["overview"])
 
 
 @router.get("/overview")
-def overview(_: str = Depends(require_admin), db: Session = Depends(get_db)) -> dict[str, Any]:
+def overview(
+    _: str = Depends(require_admin), db: Session = Depends(get_db, scope="function")
+) -> dict[str, Any]:
     return build_overview(db, get_settings())
 
 
 @router.get("/audit")
 def list_audit(
     _: str = Depends(require_admin),
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db, scope="function"),
     limit: int = Query(50, ge=1, le=200),
     before_id: int | None = Query(None, ge=1),
     action: str | None = Query(None, max_length=120),

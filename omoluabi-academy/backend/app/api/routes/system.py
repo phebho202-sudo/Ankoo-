@@ -27,14 +27,38 @@ def provider_status(_: str = Depends(require_admin)) -> dict[str, Any]:
     }
 
 
+@router.get("/health")
+def health_checks(
+    _: str = Depends(require_admin), db: Session = Depends(get_db, scope="function")
+) -> dict[str, Any]:
+    """Health of every part of the system, for the Overview page and external monitors."""
+    from app.adapters.registry import get_storage
+    from app.services import monitoring
+
+    s = get_settings()
+    results = monitoring.checks(db, redis_url=s.redis_url, storage=get_storage(s))
+    worst = (
+        "error"
+        if any(c["level"] == "error" for c in results)
+        else ("warn" if any(c["level"] == "warn" for c in results) else "ok")
+    )
+    return {
+        "status": worst,
+        "checks": results,
+        "alerts_configured": s.alert_webhook_url is not None,
+    }
+
+
 @router.get("/audit/verify")
-def verify_audit(_: str = Depends(require_admin), db: Session = Depends(get_db)) -> dict[str, Any]:
+def verify_audit(
+    _: str = Depends(require_admin), db: Session = Depends(get_db, scope="function")
+) -> dict[str, Any]:
     return asdict(audit.verify_chain(db))
 
 
 @router.post("/jobs/ping", status_code=202)
 def enqueue_ping(
-    actor: str = Depends(require_admin), db: Session = Depends(get_db)
+    actor: str = Depends(require_admin), db: Session = Depends(get_db, scope="function")
 ) -> dict[str, str]:
     """Round-trip check of API -> Redis -> worker -> database."""
     from app.worker.tasks.system import ping
@@ -50,7 +74,7 @@ def enqueue_ping(
 
 @router.get("/jobs/{job_id}")
 def get_job(
-    job_id: str, _: str = Depends(require_admin), db: Session = Depends(get_db)
+    job_id: str, _: str = Depends(require_admin), db: Session = Depends(get_db, scope="function")
 ) -> dict[str, Any]:
     job = db.get(JobRun, job_id)
     if job is None:

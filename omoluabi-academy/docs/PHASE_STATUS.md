@@ -9,9 +9,58 @@
 | 5. Yoruba content engine | Complete in sample mode. Approved 2026-11-16. |
 | 6. Voice and avatar | Complete in sample mode. Approved 2026-11-16 (ElevenLabs account pending). |
 | 7. Video production | Complete in sample mode (2026-11-16). |
-| 8. Publishing | **Complete in sample mode (2026-11-17). Platform apps and accounts pending.** |
-| 9. Monetisation | Not started |
+| 8. Publishing | Complete in sample mode (2026-11-17). Platform apps and accounts pending. |
+| 9. Monetisation | **Complete in sample mode (2026-11-17). Paystack account pending.** |
 | 10. Deployment | Not started |
+
+---
+
+## Phase 9: Monetisation and analytics (2026-11-17)
+
+### Delivered
+| Requirement | What exists |
+|---|---|
+| Affiliate links | Links with a short public address (`/go/<name>?s=<source>`), https-only destinations, **mandatory Yoruba and English disclosures**, pause/resume. Clicks are counted with source and referring site only: **no IP address or personal data**. |
+| Digital product catalogue | Products (e-book, template, course, workshop) with Yoruba and English names, price in kobo/cents, draft/on sale/archived. |
+| Payment integration readiness | Paystack adapter: checkout links, **webhook signature check (HMAC-SHA512)**, a second verification with Paystack, and amount/currency must match the order before anything is recorded. Revenue is recorded once even if Paystack resends. Test mode: simulated orders, no checkout, no money. |
+| Sponsorship tracking | Proposed → agreed (needs the signed agreement's reference) → delivered → paid, or cancelled. Linked videos automatically carry a **paid-partnership notice** in every caption. A paid sponsorship becomes revenue. |
+| YouTube earnings reporting | Daily import from the YouTube Analytics API (views, watch time, likes, comments, subscribers, and estimated revenue **only if YouTube reports it**). If the channel is not monetised or the permission is missing, revenue is *not reported*, never 0. Estimates are labelled and updated in place as YouTube revises them. **Monetisation is never assumed.** |
+| Revenue analytics | Revenue by source and currency (NGN and USD never mixed), provider costs, USD net, cost per approved video, per-video views, watch hours, average view, engagement, revenue and RPM, monthly series, affiliate clicks/sales/conversion/earnings per click, orders and sponsorship pipeline. 30/90/365-day periods. |
+| Revenue records | Owner entries (with who entered them), duplicate references refused, no future dates. |
+| Dashboard | **Monetisation** and **Analytics** pages, English and Yoruba, owner only. |
+
+### Test results
+* **Backend:** 299 passed on PostgreSQL 16; also passes in SQLite mode. Lint clean. Migration up/down checked.
+  Analytics calculation tests cover zero denominators, unreported revenue, partial revenue, currency separation, monthly series, net and affiliate rates.
+* **Frontend:** typecheck clean; 37 unit tests (including exact money parsing and formatting); build OK.
+* **Backend:** 316 passed after the commit-ordering fix (includes early Phase 10 tests).
+* **Browser tests on the real stack, all suites in sequence:** Phase 9 **23/23**, Phase 8 **22/22**, Phase 7 **23/23**, Phase 6 **15/15**, Phase 5 **20/20**, Phase 4 **19/19**, Phase 3 **18/18**, Phase 2 **19/19**.
+
+### Failures found and fixed
+1. **Empty periods crashed the summary** (a sum of nothing was an integer, not a decimal). Fixed; tested.
+2. **A rejected payment notification was lost from the audit trail** because the error rolled
+   back the request. The rejection is now committed to the audit trail before the error is returned.
+3. The placeholder page component and its text were removed: every dashboard page is now built.
+4. A browser-test step reused a form after it had been cleared (test error, fixed in the test).
+5. **Database commits happened after the response was sent** (found while running all browser
+   suites in sequence). FastAPI 0.162 ends `yield` dependencies after responding by default, so
+   a new login token could be used a moment before it was saved ("session ended" right after
+   logging in), and a failed commit would have been reported as success. Every route now commits
+   before responding; a test proves a failed commit returns an error, and another guards against
+   the old form coming back.
+
+### Needs your action
+1. **Paystack:** create an account, start with a **test** secret key (`PAYSTACK_SECRET_KEY=sk_test_…`)
+   and register the webhook address shown on the Monetisation page.
+2. **YouTube Analytics:** reconnect YouTube once so the analytics permissions are granted.
+3. Affiliate programmes and sponsors are your agreements; record only real terms.
+
+### Known limitations
+* Paystack is not verified live (no account yet). Delivery of digital products to buyers is
+  manual (the "how the buyer receives it" note); an automatic download link is a later addition.
+* Analytics are imported for YouTube only. Facebook, Instagram and TikTok insights need extra
+  permissions and app review; their figures can be entered as revenue manually.
+* No currency conversion: NGN and USD are reported separately by design.
 
 ---
 

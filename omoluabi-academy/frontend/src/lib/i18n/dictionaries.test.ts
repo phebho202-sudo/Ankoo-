@@ -64,18 +64,16 @@ describe("dictionaries", () => {
         "accounts.platformNames.instagram",
         "accounts.platformNames.tiktok",
         "accounts.providers.tiktok",
+        "money.sources.youtube",
+        "stats.colRpm",
       ].sort(),
     );
   });
 
-  it("label every navigation entry and describe every placeholder page", () => {
+  it("label every navigation entry", () => {
     for (const item of NAV) {
       expect(en.nav[item.key]).toBeTruthy();
       expect(yo.nav[item.key]).toBeTruthy();
-      if (!["overview", "settings", "episodes", "research", "rights", "scripts", "voice", "video", "calendar", "accounts"].includes(item.key)) {
-        const k = item.key as keyof typeof en.pages;
-        expect(yo.pages[k].safeguards.length).toBe(en.pages[k].safeguards.length);
-      }
     }
   });
 

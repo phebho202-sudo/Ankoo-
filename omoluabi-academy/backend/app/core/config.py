@@ -79,6 +79,13 @@ class Settings(BaseSettings):
     # a public URL, so Instagram publishing is unavailable without it.
     public_media_base_url: str | None = None
 
+    # Monitoring (Phase 10): where owner alerts are sent (Slack/Discord/Google Chat webhook,
+    # or any JSON endpoint). Treated as a secret because the URL itself grants posting rights.
+    alert_webhook_url: SecretStr | None = None
+
+    # Payments (Phase 9): Paystack secret key (test keys start with sk_test_).
+    paystack_secret_key: SecretStr | None = None
+
     @field_validator("cors_origins", mode="before")
     @classmethod
     def _split_origins(cls, value: object) -> object:
@@ -101,6 +108,8 @@ class Settings(BaseSettings):
         "meta_app_id",
         "tiktok_client_key",
         "public_media_base_url",
+        "paystack_secret_key",
+        "alert_webhook_url",
         mode="before",
     )
     @classmethod

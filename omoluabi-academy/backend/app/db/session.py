@@ -20,7 +20,13 @@ def get_sessionmaker() -> sessionmaker[Session]:
 
 
 def get_db() -> Iterator[Session]:
-    """FastAPI dependency: one session per request, rolled back on error."""
+    """FastAPI dependency: one session per request, rolled back on error.
+
+    Always declare it as ``Depends(get_db, scope="function")`` so the commit happens *before*
+    the response is sent. With FastAPI's default request scope the commit would run after the
+    client already had its answer: a new login token could be used before it was saved, and a
+    failed commit would be lost after reporting success.
+    """
     db = get_sessionmaker()()
     try:
         yield db

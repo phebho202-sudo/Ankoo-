@@ -28,7 +28,8 @@ def _bearer(authorization: str | None) -> str:
 
 
 def require_principal(
-    authorization: str | None = Header(default=None), db: Session = Depends(get_db)
+    authorization: str | None = Header(default=None),
+    db: Session = Depends(get_db, scope="function"),
 ) -> Principal:
     """Accepts an owner session token, or the optional ADMIN_API_TOKEN for automation."""
     token = _bearer(authorization)

@@ -45,7 +45,9 @@ def _temporary_password() -> str:
 
 
 @router.get("")
-def list_users(_: UserPrincipal = Depends(require_owner), db: Session = Depends(get_db)) -> dict:
+def list_users(
+    _: UserPrincipal = Depends(require_owner), db: Session = Depends(get_db, scope="function")
+) -> dict:
     return {
         "users": [user_row(u) for u in db.execute(select(User).order_by(User.created_at)).scalars()]
     }
@@ -53,7 +55,9 @@ def list_users(_: UserPrincipal = Depends(require_owner), db: Session = Depends(
 
 @router.post("", status_code=201)
 def create_reviewer(
-    body: ReviewerIn, p: UserPrincipal = Depends(require_owner), db: Session = Depends(get_db)
+    body: ReviewerIn,
+    p: UserPrincipal = Depends(require_owner),
+    db: Session = Depends(get_db, scope="function"),
 ) -> dict:
     password = _temporary_password()
     user = auth.create_user(
@@ -72,7 +76,7 @@ def set_active(
     user_id: str,
     body: ActiveIn,
     p: UserPrincipal = Depends(require_owner),
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db, scope="function"),
 ) -> dict:
     user = db.get(User, user_id)
     if user is None:

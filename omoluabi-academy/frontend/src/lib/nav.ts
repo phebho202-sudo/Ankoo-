@@ -13,8 +13,6 @@ export type PageKey =
   | "monetisation"
   | "settings";
 
-export type PlaceholderKey = Exclude<PageKey, "overview" | "settings" | "episodes" | "research" | "rights" | "scripts" | "voice" | "video" | "calendar" | "accounts">;
-
 export type NavGroup = "main" | "content" | "production" | "distribution" | "business" | "system";
 
 export const NAV: { key: PageKey; href: string; group: NavGroup; phase: number }[] = [
@@ -32,7 +30,7 @@ export const NAV: { key: PageKey; href: string; group: NavGroup; phase: number }
   { key: "settings", href: "/settings", group: "system", phase: 2 },
 ];
 
-export const BUILT_PAGES: PageKey[] = ["overview", "episodes", "research", "rights", "scripts", "voice", "video", "calendar", "accounts", "settings"];
+export const BUILT_PAGES: PageKey[] = ["overview", "episodes", "research", "rights", "scripts", "voice", "video", "calendar", "accounts", "analytics", "monetisation", "settings"];
 
 /** Pages a language reviewer may open. Everything else is owner-only (enforced by the API). */
 export const REVIEWER_PAGES: PageKey[] = ["scripts", "voice"];

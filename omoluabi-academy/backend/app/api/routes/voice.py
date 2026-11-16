@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import UTC
 from typing import Any, Literal
 
-from fastapi import APIRouter, Depends, File, UploadFile
+from fastapi import APIRouter, Depends, File, Request, UploadFile
 from fastapi.responses import FileResponse, Response
 from pydantic import BaseModel, Field
 from sqlalchemy import select
@@ -136,14 +136,16 @@ class PresenterIn(BaseModel):
 
 @router.get("/voice/presenter")
 def get_presenter(
-    _: Principal = Depends(require_staff_read), db: Session = Depends(get_db)
+    _: Principal = Depends(require_staff_read), db: Session = Depends(get_db, scope="function")
 ) -> dict:
     return {"presenter": presenter_out(db, voice.get_presenter(db))}
 
 
 @router.put("/voice/presenter")
 def save_presenter(
-    body: PresenterIn, p: UserPrincipal = Depends(require_owner), db: Session = Depends(get_db)
+    body: PresenterIn,
+    p: UserPrincipal = Depends(require_owner),
+    db: Session = Depends(get_db, scope="function"),
 ) -> dict:
     return {"presenter": presenter_out(db, voice.save_presenter(db, body.model_dump(), p.actor))}
 
@@ -152,7 +154,7 @@ def save_presenter(
 async def upload_portrait(
     file: UploadFile = File(...),
     p: UserPrincipal = Depends(require_owner),
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db, scope="function"),
 ) -> dict:
     prof = voice.get_presenter(db)
     if prof is None:
@@ -170,7 +172,9 @@ async def upload_portrait(
 
 
 @router.get("/voice/presenter/portrait")
-def portrait(_: Principal = Depends(require_staff_read), db: Session = Depends(get_db)) -> Response:
+def portrait(
+    _: Principal = Depends(require_staff_read), db: Session = Depends(get_db, scope="function")
+) -> Response:
     prof = voice.get_presenter(db)
     if prof is None or not prof.portrait_key:
         raise NotFoundError("No portrait uploaded")
@@ -180,7 +184,9 @@ def portrait(_: Principal = Depends(require_staff_read), db: Session = Depends(g
 
 
 @router.post("/voice/presenter/approve")
-def approve(p: UserPrincipal = Depends(require_owner), db: Session = Depends(get_db)) -> dict:
+def approve(
+    p: UserPrincipal = Depends(require_owner), db: Session = Depends(get_db, scope="function")
+) -> dict:
     prof = voice.get_presenter(db)
     if prof is None:
         raise NotFoundError("No presenter profile")
@@ -194,7 +200,9 @@ class RatingIn(BaseModel):
 
 
 @router.get("/voice/tests")
-def list_tests(_: Principal = Depends(require_staff_read), db: Session = Depends(get_db)) -> dict:
+def list_tests(
+    _: Principal = Depends(require_staff_read), db: Session = Depends(get_db, scope="function")
+) -> dict:
     rows = db.execute(
         select(PronunciationTest).order_by(PronunciationTest.created_at.desc()).limit(20)
     ).scalars()
@@ -202,7 +210,9 @@ def list_tests(_: Principal = Depends(require_staff_read), db: Session = Depends
 
 
 @router.post("/voice/tests", status_code=202)
-def request_test(p: UserPrincipal = Depends(require_owner), db: Session = Depends(get_db)) -> dict:
+def request_test(
+    p: UserPrincipal = Depends(require_owner), db: Session = Depends(get_db, scope="function")
+) -> dict:
     test, job = voice.request_test(db, p.actor)
     db.commit()
     _enqueue("pronunciation_test", job.id, test.id)
@@ -214,7 +224,7 @@ def rate(
     test_id: str,
     body: RatingIn,
     p: UserPrincipal = Depends(require_staff),
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db, scope="function"),
 ) -> dict:
     t = db.get(PronunciationTest, test_id)
     if t is None:
@@ -231,7 +241,7 @@ class RunIn(BaseModel):
 @router.get("/voice/runs")
 def list_runs(
     _: Principal = Depends(require_staff_read),
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db, scope="function"),
     script_id: str | None = None,
 ) -> dict:
     q = select(ProductionRun).order_by(ProductionRun.created_at.desc()).limit(50)
@@ -242,7 +252,9 @@ def list_runs(
 
 @router.post("/voice/runs", status_code=202)
 def request_run(
-    body: RunIn, p: UserPrincipal = Depends(require_owner), db: Session = Depends(get_db)
+    body: RunIn,
+    p: UserPrincipal = Depends(require_owner),
+    db: Session = Depends(get_db, scope="function"),
 ) -> dict:
     run, job = voice.request_production(
         db, script_id=body.script_id, video_format=body.video_format, actor=p.actor
@@ -254,7 +266,9 @@ def request_run(
 
 @router.get("/voice/runs/{run_id}")
 def get_run(
-    run_id: str, _: Principal = Depends(require_staff_read), db: Session = Depends(get_db)
+    run_id: str,
+    _: Principal = Depends(require_staff_read),
+    db: Session = Depends(get_db, scope="function"),
 ) -> dict:
     r = db.get(ProductionRun, run_id)
     if r is None:
@@ -265,7 +279,10 @@ def get_run(
 # ---------------------------------------------------------------- media
 @router.get("/media/{asset_id}")
 def media_file(
-    asset_id: str, who: Principal = Depends(require_staff_read), db: Session = Depends(get_db)
+    asset_id: str,
+    request: Request,
+    who: Principal = Depends(require_staff_read),
+    db: Session = Depends(get_db, scope="function"),
 ) -> Response:
     a = db.get(MediaAsset, asset_id)
     if a is None:
@@ -278,4 +295,35 @@ def media_file(
         return FileResponse(
             storage.local_path(a.storage_key), media_type=a.mime_type, headers=headers
         )
-    return Response(storage.get(a.storage_key), media_type=a.mime_type, headers=headers)
+    # Remote storage (R2): answer Range requests ourselves so players can still seek.
+    size = a.size_bytes
+    rng = _parse_range(request.headers.get("range"), size)
+    headers["Accept-Ranges"] = "bytes"
+    if rng is None:
+        return Response(storage.get(a.storage_key), media_type=a.mime_type, headers=headers)
+    start, end = rng
+    headers["Content-Range"] = f"bytes {start}-{end}/{size}"
+    return Response(
+        storage.get_range(a.storage_key, start, end),
+        status_code=206,
+        media_type=a.mime_type,
+        headers=headers,
+    )
+
+
+def _parse_range(value: str | None, size: int) -> tuple[int, int] | None:
+    """A single "bytes=a-b" / "bytes=a-" / "bytes=-n" range, clamped to the file."""
+    if not value or not value.startswith("bytes=") or "," in value or size <= 0:
+        return None
+    first, _, last = value[6:].strip().partition("-")
+    try:
+        if first == "":
+            n = int(last)
+            return (max(0, size - n), size - 1) if n > 0 else None
+        start = int(first)
+        end = int(last) if last else size - 1
+    except ValueError:
+        return None
+    if start >= size or end < start:
+        return None
+    return start, min(end, size - 1)

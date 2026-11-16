@@ -136,7 +136,9 @@ class ChannelPatch(BaseModel):
 
 
 @router.get("/channels")
-def list_channels(_: str = Depends(require_admin), db: Session = Depends(get_db)) -> dict:
+def list_channels(
+    _: str = Depends(require_admin), db: Session = Depends(get_db, scope="function")
+) -> dict:
     counts = dict(
         db.execute(select(Episode.channel_id, func.count()).group_by(Episode.channel_id)).all()
     )
@@ -146,7 +148,9 @@ def list_channels(_: str = Depends(require_admin), db: Session = Depends(get_db)
 
 @router.post("/channels", status_code=201)
 def add_channel(
-    body: ChannelIn, p: UserPrincipal = Depends(require_user), db: Session = Depends(get_db)
+    body: ChannelIn,
+    p: UserPrincipal = Depends(require_user),
+    db: Session = Depends(get_db, scope="function"),
 ) -> dict:
     provider = get_video_source(get_settings())
     ch = discovery.add_channel(
@@ -165,7 +169,7 @@ def patch_channel(
     channel_id: str,
     body: ChannelPatch,
     p: UserPrincipal = Depends(require_user),
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db, scope="function"),
 ) -> dict:
     ch = db.get(SourceChannel, channel_id)
     if ch is None:
@@ -181,7 +185,9 @@ def patch_channel(
 
 @router.post("/channels/{channel_id}/scan", status_code=202)
 def scan_channel(
-    channel_id: str, actor: str = Depends(require_admin), db: Session = Depends(get_db)
+    channel_id: str,
+    actor: str = Depends(require_admin),
+    db: Session = Depends(get_db, scope="function"),
 ) -> dict:
     from app.worker.tasks.content import scan_channel as task
 
@@ -215,7 +221,7 @@ class TranscriptIn(BaseModel):
 @router.get("/episodes")
 def list_episodes(
     _: str = Depends(require_admin),
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db, scope="function"),
     status: EpisodeStatus | None = None,
     channel_id: str | None = None,
     q: str | None = Query(None, max_length=200),
@@ -242,7 +248,9 @@ def list_episodes(
 
 @router.get("/episodes/{episode_id}")
 def get_episode(
-    episode_id: str, _: str = Depends(require_admin), db: Session = Depends(get_db)
+    episode_id: str,
+    _: str = Depends(require_admin),
+    db: Session = Depends(get_db, scope="function"),
 ) -> dict:
     e = db.get(Episode, episode_id)
     if e is None:
@@ -275,7 +283,7 @@ def put_transcript(
     episode_id: str,
     body: TranscriptIn,
     p: UserPrincipal = Depends(require_user),
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db, scope="function"),
 ) -> dict:
     e = db.get(Episode, episode_id)
     if e is None:
@@ -305,7 +313,9 @@ class DecisionIn(BaseModel):
 
 @router.post("/research", status_code=202)
 def request_research(
-    body: ResearchIn, actor: str = Depends(require_admin), db: Session = Depends(get_db)
+    body: ResearchIn,
+    actor: str = Depends(require_admin),
+    db: Session = Depends(get_db, scope="function"),
 ) -> dict:
     from app.worker.tasks.content import generate_report as task
 
@@ -320,7 +330,7 @@ def request_research(
 @router.get("/research/reports")
 def list_reports(
     _: str = Depends(require_admin),
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db, scope="function"),
     status: ReportStatus | None = None,
     limit: int = Query(25, ge=1, le=100),
 ) -> dict:
@@ -333,7 +343,7 @@ def list_reports(
 
 @router.get("/research/reports/{report_id}")
 def get_report(
-    report_id: str, _: str = Depends(require_admin), db: Session = Depends(get_db)
+    report_id: str, _: str = Depends(require_admin), db: Session = Depends(get_db, scope="function")
 ) -> dict:
     r = db.get(ResearchReport, report_id)
     if r is None:
@@ -344,7 +354,7 @@ def get_report(
 @router.get("/topics")
 def list_topics(
     _: str = Depends(require_admin),
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db, scope="function"),
     status: TopicStatus | None = None,
     limit: int = Query(50, ge=1, le=200),
 ) -> dict:
@@ -360,7 +370,7 @@ def decide(
     topic_id: str,
     body: DecisionIn,
     p: UserPrincipal = Depends(require_user),
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db, scope="function"),
 ) -> dict:
     t = db.get(Topic, topic_id)
     if t is None:

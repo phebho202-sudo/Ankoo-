@@ -162,6 +162,17 @@ class StorageProvider(Provider):
     def usage_bytes(self) -> int:
         """Total bytes stored (used by storage limits)."""
 
+    def size(self, key: str) -> int:
+        return len(self.get(key))
+
+    def get_range(self, key: str, start: int, end: int) -> bytes:
+        """Bytes start..end inclusive (media players seek with HTTP Range requests)."""
+        return self.get(key)[start : end + 1]
+
+    def presigned_url(self, key: str, seconds: int = 3600) -> str | None:
+        """A temporary public URL for the object, if the backend supports one."""
+        return None
+
 
 # ---------------------------------------------------------------- Video source (discovery)
 @dataclass(frozen=True)

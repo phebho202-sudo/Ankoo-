@@ -57,7 +57,7 @@ from app.models import (
     VideoRender,
 )
 from app.models.publishing import REUSABLE_STATUSES
-from app.services import alerts, audit, rights
+from app.services import alerts, audit, monetisation, rights
 from app.services import settings as settings_service
 from app.services.rights import Purpose
 
@@ -382,6 +382,10 @@ def captions_for(db: Session, vr: VideoRender, destination: str) -> dict[str, An
     lines = [title_yo, title_en, "", _clip(hook, 300), ""]
     if destination == "youtube":
         lines += ["Ẹ̀kọ́ iṣẹ́ òwò ní èdè Yorùbá. Practical business lessons in Yoruba.", ""]
+    sponsors = monetisation.sponsor_disclosure(db, vr.id)
+    if sponsors:
+        names = ", ".join(sponsors)
+        lines += [f"Ìbáṣepọ̀ onígbọ̀wọ́: {names}. Paid partnership: {names}.", ""]
     lines += [AI_NOTE_YO, AI_NOTE_EN, EDU_NOTE]
     if credit:
         lines += ["", credit]
@@ -688,8 +692,10 @@ def _files(pub: Publication, vr: VideoRender, storage, tmp: Path, settings: Sett
     if th and long:
         thumb = tmp / "thumbnail.png"
         thumb.write_bytes(storage.get(th.storage_key))
-    url = None
-    if settings.public_media_base_url:
+    # Platforms that fetch the video themselves (Instagram) get a short-lived signed URL
+    # (R2), or the configured public address.
+    url = storage.presigned_url(main.storage_key, 3600)
+    if url is None and settings.public_media_base_url:
         url = f"{settings.public_media_base_url.rstrip('/')}/{main.storage_key}"
     return video, captions, thumb, url
 

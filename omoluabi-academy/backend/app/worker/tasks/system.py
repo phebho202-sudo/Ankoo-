@@ -35,3 +35,24 @@ def ping(self, job_id: str) -> dict[str, str]:  # type: ignore[no-untyped-def]
         )
         db.commit()
     return {"status": "succeeded"}
+
+
+@celery_app.task(name="system.heartbeat", max_retries=0)
+def heartbeat() -> dict[str, str]:
+    """Run by the scheduler every 5 minutes; proves both the scheduler and a worker are alive."""
+    from app.services import monitoring
+
+    monitoring.record_heartbeat(settings.redis_url)
+    return {"status": "ok"}
+
+
+@celery_app.task(name="system.monitor", max_retries=0)
+def monitor() -> dict:
+    """Health checks every 15 minutes; alerts the owner about problems."""
+    from app.adapters.registry import get_storage
+    from app.services import monitoring
+
+    with db_session.get_sessionmaker()() as db:
+        result = monitoring.run(db, redis_url=settings.redis_url, storage=get_storage(settings))
+        db.commit()
+    return result

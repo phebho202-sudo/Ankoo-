@@ -108,38 +108,6 @@ Source of truth: `frontend/src/lib/i18n/dictionaries.ts`. Regenerate this file a
 | `overview.providerState.sample` | Sample | Àpẹẹrẹ | |
 | `overview.providerState.connected` | Ready | Ó ti ṣe tán | |
 | `overview.providerState.notConfigured` | Not configured | A kò tíì ṣètò rẹ̀ | |
-| `placeholder.whatItWillDo` | What this page will do | Ohun tí ojú-ìwé yìí yóò ṣe | |
-| `placeholder.safeguards` | Built-in safeguards | Àwọn ààbò tí a kọ́ sínú rẹ̀ | |
-| `placeholder.empty` | Nothing here yet. This page will show real records once Phase {n} is complete. No sample data is shown. | Kò sí nǹkan níbí síbẹ̀. Ojú-ìwé yìí yóò fi àkọsílẹ̀ gidi hàn lẹ́yìn tí Ìpele {n} bá parí. A kò fi dátà àpẹẹrẹ hàn. | |
-| `pages.episodes.purpose` | Every source video discovered from authorised channels, with its details, transcript status and protection against duplicates. | Gbogbo fídíò orísun tí a rí láti inú àwọn ikanni tí o fún láṣẹ, pẹ̀lú àlàyé wọn, ipò àkọsílẹ̀ ọ̀rọ̀ wọn, àti ìdènà fún fídíò tí a ti ní tẹ́lẹ̀. | |
-| `pages.episodes.safeguards[0]` | Only channels you authorise are scanned. | Àwọn ikanni tí o fún láṣẹ nìkan ni a ó yẹ̀wò. | |
-| `pages.episodes.safeguards[1]` | The same video can never be added twice. | A kò lè fi fídíò kan náà kún un lẹ́ẹ̀mejì. | |
-| `pages.rights.purpose` | Licences and permissions for every adaptation: translation, adaptation, commercial and distribution rights, permitted platforms and expiry dates. | Ìwé àṣẹ àti ìyọ̀ǹda fún àtúnṣe kọ̀ọ̀kan: ẹ̀tọ́ ìtumọ̀, ẹ̀tọ́ àtúnṣe, ẹ̀tọ́ òwò àti ẹ̀tọ́ ìpínkiri, àwọn ìkànnì tí a gbà láàyè, àti ọjọ́ tí àṣẹ yóò parí. | |
-| `pages.rights.safeguards[0]` | Adaptation and publishing are blocked if permission is missing, expired or unclear. | A ó dí àtúnṣe àti ìtẹ̀jáde lọ́nà bí ìyọ̀ǹda kò bá sí, tí ó ti parí, tàbí tí kò ṣe kedere. | |
-| `pages.rights.safeguards[1]` | Original lessons must be independently written. | Ẹ̀kọ́ tuntun gbọ́dọ̀ jẹ́ èyí tí a kọ fúnra wa. | |
-| `pages.research.purpose` | Topic extraction and structured research reports. You choose which subjects become original Yoruba lessons. | Yíyọ àwọn kókó ọ̀rọ̀ jáde àti ìròyìn ìwádìí tó wà létòlétò. Ìwọ ni yóò yan kókó tí yóò di ẹ̀kọ́ Yorùbá tuntun. | |
-| `pages.research.safeguards[0]` | Nothing becomes a lesson without your approval. | Kò sí ohun tí yóò di ẹ̀kọ́ láìsí ìfọwọ́sí rẹ. | |
-| `pages.scripts.purpose` | Yoruba lesson scripts with correct tone marks, revisions, a pronunciation dictionary, and English and Yoruba subtitles. | Àkọsílẹ̀ ẹ̀kọ́ ní èdè Yorùbá pẹ̀lú àmì ohùn tó tọ̀nà, àtúnyẹ̀wò, ìwé atúmọ̀ ìpè ọ̀rọ̀, àti àkọlé ìsàlẹ̀ ní Gẹ̀ẹ́sì àti Yorùbá. | |
-| `pages.scripts.safeguards[0]` | Every script passes human language review. | Ènìyàn tó gbọ́ èdè dáadáa gbọ́dọ̀ ṣàyẹ̀wò àkọsílẹ̀ kọ̀ọ̀kan. | |
-| `pages.scripts.safeguards[1]` | An automated quality score is a guide, never proof of perfect Yoruba. | Máàkì àyẹ̀wò láti ọwọ́ ẹ̀rọ jẹ́ ìtọ́sọ́nà nìkan, kì í ṣe ẹ̀rí pé Yorùbá náà péye. | |
-| `pages.voice.purpose` | Narration in the voice of the academy's original Nigerian Yoruba presenter, pronunciation tests, and the cost of each job. | Ohùn ìsọ̀rọ̀ olùkọ́ Yorùbá ọmọ Nàìjíríà tí ilé-ẹ̀kọ́ náà ṣẹ̀dá, ìdánwò ìpè ọ̀rọ̀, àti iye owó iṣẹ́ kọ̀ọ̀kan. | |
-| `pages.voice.safeguards[0]` | Pronunciation is tested before large-scale generation. | A ó dán ìpè ọ̀rọ̀ wò kí a tó ṣe ohùn lọ́pọ̀lọpọ̀. | |
-| `pages.voice.safeguards[1]` | Every job's cost is recorded. | A ó kọ iye owó iṣẹ́ kọ̀ọ̀kan sílẹ̀. | |
-| `pages.video.purpose` | 16:9 lessons, vertical Shorts and Reels, thumbnails and captions, rendered with FFmpeg. | Ẹ̀kọ́ 16:9, fídíò ìdúró (Shorts àti Reels), àwòrán àfihàn àti àkọlé, tí a ṣe pẹ̀lú FFmpeg. | |
-| `pages.video.safeguards[0]` | The low-cost hybrid format is the default. | Ọ̀nà àdàpọ̀ tí kò wọ́n ni a ó máa lò. | |
-| `pages.video.safeguards[1]` | Every video must carry substantial original educational value. | Fídíò kọ̀ọ̀kan gbọ́dọ̀ ní ẹ̀kọ́ tuntun tó jinlẹ̀. | |
-| `pages.calendar.purpose` | Scheduled releases on YouTube, Facebook, Instagram and TikTok, with upload confirmations and logs. | Ètò ìgbà ìtẹ̀jáde lórí YouTube, Facebook, Instagram àti TikTok, pẹ̀lú ìfìdímúlẹ̀ ìgbéjáde àti àkọsílẹ̀. | |
-| `pages.calendar.safeguards[0]` | Nothing is published without approval and a passed rights check. | A kò ní tẹ ohunkóhun jáde láìsí ìfọwọ́sí àti àyẹ̀wò ẹ̀tọ́ tó yege. | |
-| `pages.calendar.safeguards[1]` | New integrations start in private or draft mode. | Ìsopọ̀ tuntun yóò bẹ̀rẹ̀ ní ipò àṣírí tàbí àkọ́pamọ́. | |
-| `pages.calendar.safeguards[2]` | Automatic publishing unlocks only after you approve the first 10 videos. | Ìtẹ̀jáde aládàáṣe yóò ṣí sílẹ̀ lẹ́yìn tí o bá fọwọ́ sí fídíò mẹ́wàá àkọ́kọ́ nìkan. | |
-| `pages.accounts.purpose` | Connected YouTube, Meta and TikTok accounts and the state of their permissions. | Àwọn àkáǹtì YouTube, Meta àti TikTok tí a so pọ̀ àti ipò àṣẹ wọn. | |
-| `pages.accounts.safeguards[0]` | Publishing stops automatically when an account's permissions expire. | Ìtẹ̀jáde yóò dúró fúnra rẹ̀ nígbà tí àṣẹ àkáǹtì kan bá parí. | |
-| `pages.accounts.safeguards[1]` | Access tokens are stored encrypted and never displayed. | A ń fi kọ́kọ́rọ́ ìwọlé pamọ́ ní ìkọ̀kọ̀, a kò sì ní fi hàn láé. | |
-| `pages.analytics.purpose` | Views, watch time and audience growth for each video and platform, from the platforms' own reports. | Iye ìwò, àkókò wíwò àti ìdàgbàsókè àwọn olùwò fún fídíò àti ìkànnì kọ̀ọ̀kan, láti inú ìròyìn tí àwọn ìkànnì náà fúnra wọn gbé jáde. | |
-| `pages.analytics.safeguards[0]` | Figures come only from platform data, never estimates presented as facts. | Àwọn nọ́ńbà yóò wá láti inú dátà àwọn ìkànnì nìkan, kì í ṣe àmọ̀rò tí a gbé kalẹ̀ bí òtítọ́. | |
-| `pages.monetisation.purpose` | Affiliate links, digital products, sponsorships and YouTube earnings. | Ìjápọ̀ affiliate, ọjà oní-nọ́ńbà, ìgbọ̀wọ́ àti owó tí a ń rí lórí YouTube. | |
-| `pages.monetisation.safeguards[0]` | No earnings are shown until they are actually reported. | A kò ní fi owó-wíwọlé kankan hàn títí tí a ó fi gbà á ní ti gidi. | |
-| `pages.monetisation.safeguards[1]` | YouTube monetisation is never assumed to be approved. | A kò ní rò pé YouTube ti fọwọ́ sí ìpawówọlé láìsí ẹ̀rí. | |
 | `jobs.queued` | Queued… | Ó ń dúró… | |
 | `jobs.running` | Working… | Ó ń ṣiṣẹ́… | |
 | `jobs.succeeded` | Finished. | Ó ti parí. | |
@@ -770,6 +738,129 @@ Source of truth: `frontend/src/lib/i18n/dictionaries.ts`. Regenerate this file a
 | `calendar.notOnPlatform` | It is not there | Kò sí níbẹ̀ | |
 | `calendar.url` | Link (optional) | Ìjápọ̀ (kò pọn dandan) | |
 | `calendar.open` | Open on the platform | Ṣí i lórí ìkànnì náà | |
+| `money.subtitle` | Affiliate links, digital products, sponsorships and revenue. Only real money is recorded: what you enter, what a payment provider confirms, and what a platform reports (labelled as an estimate). | Ìjápọ̀ ìpolówó, ọjà orí ayélujára, onígbọ̀wọ́ àti owó tó wọlé. Owó gidi nìkan ni a ń kọ sílẹ̀: èyí tí o kọ, èyí tí ilé ìsanwó fìdí rẹ̀ múlẹ̀, àti èyí tí ìkànnì ròyìn (a sàmì sí i gẹ́gẹ́ bí ìṣirò àfojúbù). | |
+| `money.youtubeNote` | YouTube monetisation is not assumed. YouTube revenue appears only when YouTube Analytics reports it for your channel. | A kò rò pé YouTube ti fọwọ́ sí ìpawówọlé. Owó YouTube yóò hàn nígbà tí YouTube Analytics bá ròyìn rẹ̀ fún ikanni rẹ nìkan. | |
+| `money.payments` | Payments | Ìsanwó | |
+| `money.paymentsSample` | Test mode: checkouts are simulated and no money can be taken. | Ipò ìdánwò: àfarawé ni ìsanwó, a kò lè gba owó kankan. | |
+| `money.paymentsNotConfigured` | Paystack is not set up. Add PAYSTACK_SECRET_KEY (start with a test key, sk_test_…). | A kò tíì ṣètò Paystack. Fi PAYSTACK_SECRET_KEY kún un (bẹ̀rẹ̀ pẹ̀lú kọ́kọ́rọ́ ìdánwò, sk_test_…). | |
+| `money.paymentsTest` | Paystack test key in use: no real money moves. | Kọ́kọ́rọ́ ìdánwò Paystack ni à ń lò: owó gidi kò ní yí ọwọ́ padà. | |
+| `money.paymentsLive` | Paystack live key in use: real payments. | Kọ́kọ́rọ́ gidi Paystack ni à ń lò: ìsanwó gidi. | |
+| `money.webhook` | Webhook address to register with Paystack: | Àdírẹ́sì ìfitónilétí láti forúkọ sílẹ̀ lórí Paystack: | |
+| `money.revenue` | Revenue | Owó tó wọlé | |
+| `money.recordRevenue` | Record revenue | Kọ owó tó wọlé sílẹ̀ | |
+| `money.source` | Source | Orísun | |
+| `money.sources.youtube` | YouTube | YouTube | |
+| `money.sources.affiliate` | Affiliate | Ìpolówó alájọṣe | |
+| `money.sources.product` | Product | Ọjà | |
+| `money.sources.sponsorship` | Sponsorship | Onígbọ̀wọ́ | |
+| `money.sources.other` | Other | Òmíràn | |
+| `money.amount` | Amount | Iye owó | |
+| `money.currency` | Currency | Owó wo | |
+| `money.date` | Date received | Ọjọ́ tí ó wọlé | |
+| `money.descriptionLabel` | Description | Àpèjúwe | |
+| `money.reference` | Reference (invoice or payout ID, prevents double entry) | Nọ́ńbà ìtọ́kasí (ìwé owó tàbí ìsanwó, kí a má kọ ọ́ lẹ́ẹ̀mejì) | |
+| `money.link` | Affiliate link (optional) | Ìjápọ̀ ìpolówó (kò pọn dandan) | |
+| `money.none` | None | Kò sí | |
+| `money.record` | Record | Kọ ọ́ sílẹ̀ | |
+| `money.recorded` | Recorded. | A ti kọ ọ́ sílẹ̀. | |
+| `money.noRevenue` | No revenue recorded yet. | A kò tíì kọ owó kankan sílẹ̀. | |
+| `money.estimate` | estimate | àfojúbù | |
+| `money.by` | by {who} | láti ọwọ́ {who} | |
+| `money.links` | Affiliate links | Ìjápọ̀ ìpolówó alájọṣe | |
+| `money.linkHelp` | Every link needs a disclosure in Yoruba and English, shown wherever you use it. | Ìjápọ̀ kọ̀ọ̀kan nílò ìkéde ní Yorùbá àti Gẹ̀ẹ́sì, tí a ó fi hàn níbikíbi tí o bá ti lò ó. | |
+| `money.slug` | Short name (for /go/…) | Orúkọ kúkúrú (fún /go/…) | |
+| `money.name` | Name | Orúkọ | |
+| `money.partner` | Partner | Alájọṣe | |
+| `money.destination` | Destination (https://) | Ibi tí ó ń lọ (https://) | |
+| `money.disclosureYo` | Disclosure (Yoruba) | Ìkéde (Yorùbá) | |
+| `money.disclosureEn` | Disclosure (English) | Ìkéde (Gẹ̀ẹ́sì) | |
+| `money.commission` | Commission terms (notes) | Àdéhùn èrè (àkíyèsí) | |
+| `money.addLink` | Add link | Fi ìjápọ̀ kún un | |
+| `money.noLinks` | No affiliate links yet. | Kò sí ìjápọ̀ ìpolówó síbẹ̀. | |
+| `money.clicks` | {n} clicks | Títẹ̀ {n} | |
+| `money.paused` | Paused | Ó dúró | |
+| `money.products` | Digital products | Ọjà orí ayélujára | |
+| `money.nameYo` | Name (Yoruba) | Orúkọ (Yorùbá) | |
+| `money.nameEn` | Name (English) | Orúkọ (Gẹ̀ẹ́sì) | |
+| `money.kind` | Type | Irú | |
+| `money.kinds.ebook` | E-book | Ìwé orí ayélujára | |
+| `money.kinds.template` | Template | Àwòṣe | |
+| `money.kinds.course` | Course | Ẹ̀kọ́ kíkún | |
+| `money.kinds.workshop` | Workshop | Ìdánilẹ́kọ̀ọ́ | |
+| `money.kinds.other` | Other | Òmíràn | |
+| `money.price` | Price | Iye owó | |
+| `money.status` | Status | Ipò | |
+| `money.productStatus.draft` | Draft | Àkọpamọ́ | |
+| `money.productStatus.active` | On sale | Ó wà fún títà | |
+| `money.productStatus.archived` | Archived | A ti fi pamọ́ | |
+| `money.delivery` | How the buyer receives it | Bí olùrà yóò ṣe gbà á | |
+| `money.addProduct` | Add product | Fi ọjà kún un | |
+| `money.noProducts` | No products yet. | Kò sí ọjà síbẹ̀. | |
+| `money.buyerEmail` | Buyer's email | Ímeèlì olùrà | |
+| `money.createCheckout` | Create payment link | Ṣe ìjápọ̀ ìsanwó | |
+| `money.checkoutReady` | Payment link created: | A ti ṣe ìjápọ̀ ìsanwó: | |
+| `money.checkoutSample` | Simulated order created (test mode): no payment link, no money taken. | A ṣe àfarawé ìbéèrè ọjà (ipò ìdánwò): kò sí ìjápọ̀ ìsanwó, a kò gba owó. | |
+| `money.orders` | Recent orders | Àwọn ìbéèrè ọjà àìpẹ́ | |
+| `money.orderStatus.pending` | Waiting for payment | Ó ń dúró de ìsanwó | |
+| `money.orderStatus.paid` | Paid | A ti sanwó | |
+| `money.orderStatus.failed` | Failed | Kò yọrí | |
+| `money.orderStatus.refunded` | Refunded | A dá owó padà | |
+| `money.sponsorships` | Sponsorships | Àwọn onígbọ̀wọ́ | |
+| `money.sponsorHelp` | A sponsorship becomes "agreed" only with the signed agreement's reference. Videos linked to an agreed sponsorship carry a paid-partnership notice in every caption. | Ìgbọ̀wọ́ yóò di "àdéhùn" nígbà tí nọ́ńbà ìwé àdéhùn tí a buwọ́ lù bá wà nìkan. Fídíò tí a so mọ́ ìgbọ̀wọ́ tí a ti fẹnukò lé lórí yóò ní ìkéde ìbáṣepọ̀ onígbọ̀wọ́ nínú gbogbo àkọlé rẹ̀. | |
+| `money.sponsor` | Sponsor | Onígbọ̀wọ́ | |
+| `money.contact` | Contact | Ìkànsí | |
+| `money.deliverables` | Deliverables | Ohun tí a ó ṣe | |
+| `money.value` | Value | Iye | |
+| `money.videos` | Videos it appears in | Fídíò tí ó ti hàn | |
+| `money.addSponsorship` | Add sponsorship | Fi onígbọ̀wọ́ kún un | |
+| `money.noSponsorships` | No sponsorships yet. | Kò sí onígbọ̀wọ́ síbẹ̀. | |
+| `money.sponsorStatus.proposed` | Proposed | A dábàá | |
+| `money.sponsorStatus.agreed` | Agreed | A fẹnukò | |
+| `money.sponsorStatus.delivered` | Delivered | A ti ṣe é | |
+| `money.sponsorStatus.paid` | Paid | A ti sanwó | |
+| `money.sponsorStatus.cancelled` | Cancelled | A fagi lé e | |
+| `money.contract` | Agreement reference | Nọ́ńbà ìwé àdéhùn | |
+| `money.moveTo` | Mark as {status} | Sàmì sí i: {status} | |
+| `stats.subtitle` | Figures from real records only: platform reports, your revenue entries and recorded costs. Nothing is estimated by this system. | Ìṣirò láti inú àkọsílẹ̀ gidi nìkan: ìròyìn ìkànnì, owó tí o kọ sílẹ̀ àti ìnáwó tí a kọ sílẹ̀. Ètò yìí kò fojú bù nǹkan kankan. | |
+| `stats.period` | Period | Àkókò | |
+| `stats.days` | {n} days | Ọjọ́ {n} | |
+| `stats.sync` | Import YouTube figures now | Mú ìṣirò YouTube wọlé báyìí | |
+| `stats.syncQueued` | Import started. | A ti bẹ̀rẹ̀ rẹ̀. | |
+| `stats.views` | Views | Ìwòran | |
+| `stats.watchHours` | Watch hours | Wákàtí ìwòran | |
+| `stats.subscribers` | Subscribers gained | Olùforúkọsílẹ̀ tuntun | |
+| `stats.ytRevenue` | YouTube estimated revenue | Owó àfojúbù YouTube | |
+| `stats.notReported` | Not reported | A kò ròyìn rẹ̀ | |
+| `stats.notReportedHelp` | YouTube has not reported revenue for this channel. Monetisation is not assumed. | YouTube kò tíì ròyìn owó fún ikanni yìí. A kò rò pé ìpawówọlé ti bẹ̀rẹ̀. | |
+| `stats.revenueTotal` | Revenue ({currency}) | Owó tó wọlé ({currency}) | |
+| `stats.noRevenue` | No revenue in this period | Kò sí owó tó wọlé ní àkókò yìí | |
+| `stats.costs` | Provider costs (USD) | Ìnáwó olùpèsè (USD) | |
+| `stats.net` | USD revenue minus costs | Owó USD tó wọlé yọ ìnáwó | |
+| `stats.netHelp` | Naira revenue is shown separately and never converted. | A ń fi owó náírà hàn lọ́tọ̀, a kì í yí i padà. | |
+| `stats.perVideo` | Cost per approved video | Ìnáwó fún fídíò kọ̀ọ̀kan tí a fọwọ́ sí | |
+| `stats.noVideoYet` | No approved real videos in this period | Kò sí fídíò gidi tí a fọwọ́ sí ní àkókò yìí | |
+| `stats.videos` | Published videos | Fídíò tí a ti gbé jáde | |
+| `stats.noVideos` | No platform figures yet. They appear after real videos are uploaded and YouTube reports on them. | Kò sí ìṣirò ìkànnì síbẹ̀. Yóò hàn lẹ́yìn tí a bá gbé fídíò gidi sókè, tí YouTube sì ròyìn wọn. | |
+| `stats.colVideo` | Video | Fídíò | |
+| `stats.colViews` | Views | Ìwòran | |
+| `stats.colWatch` | Watch hours | Wákàtí ìwòran | |
+| `stats.colAvg` | Average view | Ìwòran ní àròpọ̀ | |
+| `stats.colEngagement` | Engagement | Ìkópa | |
+| `stats.colRevenue` | Revenue | Owó | |
+| `stats.colRpm` | RPM | RPM | |
+| `stats.partial` | partly reported | a ròyìn díẹ̀ | |
+| `stats.monthly` | Revenue and costs by month | Owó àti ìnáwó lóṣooṣù | |
+| `stats.noMonthly` | Nothing recorded yet. | A kò tíì kọ nǹkan sílẹ̀. | |
+| `stats.colMonth` | Month | Oṣù | |
+| `stats.colCost` | Costs | Ìnáwó | |
+| `stats.affiliates` | Affiliate links | Ìjápọ̀ ìpolówó alájọṣe | |
+| `stats.colClicks` | Clicks | Títẹ̀ | |
+| `stats.colConversions` | Sales | Títà | |
+| `stats.colRate` | Conversion | Ìyípadà | |
+| `stats.colEpc` | Per click | Fún títẹ̀ kọ̀ọ̀kan | |
+| `stats.pipeline` | Orders and sponsorships | Ìbéèrè ọjà àti onígbọ̀wọ́ | |
+| `stats.noPipeline` | No orders or sponsorships yet. | Kò sí ìbéèrè ọjà tàbí onígbọ̀wọ́ síbẹ̀. | |
+| `stats.estimatesNote` | Includes platform estimates, which can change and are not payouts. | Ó ní ìṣirò àfojúbù ìkànnì nínú, èyí tí ó lè yí padà, tí kì í sì í ṣe owó tí a ti san. | |
 | `settings.title` | System settings | Ètò sístẹ́mù | |
 | `settings.subtitle` | Limits and rules the platform must obey. Every change is recorded in the audit trail. | Àwọn òpin àti òfin tí sístẹ́mù gbọ́dọ̀ tẹ̀lé. A ń kọ gbogbo àyípadà sínú àkọsílẹ̀ àyẹ̀wò. | |
 | `settings.categories.budget` | Budget and cost control | Ìṣúná àti ìṣàkóso ìnáwó | |

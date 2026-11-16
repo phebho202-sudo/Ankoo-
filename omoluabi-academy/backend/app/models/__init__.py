@@ -14,6 +14,19 @@ from app.models.content import (
     TranscriptSource,
 )
 from app.models.job import JobRun, JobStatus
+from app.models.monetisation import (
+    AffiliateClick,
+    AffiliateLink,
+    Order,
+    OrderStatus,
+    Product,
+    ProductStatus,
+    RevenueEntry,
+    RevenueSource,
+    Sponsorship,
+    SponsorshipStatus,
+    VideoMetrics,
+)
 from app.models.production import (
     MediaAsset,
     PresenterProfile,
@@ -49,6 +62,17 @@ from app.models.setting import SystemSetting
 from app.models.user import AuthSession, User
 
 __all__ = [
+    "AffiliateClick",
+    "AffiliateLink",
+    "Order",
+    "OrderStatus",
+    "Product",
+    "ProductStatus",
+    "RevenueEntry",
+    "RevenueSource",
+    "Sponsorship",
+    "SponsorshipStatus",
+    "VideoMetrics",
     "AccountStatus",
     "OAuthState",
     "PlatformAccount",
