@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 S="$1"; OUT="$2"; B="$S/build"; T=50.5
-cd "$S/segs"; ls seg*.mp4 | sort | sed "s/^/file '/;s/$/'/" > list.txt
+cd "${SEGDIR:-$S/segs}"; ls seg*.mp4 | sort | sed "s/^/file '/;s/$/'/" > list.txt
 ffmpeg -hide_banner -loglevel error -y -f concat -safe 0 -i list.txt -c copy "$B/base.mp4"
 BD=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$B/base.mp4"); echo "base $BD"
 FO=$(python3 -c "print(round($BD-0.8,2))"); PAD=$(python3 -c "print(round($T-$BD,3))")
