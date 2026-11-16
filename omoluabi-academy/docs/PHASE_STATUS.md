@@ -5,13 +5,65 @@
 | 1. Project foundation | Complete. Approved 2026-11-14. |
 | 2. Brand and administration | Complete. Approved 2026-11-14. |
 | 3. Discovery and research | Complete in sample mode. Approved 2026-11-14 (API keys pending). |
-| 4. Rights management | **Complete. Awaiting owner approval.** |
-| 5. Yoruba content engine | Not started |
+| 4. Rights management | Complete. Approved 2026-11-16. |
+| 5. Yoruba content engine | **Complete in sample mode. Awaiting owner approval.** |
 | 6. Voice and avatar | Not started |
 | 7. Video production | Not started |
 | 8. Publishing | Not started |
 | 9. Monetisation | Not started |
 | 10. Deployment | Not started |
+
+---
+
+## Phase 5: Yoruba content engine (2026-11-16)
+
+### Delivered
+| Requirement | What exists |
+|---|---|
+| Expert Yoruba localisation prompt | Instructions to write natural Nigerian Yoruba (Ọ̀yọ́/Ìbàdàn/Lagos standard) with full tone marks and dots below. They also require approved business vocabulary, ₦ figures identical in both languages, concrete Nigerian examples (Balogun, POS agents, ajo/esusu…), honesty about income, and no imitation of any real person. They ask for a list of uncertain words for the reviewer. |
+| Original lessons and licensed adaptations | Originals come only from topics you approved, written from the academy's own research, and are checked against every source we hold. Adaptations need a verified licence and the licensed transcript. Rights are re-checked before writing and at approval, and the licence's credit line is added and locked. |
+| Translation revisions | Every change is a new numbered version (model-written, model-revised with your instructions, or edited by a person). Older versions can be viewed and are never overwritten. Editing an approved script needs a new review. |
+| Pronunciation dictionary | Written → spoken entries that a reviewer approves. Exported as a standard PLS lexicon for the voice service (Phase 6). |
+| Business vocabulary | Approved English → Yoruba terms go into every script brief. 20 starter terms are available as *proposals* (`seed-glossary`); none is used until a reviewer approves it. |
+| English and Yoruba subtitles, SRT export | Both languages are timed to the Yoruba narration, segment by segment, 2 lines × 42 characters. Timing is estimated now and re-timed to the real audio in Phase 6 (that logic is built and tested). A plain-text script export is also provided. |
+| Human language-review stage | Reviewer accounts (created by you, with a one-time password) see only scripts and language resources. Approval needs all six checklist items confirmed on the latest version. "Request changes" needs comments. Everything is audited. |
+| Translation quality score | Checks for missing text, misplaced marks, mostly unmarked words, copied wording, missing figures, English words, unused vocabulary and length mismatches. Errors block review. Every score is shown with the statement that it cannot judge tone accuracy or naturalness. |
+
+### Test results
+* **Backend:** 203 passed on PostgreSQL 16 (94% coverage); SQLite mode passes too. Lint clean. Migration checked.
+* **Frontend:** typecheck clean; 33 unit tests; build OK.
+* **Browser tests on the real stack:** Phase 5 **20/20** (owner and reviewer roles), Phase 4 **19/19**, Phase 3 **18/18**, Phase 2 **19/19**.
+
+### Failures found and fixed
+1. **Reviewer accounts were created as owners.** An edit to the user-creation code had
+   silently not applied. Caught by the role tests before release. Fixed and checked: the
+   role tests now cover reviewer access everywhere.
+2. **Reviewers could read the settings list** (budget limits). The endpoint needed only a
+   login. It is now owner-only, and every route was re-checked.
+3. **Approve/Reject buttons didn't send the decision.** The browser left out the clicked
+   button's value, so the review was rejected as invalid. Both two-button forms (script
+   review and topic approval) now set the decision explicitly.
+4. **In-session lists of versions and reviews went stale** after saving. Fixed.
+5. **The vocabulary check missed plurals** ("customers" vs "customer"). Fixed.
+6. **The quality disclaimer showed in English on Yoruba pages.** Now translated.
+7. Test-script issues (CSS upper-casing, a filter menu counted as navigation, a language-
+   switch race). Fixed in the tests.
+
+### Needs your action
+1. **Appoint at least one fluent Yoruba language reviewer** and create their account
+   (System settings → Language reviewers). No script can be approved without a review.
+2. Have the reviewer go through the **starter vocabulary** (after `seed-glossary`) and the
+   interface wording (`docs/YORUBA_UI_REVIEW.md`).
+3. With an Anthropic key, generate one short and one full lesson, and have the reviewer
+   judge the Yoruba quality before any volume work. **The localisation instructions are
+   untested against the real model.**
+
+### Known limitations
+* The automated checks cannot verify that a tone is *correct*, only that marks are present
+  and validly placed. Human review is the real quality gate.
+* Subtitle timing is estimated until Phase 6 records the voice.
+* One approving review is required. A second-reviewer rule can be added if you want it.
+* Deleting a vocabulary or pronunciation entry is immediate (audited, no undo).
 
 ---
 

@@ -3,7 +3,8 @@ import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { Sidebar } from "@/components/Sidebar";
 import type { User } from "@/lib/api";
 import { getI18n } from "@/lib/i18n/server";
-import { BUILT_PAGES, NAV, type PageKey } from "@/lib/nav";
+import Link from "next/link";
+import { BUILT_PAGES, NAV, REVIEWER_PAGES, type PageKey } from "@/lib/nav";
 import { authedFetch } from "@/lib/session";
 
 export const dynamic = "force-dynamic";
@@ -18,7 +19,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
       <LanguageSwitcher locale={locale} label={t.common.language} />
       {me.ok && (
         <p className="truncate text-xs text-navy-100/70">
-          {t.common.signedInAs} <span className="text-cream">{me.data.display_name}</span>
+          {t.common.signedInAs}{" "}
+          <Link href="/account" className="text-cream underline decoration-gold/50 underline-offset-2">
+            {me.data.display_name}
+          </Link>
         </p>
       )}
       <form action={logoutAction}>
@@ -38,6 +42,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         labels={labels}
         groupLabels={t.nav.groups}
         builtPages={BUILT_PAGES}
+        visiblePages={me.ok && me.data.role === "reviewer" ? REVIEWER_PAGES : NAV.map((n) => n.key)}
         soonLabel={t.common.phase}
         menuLabel={t.common.menu}
         closeLabel={t.common.close}

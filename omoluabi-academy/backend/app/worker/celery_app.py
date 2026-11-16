@@ -13,7 +13,12 @@ celery_app = Celery(
     "omoluabi",
     broker=settings.redis_url,
     backend=settings.redis_url,
-    include=["app.worker.tasks.system", "app.worker.tasks.content", "app.worker.tasks.rights"],
+    include=[
+        "app.worker.tasks.system",
+        "app.worker.tasks.content",
+        "app.worker.tasks.rights",
+        "app.worker.tasks.scripts",
+    ],
 )
 celery_app.conf.update(
     task_acks_late=True,  # a crashed worker does not lose the job

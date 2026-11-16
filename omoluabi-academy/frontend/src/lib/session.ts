@@ -29,5 +29,7 @@ export async function authedFetch<T>(path: string, init?: RequestInit): Promise<
     },
   });
   if (!result.ok && result.httpStatus === 401) redirect("/login?expired=1");
+  // Reviewers opening an owner-only page get a clear explanation instead of an error.
+  if (!result.ok && result.httpStatus === 403 && (!init?.method || init.method === "GET")) redirect("/forbidden");
   return result;
 }

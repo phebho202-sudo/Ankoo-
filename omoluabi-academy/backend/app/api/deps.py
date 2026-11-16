@@ -7,7 +7,7 @@ from fastapi import Depends, Header
 from sqlalchemy.orm import Session
 
 from app.core.config import get_settings
-from app.core.errors import AuthenticationError
+from app.core.errors import AuthenticationError, PermissionDeniedError
 from app.db.session import get_db
 from app.models import User
 from app.services import auth
@@ -41,12 +41,28 @@ def require_principal(
     if found is None:
         raise AuthenticationError("Session expired or invalid. Please log in again.")
     user, _ = found
-    return Principal(actor=f"owner:{user.email}", user=user, token=token)
+    return Principal(actor=f"{user.role}:{user.email}", user=user, token=token)
+
+
+OWNER, REVIEWER = "owner", "reviewer"
+
+
+def _role(principal: Principal) -> str | None:
+    return principal.user.role if principal.user else None
 
 
 def require_admin(principal: Principal = Depends(require_principal)) -> str:
-    """Backwards-compatible dependency returning just the audit actor name."""
+    """Owner areas (read access): the owner, or the automation token. Reviewers are refused."""
+    if principal.user is not None and principal.user.role != OWNER:
+        raise PermissionDeniedError("This area is for the owner")
     return principal.actor
+
+
+def require_staff_read(principal: Principal = Depends(require_principal)) -> Principal:
+    """Scripts and language resources: owner, language reviewer, or automation token."""
+    if principal.user is not None and principal.user.role not in (OWNER, REVIEWER):
+        raise PermissionDeniedError("Not allowed")
+    return principal
 
 
 @dataclass(frozen=True)
@@ -56,7 +72,25 @@ class UserPrincipal:
     token: str
 
 
-def require_user(principal: Principal = Depends(require_principal)) -> UserPrincipal:
+def require_any_user(principal: Principal = Depends(require_principal)) -> UserPrincipal:
+    """Any logged-in person (owner or reviewer), never the automation token."""
     if principal.user is None:
-        raise AuthenticationError("This action needs an owner login, not the automation token")
+        raise AuthenticationError("This action needs a personal login, not the automation token")
     return UserPrincipal(actor=principal.actor, user=principal.user, token=principal.token)
+
+
+def require_user(p: UserPrincipal = Depends(require_any_user)) -> UserPrincipal:
+    """Owner-only changes (settings, channels, licences, topics...)."""
+    if p.user.role != OWNER:
+        raise PermissionDeniedError("Only the owner can do this")
+    return p
+
+
+require_owner = require_user
+
+
+def require_staff(p: UserPrincipal = Depends(require_any_user)) -> UserPrincipal:
+    """Language work: the owner or a language reviewer, logged in personally."""
+    if p.user.role not in (OWNER, REVIEWER):
+        raise PermissionDeniedError("Not allowed")
+    return p

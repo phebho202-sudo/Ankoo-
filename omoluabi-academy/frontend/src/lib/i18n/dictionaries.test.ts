@@ -61,7 +61,7 @@ describe("dictionaries", () => {
     for (const item of NAV) {
       expect(en.nav[item.key]).toBeTruthy();
       expect(yo.nav[item.key]).toBeTruthy();
-      if (!["overview", "settings", "episodes", "research", "rights"].includes(item.key)) {
+      if (!["overview", "settings", "episodes", "research", "rights", "scripts"].includes(item.key)) {
         const k = item.key as keyof typeof en.pages;
         expect(yo.pages[k].safeguards.length).toBe(en.pages[k].safeguards.length);
       }

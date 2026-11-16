@@ -123,6 +123,13 @@ make web       # http://localhost:3000
 ### 6. Log in
 Open http://localhost:3000 and sign in with the owner email and password.
 
+Optional:
+```bash
+cd backend && .venv/bin/python -m app.cli seed-glossary   # starter business terms, as *proposals*
+```
+Add language reviewers under **System settings → Language reviewers**. Each gets a one-time
+temporary password to pass on privately; they change it under **My account**.
+
 ### 7. Verify the full pipeline (API → Redis → worker → database)
 This uses the optional automation token. Set `ADMIN_API_TOKEN` in `backend/.env` first
 and restart the API.

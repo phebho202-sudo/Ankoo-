@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { Alert, Card, PageHeader } from "@/components/ui";
-import type { AuditEntry, SettingItem } from "@/lib/api";
+import { setUserActiveAction } from "@/app/script-actions";
+import { ReviewerForm } from "@/components/ScriptForms";
+import type { AuditEntry, SettingItem, TeamMember } from "@/lib/api";
 import { formatDateTime } from "@/lib/i18n/format";
 import { getI18n } from "@/lib/i18n/server";
 import { authedFetch } from "@/lib/session";
@@ -20,11 +22,12 @@ export default async function SettingsPage({
   const { before } = await searchParams;
   const beforeId = before && /^\d+$/.test(before) ? before : undefined;
 
-  const [settings, auditLog] = await Promise.all([
+  const [settings, auditLog, team] = await Promise.all([
     authedFetch<{ settings: SettingItem[] }>("/api/v1/settings"),
     authedFetch<{ entries: AuditEntry[]; next_before_id: number | null }>(
       `/api/v1/audit?limit=25${beforeId ? `&before_id=${beforeId}` : ""}`,
     ),
+    authedFetch<{ users: TeamMember[] }>("/api/v1/users"),
   ]);
 
   const labelsFor = (item: SettingItem): SettingRowLabels => ({
@@ -71,6 +74,38 @@ export default async function SettingsPage({
           })}
         </div>
       )}
+
+      <div className="mt-8">
+        <Card title={t.team.title}>
+          <p className="-mt-2 mb-4 text-sm text-charcoal-400">{t.team.help}</p>
+          <ReviewerForm t={t.team} />
+          <ul className="mt-4 divide-y divide-navy-50 text-sm">
+            {team.ok && team.data.users.filter((u) => u.role === "reviewer").length === 0 && (
+              <li className="py-2 text-charcoal-400">{t.team.none}</li>
+            )}
+            {team.ok &&
+              team.data.users
+                .filter((u) => u.role === "reviewer")
+                .map((u) => (
+                  <li key={u.id} className="flex flex-wrap items-center justify-between gap-2 py-2">
+                    <span>
+                      {u.display_name} <span className="text-xs text-charcoal-400">{u.email}</span>{" "}
+                      <span className={`text-xs ${u.is_active ? "text-emerald-800" : "text-red-800"}`}>
+                        {u.is_active ? t.team.active : t.team.inactive}
+                      </span>
+                    </span>
+                    <form action={setUserActiveAction}>
+                      <input type="hidden" name="id" value={u.id} />
+                      <input type="hidden" name="active" value={String(!u.is_active)} />
+                      <button className="rounded border border-navy-100 px-2 py-1 text-xs hover:bg-cream-50">
+                        {u.is_active ? t.team.deactivate : t.team.reactivate}
+                      </button>
+                    </form>
+                  </li>
+                ))}
+          </ul>
+        </Card>
+      </div>
 
       <div id="audit" className="mt-8 scroll-mt-6">
         <Card title={s.audit}>

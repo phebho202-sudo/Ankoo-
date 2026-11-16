@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useRef } from "react";
 import {
   decideTopicAction,
   requestResearchAction,
@@ -119,15 +119,21 @@ export function TopicDecisionForm({
   labels: { approve: string; reject: string; decisionNote: string; decisionFailed: string };
 }) {
   const [state, action, pending] = useActionState<ActionState, FormData>(decideTopicAction, idle);
+  // Each button sets the decision synchronously (a submitter's value is not reliably sent).
+  const decision = useRef<HTMLInputElement>(null);
+  const choose = (value: string) => () => {
+    if (decision.current) decision.current.value = value;
+  };
   return (
     <form action={action} className="mt-3 space-y-2">
       <input type="hidden" name="topic_id" value={topicId} />
+      <input ref={decision} type="hidden" name="decision" defaultValue="" />
       <div className="flex flex-wrap items-center gap-2">
         <input name="note" placeholder={labels.decisionNote} aria-label={labels.decisionNote} maxLength={2000} className={`${inputClass} max-w-sm flex-1`} />
-        <button type="submit" name="decision" value="approved" disabled={pending} className={buttonClass}>
+        <button type="submit" onClick={choose("approved")} disabled={pending} className={buttonClass}>
           {labels.approve}
         </button>
-        <button type="submit" name="decision" value="rejected" disabled={pending} className={secondaryButtonClass}>
+        <button type="submit" onClick={choose("rejected")} disabled={pending} className={secondaryButtonClass}>
           {labels.reject}
         </button>
       </div>

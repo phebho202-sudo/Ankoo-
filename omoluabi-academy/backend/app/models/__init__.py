@@ -15,10 +15,30 @@ from app.models.content import (
 )
 from app.models.job import JobRun, JobStatus
 from app.models.rights import PLATFORMS, Grant, Licence, LicenceStatus, RightsCheck
+from app.models.scripts import (
+    GlossaryTerm,
+    LanguageReview,
+    PronunciationEntry,
+    Script,
+    ScriptFormat,
+    ScriptKind,
+    ScriptRevision,
+    ScriptStatus,
+    TermStatus,
+)
 from app.models.setting import SystemSetting
 from app.models.user import AuthSession, User
 
 __all__ = [
+    "GlossaryTerm",
+    "LanguageReview",
+    "PronunciationEntry",
+    "Script",
+    "ScriptFormat",
+    "ScriptKind",
+    "ScriptRevision",
+    "ScriptStatus",
+    "TermStatus",
     "AuditLog",
     "AuthSession",
     "AuthorisationBasis",

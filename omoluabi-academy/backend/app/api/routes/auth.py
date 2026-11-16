@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends, Request
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
-from app.api.deps import UserPrincipal, require_user
+from app.api.deps import UserPrincipal, require_any_user
 from app.db.session import get_db
 from app.models import User
 from app.services import auth
@@ -21,6 +21,11 @@ class LoginIn(BaseModel):
 
 class LanguageIn(BaseModel):
     language: Literal["en", "yo"]
+
+
+class PasswordIn(BaseModel):
+    current_password: str = Field(min_length=1, max_length=256)
+    new_password: str = Field(min_length=1, max_length=256)
 
 
 def user_out(user: User) -> dict[str, Any]:
@@ -50,18 +55,27 @@ def login(body: LoginIn, request: Request, db: Session = Depends(get_db)) -> dic
 
 
 @router.post("/logout", status_code=204)
-def logout(p: UserPrincipal = Depends(require_user), db: Session = Depends(get_db)) -> None:
+def logout(p: UserPrincipal = Depends(require_any_user), db: Session = Depends(get_db)) -> None:
     auth.logout(db, p.token)
 
 
 @router.get("/me")
-def me(p: UserPrincipal = Depends(require_user)) -> dict[str, Any]:
+def me(p: UserPrincipal = Depends(require_any_user)) -> dict[str, Any]:
     return user_out(p.user)
 
 
 @router.put("/me/language")
 def set_language(
-    body: LanguageIn, p: UserPrincipal = Depends(require_user), db: Session = Depends(get_db)
+    body: LanguageIn, p: UserPrincipal = Depends(require_any_user), db: Session = Depends(get_db)
 ) -> dict[str, Any]:
     auth.set_language(db, p.user, body.language)
     return user_out(p.user)
+
+
+@router.put("/me/password", status_code=204)
+def change_password(
+    body: PasswordIn, p: UserPrincipal = Depends(require_any_user), db: Session = Depends(get_db)
+) -> None:
+    auth.change_password(
+        db, p.user, current=body.current_password, new=body.new_password, keep_token=p.token
+    )

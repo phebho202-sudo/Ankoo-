@@ -295,3 +295,61 @@ export type OriginalityResult = {
   flagged: boolean;
   matches: { episode_id: string; episode_title: string; used_transcript: boolean; words: number; excerpt: string; flagged: boolean }[];
 };
+
+// ---- Phase 5: Yoruba scripts
+export type ScriptStatus = "generating" | "draft" | "in_review" | "changes_requested" | "approved" | "blocked" | "archived";
+export type ScriptKind = "original_lesson" | "licensed_adaptation";
+export type Issue = { code: string; [k: string]: unknown };
+export type Segment = { id: string; text_yo: string; text_en: string; visual: string; locked?: boolean };
+
+export type ScriptSummary = {
+  id: string;
+  kind: ScriptKind;
+  format: "long_form" | "short";
+  status: ScriptStatus;
+  title_en: string;
+  title_yo: string | null;
+  topic_id: string | null;
+  episode_id: string | null;
+  licence_id: string | null;
+  target_minutes: number;
+  is_sample: boolean;
+  current_revision: number;
+  approved_revision: number | null;
+  approved_at: string | null;
+  blocked_reason: string | null;
+  created_by: string;
+  created_at: string;
+  updated_at: string;
+  score: number | null;
+  error_count: number;
+};
+
+export type Revision = {
+  number: number;
+  origin: "generated" | "revised" | "human_edit";
+  title_yo: string;
+  segments: Segment[];
+  change_note: string | null;
+  quality: { score: number; errors: Issue[]; warnings: Issue[]; stats: Record<string, number>; disclaimer: string };
+  originality: { flagged: boolean; words: number; excerpt: string; episode_id: string | null } | null;
+  provider: string | null;
+  model: string | null;
+  cost_usd: string;
+  is_sample: boolean;
+  created_by: string;
+  created_at: string;
+  estimated_seconds: number;
+};
+
+export type ScriptDetail = ScriptSummary & {
+  revision: Revision | null;
+  revisions: { number: number; origin: Revision["origin"]; created_by: string; created_at: string; score: number; change_note: string | null }[];
+  reviews: { revision_number: number; reviewer: string; decision: "approved" | "changes_requested"; checklist: Record<string, boolean>; comments: string | null; created_at: string }[];
+  checklist_items: string[];
+  quality_disclaimer: string;
+};
+
+export type GlossaryTerm = { id: string; english: string; yoruba: string; notes: string | null; status: "proposed" | "approved"; approved_by: string | null };
+export type PronEntry = { id: string; written: string; spoken: string; category: string; notes: string | null; status: "proposed" | "approved"; approved_by: string | null };
+export type TeamMember = { id: string; email: string; display_name: string; role: string; is_active: boolean; last_login_at: string | null };

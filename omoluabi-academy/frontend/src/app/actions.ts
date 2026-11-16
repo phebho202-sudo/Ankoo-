@@ -37,7 +37,7 @@ export async function loginAction(_prev: LoginState, form: FormData): Promise<Lo
     path: "/",
     maxAge: 60 * 60 * 24 * 365,
   });
-  redirect("/");
+  redirect(r.data.user.role === "reviewer" ? "/scripts" : "/");
 }
 
 export async function logoutAction(): Promise<void> {

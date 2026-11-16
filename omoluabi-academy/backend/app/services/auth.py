@@ -40,8 +40,19 @@ def normalise_email(email: str) -> str:
     return email.strip().lower()
 
 
+ROLES = ("owner", "reviewer")
+
+
 def create_owner(
     db: Session, *, email: str, password: str, display_name: str, actor: str = "cli"
+) -> User:
+    return create_user(
+        db, email=email, password=password, display_name=display_name, role="owner", actor=actor
+    )
+
+
+def create_user(
+    db: Session, *, email: str, password: str, display_name: str, role: str, actor: str
 ) -> User:
     email = normalise_email(email)
     if "@" not in email:
@@ -51,10 +62,12 @@ def create_owner(
         raise AppError("Password " + "; ".join(problems))
     if db.execute(select(User).where(User.email == email)).scalar_one_or_none():
         raise ConflictError("A user with this email already exists")
+    if role not in ROLES:
+        raise AppError(f"Unknown role: {role}")
     user = User(
         email=email,
         display_name=display_name.strip() or email,
-        role="owner",
+        role=role,
         password_hash=hash_password(password),
     )
     db.add(user)
@@ -65,9 +78,56 @@ def create_owner(
         action="user.created",
         entity_type="user",
         entity_id=user.id,
-        details={"email": email, "role": "owner"},
+        details={"email": email, "role": role},
     )
     return user
+
+
+def set_active(db: Session, user: User, active: bool, actor: str) -> None:
+    """Deactivating a user also ends all of their sessions."""
+    if user.role == "owner" and not active:
+        raise AppError("The owner account cannot be deactivated here")
+    if user.is_active == active:
+        return
+    user.is_active = active
+    if not active:
+        for s in user.sessions:
+            if s.revoked_at is None:
+                s.revoked_at = utcnow()
+    audit.record(
+        db,
+        actor=actor,
+        action="user.activated" if active else "user.deactivated",
+        entity_type="user",
+        entity_id=user.id,
+        details={"email": user.email},
+    )
+
+
+def change_password(db: Session, user: User, *, current: str, new: str, keep_token: str) -> None:
+    """Changing a password ends every other session of that user."""
+    actor = f"{user.role}:{user.email}"
+    if not verify_password(current, user.password_hash):
+        audit.record(
+            db,
+            actor=actor,
+            action="auth.password_change_failed",
+            entity_type="user",
+            entity_id=user.id,
+        )
+        db.commit()
+        raise AuthenticationError("Current password is incorrect")
+    problems = validate_password_strength(new)
+    if problems:
+        raise AppError("Password " + "; ".join(problems))
+    user.password_hash = hash_password(new)
+    keep = hash_token(keep_token)
+    for s in user.sessions:
+        if s.token_hash != keep and s.revoked_at is None:
+            s.revoked_at = utcnow()
+    audit.record(
+        db, actor=actor, action="auth.password_changed", entity_type="user", entity_id=user.id
+    )
 
 
 @dataclass(frozen=True)
@@ -145,7 +205,7 @@ def login(
     user.last_login_at = now
     audit.record(
         db,
-        actor=f"owner:{user.email}",
+        actor=f"{user.role}:{user.email}",
         action="auth.login",
         entity_type="user",
         entity_id=user.id,
@@ -176,7 +236,11 @@ def logout(db: Session, token: str) -> None:
     user, session = found
     session.revoked_at = utcnow()
     audit.record(
-        db, actor=f"owner:{user.email}", action="auth.logout", entity_type="user", entity_id=user.id
+        db,
+        actor=f"{user.role}:{user.email}",
+        action="auth.logout",
+        entity_type="user",
+        entity_id=user.id,
     )
 
 

@@ -375,6 +375,153 @@ Source of truth: `frontend/src/lib/i18n/dictionaries.ts`. Regenerate this file a
 | `rights.noTranscriptCaveat` | (description only: no transcript held) | (àlàyé nìkan: kò sí àkọsílẹ̀ ọ̀rọ̀) | |
 | `rights.changeBasis` | Change basis | Yí ìdí padà | |
 | `rights.changeBasisNote` | Reason for the change (e.g. licence reference) | Ìdí fún àyípadà náà (fún àpẹẹrẹ nọ́ńbà ìwé àṣẹ) | |
+| `scripts.subtitle` | Yoruba lesson scripts. Every script is checked automatically, then reviewed and approved by a fluent Yoruba speaker before voice production. | Àkọsílẹ̀ ẹ̀kọ́ ní èdè Yorùbá. A ń ṣàyẹ̀wò àkọsílẹ̀ kọ̀ọ̀kan fúnra ẹ̀rọ, lẹ́yìn náà ẹni tó gbọ́ Yorùbá dáadáa yóò ṣàyẹ̀wò rẹ̀, yóò sì fọwọ́ sí i kí a tó gba ohùn sílẹ̀. | |
+| `scripts.newScript` | New script | Àkọsílẹ̀ tuntun | |
+| `scripts.kind` | Type | Irú | |
+| `scripts.kinds.original_lesson` | Original lesson | Ẹ̀kọ́ tuntun | |
+| `scripts.kinds.licensed_adaptation` | Licensed adaptation | Àtúnṣe pẹ̀lú ìwé àṣẹ | |
+| `scripts.kindHelp.original_lesson` | Written independently from a topic you approved. Checked against source wording. | A kọ ọ́ fúnra wa láti inú kókó tí o fọwọ́ sí. A ó fi wé ọ̀rọ̀ orísun. | |
+| `scripts.kindHelp.licensed_adaptation` | Adapted from a source episode. Needs a verified licence and the licensed transcript. | A ṣe àtúnṣe rẹ̀ láti inú ìpín orísun kan. Ó nílò ìwé àṣẹ tí a ti fìdí rẹ̀ múlẹ̀ àti àkọsílẹ̀ ọ̀rọ̀ tí a ní àṣẹ fún. | |
+| `scripts.topic` | Approved topic | Kókó tí a fọwọ́ sí | |
+| `scripts.noTopics` | No approved topics yet. Approve topics on the Research page first. | Kò sí kókó tí a fọwọ́ sí síbẹ̀. Kọ́kọ́ fọwọ́ sí kókó ní ojú-ìwé Ìwádìí. | |
+| `scripts.episode` | Licensed episode (with transcript) | Ìpín pẹ̀lú ìwé àṣẹ (pẹ̀lú àkọsílẹ̀ ọ̀rọ̀) | |
+| `scripts.noEpisodes` | No episodes with a transcript yet. | Kò sí ìpín tó ní àkọsílẹ̀ ọ̀rọ̀ síbẹ̀. | |
+| `scripts.format` | Format | Ọ̀nà | |
+| `scripts.formats.long_form` | Full lesson (16:9) | Ẹ̀kọ́ kíkún (16:9) | |
+| `scripts.formats.short` | Short (vertical, under 60 s) | Kúkúrú (ìdúró, kò tó ìṣẹ́jú kan) | |
+| `scripts.minutes` | Target length (minutes) | Gígùn tí a fẹ́ (ìṣẹ́jú) | |
+| `scripts.create` | Write script | Kọ àkọsílẹ̀ | |
+| `scripts.none` | No scripts yet. | Kò sí àkọsílẹ̀ síbẹ̀. | |
+| `scripts.all` | All | Gbogbo | |
+| `scripts.status.generating` | Being written | À ń kọ ọ́ lọ́wọ́ | |
+| `scripts.status.draft` | Draft | Àkọ́pamọ́ | |
+| `scripts.status.in_review` | In language review | Ó wà nínú àyẹ̀wò èdè | |
+| `scripts.status.changes_requested` | Changes requested | A béèrè àyípadà | |
+| `scripts.status.approved` | Approved | A fọwọ́ sí i | |
+| `scripts.status.blocked` | Blocked | A dí i lọ́nà | |
+| `scripts.status.archived` | Archived | A ti fi pamọ́ | |
+| `scripts.colTitle` | Title | Àkọlé | |
+| `scripts.colKind` | Type | Irú | |
+| `scripts.colScore` | Checks | Àyẹ̀wò | |
+| `scripts.colRevision` | Version | Ẹ̀dà | |
+| `scripts.colUpdated` | Updated | Ìgbà tí a yí i padà | |
+| `scripts.back` | Back to scripts | Padà sí àwọn àkọsílẹ̀ | |
+| `scripts.revisionOf` | Version {n} of {total} | Ẹ̀dà {n} nínú {total} | |
+| `scripts.viewingOld` | You are viewing version {n}. Editing and review always use the latest version. | Ẹ̀dà {n} lò ń wò. Ẹ̀dà tuntun jùlọ ni a máa ń ṣàtúnṣe sí, tí a sì ń ṣàyẹ̀wò. | |
+| `scripts.latest` | Go to latest | Lọ sí tuntun jùlọ | |
+| `scripts.generating` | The script is being written. This page updates when it is ready. | À ń kọ àkọsílẹ̀ náà lọ́wọ́. Ojú-ìwé yìí yóò yí padà nígbà tí ó bá parí. | |
+| `scripts.blocked` | Stopped: {reason} | Ó dúró: {reason} | |
+| `scripts.segments` | Script | Àkọsílẹ̀ | |
+| `scripts.colYo` | Yorùbá (narration) | Yorùbá (ohùn) | |
+| `scripts.colEn` | English (subtitles) | Gẹ̀ẹ́sì (àkọlé ìsàlẹ̀) | |
+| `scripts.colVisual` | On screen | Lójú ìbòjú | |
+| `scripts.credit` | Credit required by the licence (cannot be removed) | Ìdárúkọ tí ìwé àṣẹ béèrè (a kò lè yọ ọ́ kúrò) | |
+| `scripts.estimated` | About {min} min {sec} s when read aloud (estimate). | Nǹkan bí ìṣẹ́jú {min} àti ìṣẹ́jú-àáyá {sec} tí a bá kà á sókè (àmọ̀rò). | |
+| `scripts.edit` | Edit script | Ṣàtúnṣe àkọsílẹ̀ | |
+| `scripts.cancel` | Cancel | Fagi lé e | |
+| `scripts.titleYo` | Yoruba title | Àkọlé Yorùbá | |
+| `scripts.addSegment` | Add segment | Fi apá kan kún un | |
+| `scripts.removeSegment` | Remove | Yọ ọ́ kúrò | |
+| `scripts.changeNote` | What did you change? | Kí lo yí padà? | |
+| `scripts.saveRevision` | Save as new version | Fi pamọ́ gẹ́gẹ́ bí ẹ̀dà tuntun | |
+| `scripts.saved` | New version saved. | A ti fi ẹ̀dà tuntun pamọ́. | |
+| `scripts.quality` | Automated checks | Àyẹ̀wò ẹ̀rọ | |
+| `scripts.score` | Score | Máàkì | |
+| `scripts.noIssues` | No problems found by the automated checks. | Àyẹ̀wò ẹ̀rọ kò rí ìṣòro kankan. | |
+| `scripts.disclaimer` | Automated checks only. They catch missing marks, English left in the text, missing numbers and similar problems. They cannot judge tone accuracy or naturalness: a fluent Yoruba reviewer must approve every script. | Àyẹ̀wò ẹ̀rọ nìkan ni èyí. Ó ń rí àmì tó sọnù, ọ̀rọ̀ Gẹ̀ẹ́sì tó kù sínú Yorùbá, nọ́ńbà tó sọnù àti irú ìṣòro bẹ́ẹ̀. Kò lè dájọ́ bóyá ohùn tọ̀nà tàbí bóyá èdè náà dùn létí: ẹni tó gbọ́ Yorùbá dáadáa gbọ́dọ̀ fọwọ́ sí gbogbo àkọsílẹ̀. | |
+| `scripts.errorsTitle` | Must fix before review | Gbọ́dọ̀ tún un ṣe kí àyẹ̀wò tó bẹ̀rẹ̀ | |
+| `scripts.warningsTitle` | Please check | Jọ̀ọ́ ṣàyẹ̀wò | |
+| `scripts.issues.no_segments` | The script has no segments. | Àkọsílẹ̀ náà kò ní apá kankan. | |
+| `scripts.issues.missing_yoruba` | Segment {segment} has no Yoruba text. | Apá {segment} kò ní ọ̀rọ̀ Yorùbá. | |
+| `scripts.issues.missing_english` | Segment {segment} has no English text. | Apá {segment} kò ní ọ̀rọ̀ Gẹ̀ẹ́sì. | |
+| `scripts.issues.misplaced_marks` | A tone mark or dot is on a letter that cannot carry it: {words}. | Àmì ohùn tàbí àmì ìsàlẹ̀ wà lórí lẹ́tà tí kò lè gbé e: {words}. | |
+| `scripts.issues.tone_marks_missing` | {unmarked_percent}% of words have no tone marks. Tone marks are probably missing. | Ọ̀rọ̀ {unmarked_percent}% kò ní àmì ohùn. Ó ṣeé ṣe kí àmì ohùn ti sọnù. | |
+| `scripts.issues.copied_source_wording` | {words} words copied from a source: “{excerpt}”. | Ọ̀rọ̀ {words} tí a dà kọ láti orísun: “{excerpt}”. | |
+| `scripts.issues.length_mismatch` | Segment {segment}: Yoruba and English lengths differ a lot. Check nothing is missing. | Apá {segment}: gígùn Yorùbá àti Gẹ̀ẹ́sì yàtọ̀ púpọ̀. Ṣàyẹ̀wò pé kò sí nǹkan tó sọnù. | |
+| `scripts.issues.numbers_missing` | Segment {segment}: these figures are in the English but not the Yoruba: {numbers}. | Apá {segment}: àwọn nọ́ńbà yìí wà nínú Gẹ̀ẹ́sì ṣùgbọ́n wọn kò sí nínú Yorùbá: {numbers}. | |
+| `scripts.issues.english_in_yoruba` | Segment {segment}: English words in the Yoruba: {words}. | Apá {segment}: ọ̀rọ̀ Gẹ̀ẹ́sì wà nínú Yorùbá: {words}. | |
+| `scripts.issues.glossary_term_not_used` | Segment {segment}: the approved word for “{english}” is “{yoruba}”. | Apá {segment}: ọ̀rọ̀ tí a fọwọ́ sí fún “{english}” ni “{yoruba}”. | |
+| `scripts.issues.line_below_used` | Uses the vertical line below (e̩) instead of the dot below (ẹ). Saving a new version fixes this. | Ó lo ìlà ìsàlẹ̀ (e̩) dípò àmì ìsàlẹ̀ (ẹ). Fífi ẹ̀dà tuntun pamọ́ yóò tún un ṣe. | |
+| `scripts.originality` | Originality: longest run copied from a source is {words} words. | Àìdàkọ: ọ̀rọ̀ tó gùn jùlọ tí a dà kọ láti orísun jẹ́ ọ̀rọ̀ {words}. | |
+| `scripts.sampleNote` | Sample output: written offline without a language model, to test the workflow only. | Èsì àpẹẹrẹ: a kọ ọ́ láìlo ẹ̀rọ èdè, fún ìdánwò ètò iṣẹ́ nìkan. | |
+| `scripts.actions` | Next step | Ìgbésẹ̀ tó kàn | |
+| `scripts.submit` | Send for language review | Fi ránṣẹ́ fún àyẹ̀wò èdè | |
+| `scripts.submitHelp` | A fluent Yoruba reviewer must check and approve the latest version. | Ẹni tó gbọ́ Yorùbá dáadáa gbọ́dọ̀ ṣàyẹ̀wò ẹ̀dà tuntun jùlọ, kí ó sì fọwọ́ sí i. | |
+| `scripts.review` | Language review | Àyẹ̀wò èdè | |
+| `scripts.checklist.tone_marks` | Every word is correctly toned and dotted | Gbogbo ọ̀rọ̀ ní àmì ohùn àti àmì ìsàlẹ̀ tó tọ̀nà | |
+| `scripts.checklist.natural_phrasing` | It sounds like natural Nigerian Yoruba, not translated English | Ó dún bí Yorùbá Nàìjíríà gidi, kì í ṣe Gẹ̀ẹ́sì tí a túmọ̀ | |
+| `scripts.checklist.terminology` | Business terms are correct and consistent | Àwọn ọ̀rọ̀ òwò tọ̀nà, wọ́n sì dọ́gba jákèjádò | |
+| `scripts.checklist.numbers_and_naira` | Figures and naira amounts are correct and read naturally | Àwọn nọ́ńbà àti iye owó náírà tọ̀nà, wọ́n sì ṣeé kà dáadáa | |
+| `scripts.checklist.cultural_fit` | Examples and tone suit the audience | Àwọn àpẹẹrẹ àti ohùn bá àwọn olùgbọ́ mu | |
+| `scripts.checklist.source_handling` | Original: nothing copied. Adaptation: faithful to the source and credited. | Ẹ̀kọ́ tuntun: kò sí ohun tí a dà kọ. Àtúnṣe: ó bá orísun mu, a sì dárúkọ wọn. | |
+| `scripts.comments` | Comments | Àkíyèsí | |
+| `scripts.approve` | Approve this version | Fọwọ́ sí ẹ̀dà yìí | |
+| `scripts.requestChanges` | Request changes | Béèrè àyípadà | |
+| `scripts.reviseTitle` | Ask the writer for changes | Ní kí òǹkọ̀wé ṣe àyípadà | |
+| `scripts.reviseHelp` | The language model writes a new version following your instructions. It still needs review. | Ẹ̀rọ èdè yóò kọ ẹ̀dà tuntun gẹ́gẹ́ bí ìtọ́sọ́nà rẹ. Ó ṣì nílò àyẹ̀wò. | |
+| `scripts.instructions` | Instructions | Ìtọ́sọ́nà | |
+| `scripts.reviseButton` | Write new version | Kọ ẹ̀dà tuntun | |
+| `scripts.approvedBy` | Version {n} approved by {who} on {when}. | {who} ló fọwọ́ sí ẹ̀dà {n} ní {when}. | |
+| `scripts.readyForVoice` | Ready for voice production (Phase 6). | Ó ti ṣe tán fún gbígba ohùn sílẹ̀ (Ìpele 6). | |
+| `scripts.exports` | Downloads | Àwọn ohun tí a lè gbà sílẹ̀ | |
+| `scripts.srtYo` | Yoruba subtitles (.srt) | Àkọlé ìsàlẹ̀ Yorùbá (.srt) | |
+| `scripts.srtEn` | English subtitles (.srt) | Àkọlé ìsàlẹ̀ Gẹ̀ẹ́sì (.srt) | |
+| `scripts.textFile` | Script text (.txt) | Àkọsílẹ̀ (.txt) | |
+| `scripts.srtNote` | Timing is estimated until the voice is recorded. It is then re-timed to the real audio. | Àkókò jẹ́ àmọ̀rò títí tí a ó fi gba ohùn sílẹ̀. Lẹ́yìn náà a ó tún un ṣe sí ohùn gidi. | |
+| `scripts.revisions` | Versions | Àwọn ẹ̀dà | |
+| `scripts.origins.generated` | Written by model | Ẹ̀rọ ló kọ ọ́ | |
+| `scripts.origins.revised` | Revised by model | Ẹ̀rọ ló tún un kọ | |
+| `scripts.origins.human_edit` | Edited by a person | Ènìyàn ló ṣàtúnṣe rẹ̀ | |
+| `scripts.reviews` | Review history | Ìtàn àyẹ̀wò | |
+| `scripts.decisions.approved` | Approved | A fọwọ́ sí i | |
+| `scripts.decisions.changes_requested` | Changes requested | A béèrè àyípadà | |
+| `scripts.noReviews` | No reviews yet. | Kò sí àyẹ̀wò síbẹ̀. | |
+| `scripts.archive` | Archive | Fi pamọ́ | |
+| `scripts.failed` | Could not complete: {msg} | A kò lè parí rẹ̀: {msg} | |
+| `scripts.dictionaryLink` | Vocabulary & pronunciation | Ọ̀rọ̀ àti ìpè | |
+| `dictionary.title` | Vocabulary & pronunciation | Ọ̀rọ̀ àti ìpè | |
+| `dictionary.subtitle` | Approved Yoruba business terms are given to the script writer. Approved pronunciations are given to the voice. Every new or changed entry must be approved by a Yoruba reviewer first. | A ń fún òǹkọ̀wé ní àwọn ọ̀rọ̀ òwò Yorùbá tí a fọwọ́ sí. A ń fún ohùn ní àwọn ìpè tí a fọwọ́ sí. Ẹni tó ń ṣàyẹ̀wò Yorùbá gbọ́dọ̀ kọ́kọ́ fọwọ́ sí gbogbo ọ̀rọ̀ tuntun tàbí èyí tí a yí padà. | |
+| `dictionary.glossary` | Business vocabulary | Ọ̀rọ̀ òwò | |
+| `dictionary.english` | English term | Ọ̀rọ̀ Gẹ̀ẹ́sì | |
+| `dictionary.yoruba` | Yoruba term | Ọ̀rọ̀ Yorùbá | |
+| `dictionary.notes` | Notes | Àkíyèsí | |
+| `dictionary.add` | Add | Fi kún un | |
+| `dictionary.approve` | Approve | Fọwọ́ sí i | |
+| `dictionary.remove` | Delete | Pa á rẹ́ | |
+| `dictionary.proposed` | Needs approval | Ó nílò ìfọwọ́sí | |
+| `dictionary.approved` | Approved | A fọwọ́ sí i | |
+| `dictionary.pronunciation` | Pronunciation dictionary | Ìwé atúmọ̀ ìpè | |
+| `dictionary.written` | Written as | Bí a ṣe ń kọ ọ́ | |
+| `dictionary.spoken` | Say it as | Bí a ṣe ń pè é | |
+| `dictionary.category` | Kind | Irú | |
+| `dictionary.categories.term` | Term | Ọ̀rọ̀ | |
+| `dictionary.categories.name` | Name | Orúkọ | |
+| `dictionary.categories.brand` | Brand | Orúkọ ọjà | |
+| `dictionary.categories.loanword` | Loanword | Ọ̀rọ̀ àyálò | |
+| `dictionary.categories.number` | Number | Nọ́ńbà | |
+| `dictionary.exportPls` | Download lexicon (.pls) for the voice service | Gba ìwé atúmọ̀ (.pls) sílẹ̀ fún iṣẹ́ ohùn | |
+| `dictionary.empty` | Nothing yet. | Kò sí nǹkan síbẹ̀. | |
+| `account.title` | My account | Àkáǹtì mi | |
+| `account.changePassword` | Change password | Yí ọ̀rọ̀ aṣínà padà | |
+| `account.current` | Current password | Ọ̀rọ̀ aṣínà ti ìsinsìnyí | |
+| `account.next` | New password (at least 12 characters, mixed case and a digit) | Ọ̀rọ̀ aṣínà tuntun (ó kéré tán lẹ́tà 12, lẹ́tà ńlá àti kékeré, àti nọ́ńbà kan) | |
+| `account.save` | Change password | Yí ọ̀rọ̀ aṣínà padà | |
+| `account.done` | Password changed. Other devices have been signed out. | A ti yí ọ̀rọ̀ aṣínà padà. A ti mú àwọn ẹ̀rọ mìíràn jáde. | |
+| `account.menu` | My account | Àkáǹtì mi | |
+| `team.title` | Language reviewers | Àwọn olùyẹ̀wò èdè | |
+| `team.help` | Reviewers can sign in to check and approve Yoruba scripts and vocabulary. They cannot see anything else. | Àwọn olùyẹ̀wò lè wọlé láti ṣàyẹ̀wò àti fọwọ́ sí àkọsílẹ̀ Yorùbá àti ọ̀rọ̀. Wọn kò lè rí nǹkan mìíràn. | |
+| `team.name` | Name | Orúkọ | |
+| `team.email` | Email | Ímeèlì | |
+| `team.add` | Add reviewer | Fi olùyẹ̀wò kún un | |
+| `team.tempPassword` | Temporary password for {email}: {password} (shown once; share it privately and ask them to change it). | Ọ̀rọ̀ aṣínà fún ìgbà díẹ̀ fún {email}: {password} (a ó fi hàn lẹ́ẹ̀kan ṣoṣo; fi ránṣẹ́ sí wọn ní ìkọ̀kọ̀, kí o sì ní kí wọ́n yí i padà). | |
+| `team.active` | Active | Ó ń ṣiṣẹ́ | |
+| `team.inactive` | Deactivated | A ti dá a dúró | |
+| `team.deactivate` | Deactivate | Dá a dúró | |
+| `team.reactivate` | Reactivate | Tún un ṣí | |
+| `team.none` | No reviewers yet. | Kò sí olùyẹ̀wò síbẹ̀. | |
+| `forbidden.title` | Not available | Kò sí fún ọ | |
+| `forbidden.body` | This page is for the academy owner. Your account can work on Yoruba scripts. | Ojú-ìwé yìí wà fún ọ̀gá ilé-ẹ̀kọ́ nìkan. Àkáǹtì rẹ lè ṣiṣẹ́ lórí àkọsílẹ̀ Yorùbá. | |
+| `forbidden.go` | Go to Yoruba scripts | Lọ sí àkọsílẹ̀ Yorùbá | |
 | `settings.title` | System settings | Ètò sístẹ́mù | |
 | `settings.subtitle` | Limits and rules the platform must obey. Every change is recorded in the audit trail. | Àwọn òpin àti òfin tí sístẹ́mù gbọ́dọ̀ tẹ̀lé. A ń kọ gbogbo àyípadà sínú àkọsílẹ̀ àyẹ̀wò. | |
 | `settings.categories.budget` | Budget and cost control | Ìṣúná àti ìṣàkóso ìnáwó | |

@@ -9,6 +9,7 @@ type Props = {
   labels: Record<PageKey, string>;
   groupLabels: Record<NavGroup, string>;
   builtPages: PageKey[];
+  visiblePages: PageKey[];
   soonLabel: string;
   menuLabel: string;
   closeLabel: string;
@@ -17,7 +18,7 @@ type Props = {
 
 const GROUP_ORDER: NavGroup[] = ["main", "content", "production", "distribution", "business", "system"];
 
-export function Sidebar({ labels, groupLabels, builtPages, soonLabel, menuLabel, closeLabel, footer }: Props) {
+export function Sidebar({ labels, groupLabels, builtPages, visiblePages, soonLabel, menuLabel, closeLabel, footer }: Props) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   useEffect(() => setOpen(false), [pathname]); // close the mobile drawer after navigating
@@ -26,7 +27,7 @@ export function Sidebar({ labels, groupLabels, builtPages, soonLabel, menuLabel,
 
   const nav = (
     <nav aria-label="Main" className="flex-1 overflow-y-auto px-3 py-3">
-      {GROUP_ORDER.map((group) => (
+      {GROUP_ORDER.filter((g) => NAV.some((n) => n.group === g && visiblePages.includes(n.key))).map((group) => (
         <div key={group} className="mb-2.5">
           {group !== "main" && (
             <p className="px-3 pb-1 text-[11px] font-semibold uppercase tracking-wider text-navy-100/60">
@@ -34,7 +35,7 @@ export function Sidebar({ labels, groupLabels, builtPages, soonLabel, menuLabel,
             </p>
           )}
           <ul>
-            {NAV.filter((n) => n.group === group).map((item) => {
+            {NAV.filter((n) => n.group === group && visiblePages.includes(n.key)).map((item) => {
               const active = isActive(item.href);
               const built = builtPages.includes(item.key);
               return (

@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
-from app.api.deps import Principal, UserPrincipal, require_principal, require_user
+from app.api.deps import UserPrincipal, require_admin, require_user
 from app.db.session import get_db
 from app.services import settings as settings_service
 
@@ -19,9 +19,7 @@ class SettingUpdate(BaseModel):
 
 
 @router.get("")
-def list_settings(
-    _: Principal = Depends(require_principal), db: Session = Depends(get_db)
-) -> dict[str, Any]:
+def list_settings(_: str = Depends(require_admin), db: Session = Depends(get_db)) -> dict[str, Any]:
     return {"settings": settings_service.list_settings(db)}
 
 

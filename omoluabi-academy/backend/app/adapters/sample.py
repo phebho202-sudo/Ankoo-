@@ -78,6 +78,14 @@ def sample_from_schema(schema: dict[str, Any], label: str = "") -> Any:
         return float(schema.get("minimum", 1))
     if kind == "boolean":
         return False
+    if label.endswith("_yo"):
+        # Yoruba-looking placeholder with full tone marks, so offline runs exercise the
+        # same checks as real scripts. Clearly labelled as sample text.
+        n = "".join(ch for ch in label if ch.isdigit()) or "1"
+        return f"[ÀPẸẸRẸ] Ọ̀rọ̀ àpẹẹrẹ fún ìdánwò nìkan, ìpín {n}."
+    if label.endswith("_en"):
+        n = "".join(ch for ch in label if ch.isdigit()) or "1"
+        return f"[SAMPLE] Example text for testing only, part {n}."
     return f"[SAMPLE] {_readable(label or 'text')}"
 
 

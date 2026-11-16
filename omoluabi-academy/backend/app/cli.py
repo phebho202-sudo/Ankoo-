@@ -37,6 +37,16 @@ def _create_owner(args: argparse.Namespace) -> int:
     return 0
 
 
+def _seed_glossary(args: argparse.Namespace) -> int:
+    from app.services import scripts
+
+    with get_sessionmaker()() as db:
+        n = scripts.seed_glossary(db, actor="cli")
+        db.commit()
+    print(f"Added {n} proposed glossary terms. A Yoruba reviewer must approve each one.")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="python -m app.cli")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -44,6 +54,8 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--email", required=True)
     p.add_argument("--name", default="")
     p.set_defaults(func=_create_owner)
+    g = sub.add_parser("seed-glossary", help="Add starter business terms (as proposals)")
+    g.set_defaults(func=_seed_glossary)
     args = parser.parse_args(argv)
     return args.func(args)
 

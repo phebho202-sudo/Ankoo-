@@ -184,6 +184,40 @@ between a text and each source's description and permitted transcript, with the 
 passage quoted. 12+ words is flagged. It's used by research, by the Rights page's
 checker, and later by Yoruba scripts.
 
+### Yoruba content engine (Phase 5)
+
+| Table | Purpose | Key rules |
+|---|---|---|
+| `scripts` | A lesson script | `kind` is `original_lesson` (from an approved topic) or `licensed_adaptation` (from an episode, with the licence that allowed it). `format` is long or short. Status: `generating → draft → in_review → changes_requested/approved` (or `blocked`). Tracks `current_revision` and `approved_revision`. |
+| `script_revisions` | Every version, never overwritten | Numbered. `origin` is `generated`, `revised` (model, with instructions) or `human_edit`. Segments `[{id, text_yo, text_en, visual, locked?}]`. Stores the quality result, the originality result, provider, model and cost. |
+| `language_reviews` | Human review decisions | Tied to a revision number. Reviewer, decision, the six-item checklist, comments. |
+| `glossary_terms` | Approved business vocabulary | English → Yoruba. Only `approved` terms go into the writer's instructions; any edit returns a term to `proposed`. |
+| `pronunciation_entries` | How the voice should say a word | Written → spoken form. Approved entries export as a W3C PLS lexicon for the TTS provider (Phase 6). |
+
+**Generation** (`app/services/scripts.py`): the localisation instructions (natural Nigerian
+Yoruba, full tone marks and dots below, approved vocabulary, ₦ figures identical in both
+languages, practical Nigerian examples, no imitation of real people) plus a brief built
+from the approved topic and the academy's own research, or from the licensed transcript
+for adaptations. Structured JSON output; budget reservation first; refusals and malformed
+output are recorded, never patched. Adaptations re-check rights before the paid call and
+at approval, and get the licence's credit text as a locked final segment.
+
+**Quality checks** (`quality.py`, `yoruba.py`): errors block review (missing text,
+misplaced tone marks, words mostly unmarked, copied source wording). Warnings guide the
+reviewer: length mismatch, missing figures, English words, unused approved vocabulary,
+non-standard "line below". The score is always shown with the statement that it cannot
+judge tone accuracy or naturalness.
+
+**Subtitles** (`subtitles.py`): English and Yoruba cues are both timed to the *Yoruba*
+narration, segment by segment, at most 2 lines of 42 characters. Before recording, timing
+is estimated from syllables (4.2/s). Phase 6 passes real per-segment audio durations to
+`build_cues(..., durations)`, which re-times both languages exactly to the voice.
+
+**Roles** (`app/api/deps.py`): `owner` (everything), `reviewer` (scripts, vocabulary,
+pronunciation and their own account only), and the optional automation token (owner
+reads and jobs; never approvals, edits or reviews). Deactivating a user or changing a
+password ends their other sessions.
+
 Later phases add: source channels, episodes, licences and rights, research reports,
 scripts and revisions, pronunciation dictionary, voice/video assets, publications,
 platform accounts and tokens, budgets and spend, and monetisation tables.
