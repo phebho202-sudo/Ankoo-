@@ -6,7 +6,7 @@ import { fmt, formatDateTime, formatUsdPrecise } from "@/lib/i18n/format";
 import { getI18n } from "@/lib/i18n/server";
 import { minutesSeconds } from "@/lib/scripts";
 import { authedFetch } from "@/lib/session";
-import { RunWatcher } from "./RunWatcher";
+import { AutoRefresh } from "@/components/AutoRefresh";
 
 export const dynamic = "force-dynamic";
 
@@ -27,7 +27,7 @@ export default async function RunPage({ params }: { params: Promise<{ id: string
 
   return (
     <>
-      {(r.status === "queued" || r.status === "running") && <RunWatcher />}
+      {(r.status === "queued" || r.status === "running") && <AutoRefresh />}
       <Link href="/voice" className="mb-3 inline-block text-sm text-navy underline decoration-gold underline-offset-4">← {v.back}</Link>
       <PageHeader
         title={`${t.nav.voice} · ${t.scripts.colRevision} ${r.script_revision}`}

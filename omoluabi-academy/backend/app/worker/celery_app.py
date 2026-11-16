@@ -19,6 +19,7 @@ celery_app = Celery(
         "app.worker.tasks.rights",
         "app.worker.tasks.scripts",
         "app.worker.tasks.voice",
+        "app.worker.tasks.video",
     ],
 )
 celery_app.conf.update(

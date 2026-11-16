@@ -142,6 +142,16 @@ DEFINITIONS: dict[str, SettingDef] = {
             "Default presenter format. Hybrid is the low-cost default.",
             choices=("hybrid", "full_avatar"),
         ),
+        SettingDef(
+            "production.min_long_form_seconds",
+            "production",
+            "int",
+            120,
+            "Shortest narrated lesson accepted as a long-form video (educational value gate).",
+            Decimal("30"),
+            Decimal("3600"),
+            unit="s",
+        ),
     ]
 }
 

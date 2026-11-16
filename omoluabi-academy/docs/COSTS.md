@@ -5,7 +5,7 @@ The platform records the **actual** cost of every paid call against its job, and
 Overview page shows real month-to-date spend. Your Anthropic and Google invoices are the
 authoritative bill.
 
-## Built so far (Phases 1–6)
+## Built so far (Phases 1–7)
 
 | Item | Cost |
 |---|---|
@@ -24,6 +24,7 @@ authoritative bill.
 | ElevenLabs narration, short (~700 characters) | ≈ $0.21 |
 | Pronunciation test (~420 characters) | ≈ $0.13 per test |
 | Hybrid presenter video, slides, waveform, captions | **$0**. Rendered locally with FFmpeg. |
+| Video rendering (16:9 lesson, 9:16 cut, thumbnails, captions) | **$0**. Rendered locally with FFmpeg; uses worker CPU (a few minutes per 8-minute lesson on a small server). |
 | Lip-synced avatar | Not connected. Capped at 0 minutes until you raise `budget.max_avatar_minutes_per_month`. |
 
 These script figures assume Yoruba with full tone marks uses noticeably more tokens than

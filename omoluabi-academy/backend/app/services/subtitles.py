@@ -33,8 +33,8 @@ def estimate_seconds(text_yo: str) -> float:
     return max(MIN_SEGMENT_SECONDS, yoruba.syllables(text_yo) / SYLLABLES_PER_SECOND)
 
 
-def _wrap(text: str) -> list[str]:
-    """Split text into cue texts of at most MAX_LINES lines of MAX_LINE characters."""
+def _wrap(text: str, max_line: int = MAX_LINE) -> list[str]:
+    """Split text into cue texts of at most MAX_LINES lines of ``max_line`` characters."""
     sentences = [s for s in re.split(r"(?<=[.!?…])\s+", " ".join(text.split())) if s]
     cues: list[str] = []
     for sentence in sentences:
@@ -42,7 +42,7 @@ def _wrap(text: str) -> list[str]:
         line = ""
         for word in sentence.split(" "):
             candidate = f"{line} {word}".strip()
-            if len(candidate) <= MAX_LINE or not line:
+            if len(candidate) <= max_line or not line:
                 line = candidate
             else:
                 lines.append(line)
@@ -58,19 +58,28 @@ def _wrap(text: str) -> list[str]:
 
 
 def build_cues(
-    segments: list[dict[str, Any]], lang: str, durations: list[float] | None = None
+    segments: list[dict[str, Any]],
+    lang: str,
+    durations: list[float] | None = None,
+    *,
+    offset: float = 0.0,
+    max_line: int = MAX_LINE,
 ) -> list[Cue]:
-    """Cues for ``lang`` ("yo" or "en") on the Yoruba narration timeline."""
+    """Cues for ``lang`` ("yo" or "en") on the Yoruba narration timeline.
+
+    ``offset`` shifts every cue (e.g. past a video's intro card); ``max_line`` narrows lines
+    for vertical video.
+    """
     if durations is not None and len(durations) != len(segments):
         raise ValueError("One duration is needed per segment")
     key = "text_yo" if lang == "yo" else "text_en"
     cues: list[Cue] = []
-    t = 0.0
+    t = offset
     for i, seg in enumerate(segments):
         seg_len = (
             durations[i] if durations is not None else estimate_seconds(seg.get("text_yo", ""))
         )
-        parts = _wrap(seg.get(key, "")) or [""]
+        parts = _wrap(seg.get(key, ""), max_line) or [""]
         weights = [max(1, len(p.replace("\n", ""))) for p in parts]
         total = sum(weights)
         start = t

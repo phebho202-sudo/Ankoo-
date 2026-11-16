@@ -421,3 +421,51 @@ export type ProductionRun = {
   segment_durations?: number[];
   assets?: Asset[];
 };
+
+export type GateCheck = { code: string; ok: boolean; blocking: boolean; detail: unknown };
+export type ValueReport = { passed: boolean; checks: GateCheck[]; note: string };
+export type RenderStatus = "queued" | "rendering" | "awaiting_approval" | "approved" | "rejected" | "failed" | "blocked";
+
+export type VideoRender = {
+  id: string;
+  run_id: string;
+  script_id: string;
+  script_revision: number;
+  title_en: string | null;
+  title_yo: string | null;
+  status: RenderStatus;
+  formats: string[];
+  platforms: Record<string, boolean>;
+  long_seconds: number | null;
+  vertical_seconds: number | null;
+  vertical_is_full: boolean;
+  is_sample: boolean;
+  error: string | null;
+  job_id: string | null;
+  requested_by: string;
+  decided_by: string | null;
+  decided_at: string | null;
+  decision_notes: string | null;
+  created_at: string;
+  finished_at: string | null;
+  value_report?: ValueReport;
+  checks?: GateCheck[];
+  review_checklist?: Record<string, boolean>;
+  checklist_items?: string[];
+  assets?: Asset[];
+};
+
+export type VideoList = {
+  videos: VideoRender[];
+  approved_count: number;
+  required_approved: number;
+  platform_rules: Record<string, { format: string; max_seconds: number }>;
+};
+
+export type RenderCandidate = {
+  run: ProductionRun;
+  title_yo: string | null;
+  title_en: string;
+  format: "long_form" | "short";
+  value_report: ValueReport;
+};

@@ -13,7 +13,7 @@ from app.adapters.registry import get_storage
 from app.adapters.storage.local import LocalStorage
 from app.api.deps import Principal, UserPrincipal, require_owner, require_staff, require_staff_read
 from app.core.config import get_settings
-from app.core.errors import NotFoundError
+from app.core.errors import NotFoundError, PermissionDeniedError
 from app.db.base import aware
 from app.db.session import get_db
 from app.models import MediaAsset, ProductionRun, PronunciationTest
@@ -265,11 +265,13 @@ def get_run(
 # ---------------------------------------------------------------- media
 @router.get("/media/{asset_id}")
 def media_file(
-    asset_id: str, _: Principal = Depends(require_staff_read), db: Session = Depends(get_db)
+    asset_id: str, who: Principal = Depends(require_staff_read), db: Session = Depends(get_db)
 ) -> Response:
     a = db.get(MediaAsset, asset_id)
     if a is None:
         raise NotFoundError("Media not found")
+    if a.render_id is not None and who.user is not None and who.user.role != "owner":
+        raise PermissionDeniedError("Finished videos are for the owner")
     storage = get_storage(get_settings())
     headers = {"Cache-Control": "private, max-age=3600", "X-Content-Type-Options": "nosniff"}
     if isinstance(storage, LocalStorage):  # range requests, so audio/video players can seek

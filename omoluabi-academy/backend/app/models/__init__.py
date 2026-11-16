@@ -20,7 +20,9 @@ from app.models.production import (
     PresenterStatus,
     ProductionRun,
     PronunciationTest,
+    RenderStatus,
     RunStatus,
+    VideoRender,
     VoiceTestStatus,
 )
 from app.models.rights import PLATFORMS, Grant, Licence, LicenceStatus, RightsCheck
@@ -44,7 +46,9 @@ __all__ = [
     "PresenterStatus",
     "ProductionRun",
     "PronunciationTest",
+    "RenderStatus",
     "RunStatus",
+    "VideoRender",
     "VoiceTestStatus",
     "GlossaryTerm",
     "LanguageReview",

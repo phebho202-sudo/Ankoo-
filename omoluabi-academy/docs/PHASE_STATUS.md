@@ -7,11 +7,64 @@
 | 3. Discovery and research | Complete in sample mode. Approved 2026-11-14 (API keys pending). |
 | 4. Rights management | Complete. Approved 2026-11-16. |
 | 5. Yoruba content engine | Complete in sample mode. Approved 2026-11-16. |
-| 6. Voice and avatar | **Complete in sample mode. Awaiting owner approval and an ElevenLabs account.** |
-| 7. Video production | Not started |
+| 6. Voice and avatar | Complete in sample mode. Approved 2026-11-16 (ElevenLabs account pending). |
+| 7. Video production | **Complete in sample mode (2026-11-16).** |
 | 8. Publishing | Not started |
 | 9. Monetisation | Not started |
 | 10. Deployment | Not started |
+
+---
+
+## Phase 7: Video production (2026-11-16)
+
+### Delivered
+| Requirement | What exists |
+|---|---|
+| Long-form 16:9 YouTube lesson | 1920×1080 H.264/AAC: a 4 s branded intro card (academy name, Yoruba title), one Yoruba slide per narrated segment shown for exactly that segment's measured length, the presenter framed in gold on the right, then a 5 s outro ("Ẹ ṣé tí ẹ wò ó!") with the licence credit when a licence requires one. Fades in and out. |
+| Vertical 9:16 master | 1080×1920: branded header with the Yoruba title, the presenter, **burned-in Yoruba captions** (libass + DejaVu Sans, tone marks checked) and an end card. Lessons up to 85 s are used whole; longer lessons use their opening segments (up to 55 s) and end with a card pointing to the full lesson. |
+| YouTube Shorts, Instagram Reels, Facebook Reels, TikTok | The vertical master serves all four. Each video shows which destinations it fits, from documented length limits (YouTube Shorts 180 s, Instagram Reels 180 s, Facebook Reels 90 s, TikTok 600 s; see PUBLISHING.md). |
+| Thumbnails | 1280×720 lesson thumbnail and 1080×1920 cover: Yoruba title, presenter portrait in a gold frame, brand line. |
+| Subtitle files | Yoruba and English SRT for each video. The lesson's captions are shifted past the intro card; vertical captions use shorter lines. |
+| Branded intro and outro | As above, in the academy colours. |
+| Substantial original educational value | **Educational value gate**, checked when a render is requested, again before rendering and again at approval: completed narration; latest script version approved by a Yoruba reviewer; no automated quality errors; original lessons not flagged as copied, adaptations still holding valid rights; enough substance (long-form lessons at least `production.min_long_form_seconds`, default 120 s, and at least 3 teaching segments). Advice shown to you: a practical action, Nigerian examples, no income promises. |
+| Quality checks | After rendering, each video is probed: resolution, sound present, length matches the narration (±0.6 s), captions end inside the video. **Any failure stops the video: it can never be approved or published.** |
+| No duplicates | Each lesson version (script, version, voice) has a fingerprint. A second video for the same lesson version is refused (409) while one is queued, rendering, waiting or approved. |
+| Owner approval | Every video waits for you. Approving needs six confirmations (watched in full, captions match the voice and marks are correct, presenter consistent, educational value, no income promises, credits). Rejecting needs a note. Everything is in the audit trail. **Approving publishes nothing.** |
+| Unlock count | The Video page shows how many real videos you have approved out of the 10 required for automatic publishing. **Sample videos never count.** |
+| Dashboard | **Video production** page (unlock progress, lessons ready with their gate report, video list) and a **video** page (both players, where it fits, thumbnails, caption files, gate, automated checks, your review). English and Yoruba. Owner only: reviewers cannot open finished videos. |
+
+### Test results
+* **Backend:** 237 passed on PostgreSQL 16 (94% coverage); SQLite mode 235 passed + 2 skipped (PostgreSQL-only). Lint clean. Migration up/down checked.
+  Video tests render real videos with FFmpeg and check them with ffprobe.
+* **Frontend:** typecheck clean; 33 unit tests; build OK.
+* **Browser tests on the real stack:** Phase 7 **23/23**, Phase 6 **15/15**, Phase 5 **20/20**, Phase 4 **19/19**, Phase 3 **18/18**, Phase 2 **19/19**.
+
+### Failures found and fixed
+1. **Burned-in captions appeared at the top of the vertical video.** Subtitles from an SRT
+   use a 288-pixel-high virtual canvas, so the bottom margin pushed the text up. Captions
+   are now written as ASS with the real frame size, so margins are in true pixels.
+2. **Sample lessons are only seconds long,** so the substance check would make test mode
+   unusable. In sample mode the check is reported but not enforced, and sample videos
+   never count toward the unlock. It is enforced for every real lesson (tested).
+3. **A second narration of the same script version was offered for rendering again.** The
+   list of lessons ready to render now hides any lesson version that already has a video.
+
+### Needs your action
+1. Nothing new to buy. Rendering is local and costs $0.
+2. Before the first real video, look at the default 120 s minimum for long-form lessons
+   (System settings) and change it if you want.
+
+### Known limitations
+* Slides show the narration text. Diagrams, charts and b-roll are not generated (no paid
+  image service is used).
+* The presenter is the hybrid format (portrait with gentle motion). A lip-synced avatar
+  needs a licensed provider and avatar minutes in the budget.
+* The value-gate advice (practical action, Nigerian examples, income promises) uses keyword
+  heuristics on the English text. It guides your review; it does not replace it.
+* Platform length limits are hard-coded from current published rules and must be reviewed
+  when platforms change them.
+* Rendering uses the worker's CPU: about 15 s for a short sample; a real 8-minute lesson
+  will take a few minutes on a small server.
 
 ---
 

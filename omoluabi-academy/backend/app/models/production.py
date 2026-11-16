@@ -160,6 +160,60 @@ class ProductionRun(Base, TimestampMixin):
     )
 
 
+class RenderStatus(enum.StrEnum):
+    QUEUED = "queued"
+    RENDERING = "rendering"
+    AWAITING_APPROVAL = "awaiting_approval"
+    APPROVED = "approved"
+    REJECTED = "rejected"
+    FAILED = "failed"
+    BLOCKED = "blocked"
+
+
+class VideoRender(Base, TimestampMixin):
+    """Finished videos (16:9 lesson and 9:16 cut) built from one completed production run.
+
+    A render is never published until the owner has watched and approved it. The count of
+    owner-approved (non-sample) renders unlocks automatic publishing.
+    """
+
+    __tablename__ = "video_renders"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid)
+    run_id: Mapped[str] = mapped_column(
+        ForeignKey("production_runs.id", ondelete="RESTRICT"), nullable=False, index=True
+    )
+    script_id: Mapped[str] = mapped_column(
+        ForeignKey("scripts.id", ondelete="RESTRICT"), nullable=False, index=True
+    )
+    script_revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    # sha256 of script + revision + voice: the same lesson is never rendered twice in parallel
+    fingerprint: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    status: Mapped[RenderStatus] = mapped_column(
+        _enum(RenderStatus, "render_status"), default=RenderStatus.QUEUED, nullable=False
+    )
+    formats: Mapped[list[str]] = mapped_column(JSON, default=list, nullable=False)
+    value_report: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict, nullable=False)
+    checks: Mapped[list[dict[str, Any]]] = mapped_column(JSON, default=list, nullable=False)
+    platforms: Mapped[dict[str, bool]] = mapped_column(JSON, default=dict, nullable=False)
+    long_seconds: Mapped[float | None] = mapped_column(Float)
+    vertical_seconds: Mapped[float | None] = mapped_column(Float)
+    vertical_is_full: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    is_sample: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    error: Mapped[str | None] = mapped_column(Text)
+    job_id: Mapped[str | None] = mapped_column(String(36))
+    requested_by: Mapped[str] = mapped_column(String(120), nullable=False)
+    finished_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    review_checklist: Mapped[dict[str, bool]] = mapped_column(JSON, default=dict, nullable=False)
+    decision_notes: Mapped[str | None] = mapped_column(Text)
+    decided_by: Mapped[str | None] = mapped_column(String(120))
+    decided_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+    assets: Mapped[list[MediaAsset]] = relationship(
+        back_populates="render", order_by="MediaAsset.position"
+    )
+
+
 class MediaAsset(Base):
     __tablename__ = "media_assets"
 
@@ -167,9 +221,13 @@ class MediaAsset(Base):
     run_id: Mapped[str | None] = mapped_column(
         ForeignKey("production_runs.id", ondelete="CASCADE"), index=True
     )
+    render_id: Mapped[str | None] = mapped_column(
+        ForeignKey("video_renders.id", ondelete="CASCADE"), index=True
+    )
     kind: Mapped[str] = mapped_column(String(30), nullable=False)
     # segment_audio, narration, waveform, captions_yo, captions_en, slide,
-    # presenter_clip, voice_test, portrait
+    # presenter_clip, voice_test, portrait; renders: video_long, video_vertical, thumbnail_long,
+    # thumbnail_vertical, captions_long_yo/en, captions_vertical_yo/en
     position: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     storage_key: Mapped[str] = mapped_column(String(300), nullable=False)
     mime_type: Mapped[str] = mapped_column(String(80), nullable=False)
@@ -182,3 +240,4 @@ class MediaAsset(Base):
     )
 
     run: Mapped[ProductionRun | None] = relationship(back_populates="assets")
+    render: Mapped[VideoRender | None] = relationship(back_populates="assets")

@@ -245,6 +245,26 @@ Portraits are decoded on upload, so a corrupt image is refused before it can sta
 Sans renders them correctly (tested), so it is used for all rendered text and installed in
 the Docker image.
 
+### Video production (Phase 7)
+
+| Table | Purpose |
+|---|---|
+| `video_renders` | Finished videos from one completed production run: lesson fingerprint (script + version + voice), formats, educational value report, automated checks, platform fit, lengths, status (`queued → rendering → awaiting_approval → approved/rejected`, or `failed`/`blocked`), the owner's checklist, notes and decision. |
+| `media_assets.render_id` | Links video files, thumbnails and caption files to their render. |
+
+**Pipeline** (`app/services/videos.py`, `render.py`): value gate → presenter still approved →
+FFmpeg and fonts present → storage limit. The 16:9 lesson is built with FFmpeg's concat
+demuxer (intro card, one slide per segment for its measured duration, outro card), the
+presenter clip overlaid in a gold frame during narration, and the narration delayed past
+the intro. The 9:16 cut overlays the presenter on a branded background and burns in ASS
+captions (PlayRes = real frame size, DejaVu Sans) before an end card. Thumbnails are drawn
+with drawtext. Each output is probed (`ffprobe`) and checked. Any failure marks the render
+`failed`, which can never be approved. Rendering costs nothing: no external service.
+
+**Approval and unlock:** `videos.decide()` re-runs the value gate (rights or approvals may
+have changed) and needs every checklist item. `videos.approved_count()` counts approved
+non-sample renders. Phase 8 uses it to unlock automatic publishing.
+
 Later phases add: source channels, episodes, licences and rights, research reports,
 scripts and revisions, pronunciation dictionary, voice/video assets, publications,
 platform accounts and tokens, budgets and spend, and monetisation tables.

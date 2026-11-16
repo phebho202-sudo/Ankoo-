@@ -54,6 +54,11 @@ describe("dictionaries", () => {
         "rights.platformNames.instagram",
         "rights.platformNames.tiktok",
         "voice.avatar",
+        "videos.platformNames.youtube",
+        "videos.platformNames.youtube_short",
+        "videos.platformNames.instagram_reel",
+        "videos.platformNames.facebook_reel",
+        "videos.platformNames.tiktok",
       ].sort(),
     );
   });
@@ -62,7 +67,7 @@ describe("dictionaries", () => {
     for (const item of NAV) {
       expect(en.nav[item.key]).toBeTruthy();
       expect(yo.nav[item.key]).toBeTruthy();
-      if (!["overview", "settings", "episodes", "research", "rights", "scripts", "voice"].includes(item.key)) {
+      if (!["overview", "settings", "episodes", "research", "rights", "scripts", "voice", "video"].includes(item.key)) {
         const k = item.key as keyof typeof en.pages;
         expect(yo.pages[k].safeguards.length).toBe(en.pages[k].safeguards.length);
       }
@@ -81,6 +86,7 @@ describe("dictionaries", () => {
       "publishing.required_approved_videos",
       "publishing.default_visibility",
       "production.default_video_format",
+      "production.min_long_form_seconds",
       "discovery.max_videos_per_scan",
     ];
     for (const k of keys) {

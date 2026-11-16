@@ -597,6 +597,82 @@ Source of truth: `frontend/src/lib/i18n/dictionaries.ts`. Regenerate this file a
 | `voice.total` | Total | Àpapọ̀ | |
 | `voice.sampleNote` | Sample audio: a test tone made offline, not a real voice. | Ohùn àpẹẹrẹ: ìró ìdánwò tí a ṣe láìlo ẹ̀rọ ohùn, kì í ṣe ohùn gidi. | |
 | `voice.ownerOnly` | Only the owner can change the presenter or start production. | Ọ̀gá nìkan ló lè yí olùkọ́ padà tàbí bẹ̀rẹ̀ ìṣẹ̀dá. | |
+| `videos.subtitle` | Finished videos built from completed narration: a 16:9 lesson with intro and outro, a 9:16 vertical cut with burned-in Yoruba captions, thumbnails and caption files. Nothing is published from here: you watch and approve every video first. | Fídíò tí a ti parí láti inú ohùn tí a ti gbà sílẹ̀: ẹ̀kọ́ 16:9 pẹ̀lú ìbẹ̀rẹ̀ àti ìparí, fídíò ìdúró 9:16 pẹ̀lú àkọlé Yorùbá lára rẹ̀, àwòrán àfihàn àti fáìlì àkọlé. A kò ní gbé nǹkan jáde láti ibí: ìwọ ni yóò wo fídíò kọ̀ọ̀kan, tí yóò sì fọwọ́ sí i ní àkọ́kọ́. | |
+| `videos.unlock` | {n} of {required} real videos approved by you. Automatic publishing stays off until {required} have been approved. | O ti fọwọ́ sí fídíò gidi {n} nínú {required}. Ìgbéjáde aládàáṣe yóò wà ní pípa títí tí o fi fọwọ́ sí {required}. | |
+| `videos.sampleUnlock` | Sample (test-mode) videos are never counted. | A kò ní ka fídíò àpẹẹrẹ (ti ìdánwò) mọ́ ọn. | |
+| `videos.ready` | Ready to render | Ó ṣetán fún ṣíṣe fídíò | |
+| `videos.readyHelp` | Completed narration runs. Each must pass the educational value gate before it can be rendered. | Iṣẹ́ ohùn tí ó ti parí. Ọ̀kọ̀ọ̀kan gbọ́dọ̀ yege àyẹ̀wò iye ẹ̀kọ́ kí a tó ṣe fídíò rẹ̀. | |
+| `videos.noReady` | Nothing ready. Produce narration for an approved script first. | Kò sí èyí tí ó ṣetán. Kọ́kọ́ gba ohùn sílẹ̀ fún àkọsílẹ̀ tí a fọwọ́ sí. | |
+| `videos.render` | Render videos | Ṣe fídíò | |
+| `videos.gate` | Educational value gate | Àyẹ̀wò iye ẹ̀kọ́ | |
+| `videos.gatePassed` | Passes | Ó yege | |
+| `videos.gateFailed` | Does not pass | Kò yege | |
+| `videos.advisory` | advice only | ìmọ̀ràn nìkan | |
+| `videos.notEnforced` | reported, not enforced for sample content | a sọ ọ́, ṣùgbọ́n a kò fi dandan lé e fún àpẹẹrẹ | |
+| `videos.checks.run_completed` | Narration run completed | Iṣẹ́ ohùn ti parí | |
+| `videos.checks.approved_latest_script` | Latest script version passed language review | Ẹ̀dà àkọsílẹ̀ tuntun ti yege àyẹ̀wò èdè | |
+| `videos.checks.automated_quality_clean` | No automated quality errors | Kò sí àṣìṣe nínú àyẹ̀wò ẹ̀rọ | |
+| `videos.checks.original_content` | Original content (no copied source text) | Àkóónú tuntun (kò sí ọ̀rọ̀ tí a dà kọ) | |
+| `videos.checks.adaptation_rights_valid` | Valid rights for this adaptation | Àṣẹ tó fẹsẹ̀ múlẹ̀ wà fún àtúnṣe yìí | |
+| `videos.checks.enough_substance` | Enough teaching substance | Ẹ̀kọ́ tó pọ̀ tó wà nínú rẹ̀ | |
+| `videos.checks.practical_action` | Gives the viewer a practical action | Ó fún olùwò ní ìgbésẹ̀ tí ó lè gbé | |
+| `videos.checks.local_examples` | Uses Nigerian examples | Ó lo àpẹẹrẹ ti Nàìjíríà | |
+| `videos.checks.no_income_promises` | No income promises | Kò ṣe ìlérí owó | |
+| `videos.checks.long_resolution` | Lesson is 1920×1080 | Ẹ̀kọ́ jẹ́ 1920×1080 | |
+| `videos.checks.long_has_audio` | Lesson has sound | Ẹ̀kọ́ ní ohùn | |
+| `videos.checks.long_duration` | Lesson length matches the narration | Gígùn ẹ̀kọ́ bá ohùn mu | |
+| `videos.checks.long_captions_within_video` | Lesson captions end within the video | Àkọlé ẹ̀kọ́ parí kí fídíò tó parí | |
+| `videos.checks.vertical_resolution` | Vertical video is 1080×1920 | Fídíò ìdúró jẹ́ 1080×1920 | |
+| `videos.checks.vertical_has_audio` | Vertical video has sound | Fídíò ìdúró ní ohùn | |
+| `videos.checks.vertical_duration` | Vertical length matches its narration | Gígùn fídíò ìdúró bá ohùn rẹ̀ mu | |
+| `videos.checks.vertical_captions_within_video` | Vertical captions end within the video | Àkọlé fídíò ìdúró parí kí fídíò tó parí | |
+| `videos.list` | Videos | Àwọn fídíò | |
+| `videos.noVideos` | No videos yet. | Kò sí fídíò síbẹ̀. | |
+| `videos.status.queued` | Queued | Ó ń dúró | |
+| `videos.status.rendering` | Rendering… | À ń ṣe é… | |
+| `videos.status.awaiting_approval` | Waiting for your approval | Ó ń dúró de ìfọwọ́sí rẹ | |
+| `videos.status.approved` | Approved | A fọwọ́ sí i | |
+| `videos.status.rejected` | Rejected | A kọ̀ ọ́ | |
+| `videos.status.failed` | Failed | Kò yọrí | |
+| `videos.status.blocked` | Stopped | Ó dúró | |
+| `videos.colTitle` | Lesson | Ẹ̀kọ́ | |
+| `videos.colStatus` | Status | Ipò | |
+| `videos.colLength` | Length | Gígùn | |
+| `videos.colPlatforms` | Fits | Ibi tí ó bá mu | |
+| `videos.back` | Back to video production | Padà sí ìṣẹ̀dá fídíò | |
+| `videos.long` | Lesson (16:9) | Ẹ̀kọ́ (16:9) | |
+| `videos.vertical` | Vertical (9:16) | Fídíò ìdúró (9:16) | |
+| `videos.verticalWhole` | The whole lesson. | Gbogbo ẹ̀kọ́ náà. | |
+| `videos.verticalTeaser` | The opening of the lesson, ending with a card pointing to the full lesson. | Ìbẹ̀rẹ̀ ẹ̀kọ́ náà, tí ó parí pẹ̀lú káàdì tí ó tọ́ka sí ẹ̀kọ́ kíkún. | |
+| `videos.thumbnails` | Thumbnails | Àwòrán àfihàn | |
+| `videos.captions` | Caption files | Fáìlì àkọlé | |
+| `videos.captionFiles.captions_long_yo` | Lesson · Yoruba (.srt) | Ẹ̀kọ́ · Yorùbá (.srt) | |
+| `videos.captionFiles.captions_long_en` | Lesson · English (.srt) | Ẹ̀kọ́ · Gẹ̀ẹ́sì (.srt) | |
+| `videos.captionFiles.captions_vertical_yo` | Vertical · Yoruba (.srt) | Fídíò ìdúró · Yorùbá (.srt) | |
+| `videos.captionFiles.captions_vertical_en` | Vertical · English (.srt) | Fídíò ìdúró · Gẹ̀ẹ́sì (.srt) | |
+| `videos.platforms` | Where it fits | Ibi tí ó bá mu | |
+| `videos.platformNames.youtube` | YouTube | YouTube | |
+| `videos.platformNames.youtube_short` | YouTube Shorts | YouTube Shorts | |
+| `videos.platformNames.instagram_reel` | Instagram Reels | Instagram Reels | |
+| `videos.platformNames.facebook_reel` | Facebook Reels | Facebook Reels | |
+| `videos.platformNames.tiktok` | TikTok | TikTok | |
+| `videos.fits` | Fits | Ó bá a mu | |
+| `videos.doesNotFit` | Does not fit | Kò bá a mu | |
+| `videos.platformNote` | Platform upload limits change. Review them in docs/PUBLISHING.md. | Òfin ìgbéjáde àwọn ìkànnì máa ń yí padà. Ṣàyẹ̀wò wọn nínú docs/PUBLISHING.md. | |
+| `videos.autoChecks` | Automated video checks | Àyẹ̀wò fídíò láti ọwọ́ ẹ̀rọ | |
+| `videos.review` | Your review | Àyẹ̀wò rẹ | |
+| `videos.reviewHelp` | Watch both videos in full before approving. Approving does not publish anything. | Wo fídíò méjèèjì tán kí o tó fọwọ́ sí i. Fífọwọ́sí kò ní gbé nǹkan jáde. | |
+| `videos.checklist.watched_in_full` | I watched the videos in full | Mo ti wo àwọn fídíò náà tán | |
+| `videos.checklist.captions_match_voice` | Captions match the voice and the Yoruba marks are correct | Àkọlé bá ohùn mu, àmì ohùn Yorùbá sì tọ̀nà | |
+| `videos.checklist.presenter_consistent` | The presenter looks and sounds as approved | Olùkọ́ rí, ó sì dún bí a ṣe fọwọ́ sí i | |
+| `videos.checklist.educational_value` | It teaches something useful and original | Ó kọ́ni ní nǹkan tó wúlò tí ó sì jẹ́ tuntun | |
+| `videos.checklist.no_income_promises` | It makes no promises of income or quick wealth | Kò ṣe ìlérí owó tàbí ọrọ̀ kíákíá | |
+| `videos.checklist.credits_correct` | Credits are correct (or none are needed) | Ìdúpẹ́ orísun tọ̀nà (tàbí kò pọn dandan) | |
+| `videos.notes` | Notes (required to reject) | Àkíyèsí (ó pọn dandan láti kọ̀ ọ́) | |
+| `videos.approve` | Approve video | Fọwọ́ sí fídíò | |
+| `videos.reject` | Reject | Kọ̀ ọ́ | |
+| `videos.decided` | {who} decided on {when}. | {who} ló pinnu ní {when}. | |
+| `videos.sampleNote` | Sample video: a test tone and placeholder text. It can be reviewed, but never counts toward automatic publishing. | Fídíò àpẹẹrẹ: ìró ìdánwò àti ọ̀rọ̀ àpẹẹrẹ. A lè ṣàyẹ̀wò rẹ̀, ṣùgbọ́n a kò ní kà á mọ́ ìgbéjáde aládàáṣe. | |
 | `settings.title` | System settings | Ètò sístẹ́mù | |
 | `settings.subtitle` | Limits and rules the platform must obey. Every change is recorded in the audit trail. | Àwọn òpin àti òfin tí sístẹ́mù gbọ́dọ̀ tẹ̀lé. A ń kọ gbogbo àyípadà sínú àkọsílẹ̀ àyẹ̀wò. | |
 | `settings.categories.budget` | Budget and cost control | Ìṣúná àti ìṣàkóso ìnáwó | |
@@ -630,6 +706,7 @@ Source of truth: `frontend/src/lib/i18n/dictionaries.ts`. Regenerate this file a
 | `settings.labels.publishing.required_approved_videos` | Approved videos before automation | Fídíò tí a fọwọ́ sí kí aládàáṣe tó bẹ̀rẹ̀ | |
 | `settings.labels.publishing.default_visibility` | Default upload visibility | Ìrísí ìgbéjáde àtilẹ̀wá | |
 | `settings.labels.production.default_video_format` | Default video format | Ọ̀nà fídíò àtilẹ̀wá | |
+| `settings.labels.production.min_long_form_seconds` | Shortest long-form lesson | Ẹ̀kọ́ gígùn tí ó kúrú jù | |
 | `settings.labels.discovery.max_videos_per_scan` | Videos per channel scan | Fídíò fún ìwádìí ikanni kọ̀ọ̀kan | |
 | `settings.help.budget.monthly_limit_usd` | Maximum total provider spend per calendar month. | Àpapọ̀ owó tó pọ̀ jù tí a lè ná lórí àwọn olùpèsè ní oṣù kan. | |
 | `settings.help.budget.alert_threshold_percent` | Alert the owner when monthly spend reaches this share of the limit. | Kìlọ̀ fún ọ̀gá nígbà tí ìnáwó oṣù bá dé ìpín yìí nínú òpin. | |
@@ -641,6 +718,7 @@ Source of truth: `frontend/src/lib/i18n/dictionaries.ts`. Regenerate this file a
 | `settings.help.publishing.required_approved_videos` | Owner-approved videos required before automatic publishing can be enabled (minimum 10). | Iye fídíò tí ọ̀gá gbọ́dọ̀ fọwọ́ sí kí ìtẹ̀jáde aládàáṣe tó ṣeé ṣe (ó kéré tán mẹ́wàá). | |
 | `settings.help.publishing.default_visibility` | Visibility for new uploads. Public is not allowed during the trial period. | Ìrísí fún fídíò tuntun. A kò gbà á láàyè fún gbogbo ènìyàn nígbà ìdánwò. | |
 | `settings.help.production.default_video_format` | Default presenter format. Hybrid is the low-cost default. | Ọ̀nà olùkọ́ àtilẹ̀wá. Àdàpọ̀ ni èyí tí owó rẹ̀ kéré. | |
+| `settings.help.production.min_long_form_seconds` | A real lesson shorter than this cannot become a long-form video (educational value gate). | Ẹ̀kọ́ gidi tí ó kúrú ju èyí lọ kò lè di fídíò ẹ̀kọ́ gígùn (àyẹ̀wò iye ẹ̀kọ́). | |
 | `settings.help.discovery.max_videos_per_scan` | Most videos recorded per channel scan. Each 50 videos use about 2 of YouTube's 10,000 free daily quota units. | Iye fídíò tó pọ̀ jùlọ tí a ó kọ sílẹ̀ nínú ìwádìí ikanni kan. Fídíò 50 kọ̀ọ̀kan ń lo nǹkan bí 2 nínú 10,000 ìpín ọ̀fẹ́ YouTube lójoojúmọ́. | |
 | `settings.audit` | Audit trail | Àkọsílẹ̀ àyẹ̀wò | |
 | `settings.auditSubtitle` | Every login, change and job, newest first. Entries cannot be edited or deleted. | Gbogbo ìwọlé, àyípadà àti iṣẹ́, láti tuntun jùlọ. A kò lè ṣàtúnṣe tàbí pa àkọsílẹ̀ rẹ́. | |

@@ -3,8 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-/** Refreshes the run page every few seconds while it is queued or producing. */
-export function RunWatcher() {
+/** Refreshes the page every few seconds while background work (a run or a render) is in progress. */
+export function AutoRefresh() {
   const router = useRouter();
   useEffect(() => {
     const id = setInterval(() => router.refresh(), 2500);

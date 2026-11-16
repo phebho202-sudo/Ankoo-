@@ -84,8 +84,8 @@ const check = (name, cond) => { results.push(`${cond ? 'PASS' : 'FAIL'}  ${name}
   await page.waitForSelector('main h1:has-text("Àkópọ̀")');
   check('overview in Yoruba shows new limit', (await page.textContent('main')).includes('70.00'));
   await page.screenshot({ path: `${SP}/p2-overview-yo.png`, fullPage: true });
-  await page.click('nav a[href="/video"]');  // still a placeholder (Phase 7)
-  await page.waitForSelector('main h1:has-text("Ìṣẹ̀dá fídíò")');
+  await page.click('nav a[href="/calendar"]');  // still a placeholder (Phase 8)
+  await page.waitForSelector('main h1:has-text("Kàlẹ́ńdà ìtẹ̀jáde")');
   check('placeholder page shows no fake data', (await page.textContent('main')).includes('A kò fi dátà àpẹẹrẹ hàn'));
   await page.screenshot({ path: `${SP}/p2-placeholder-yo.png` });
 

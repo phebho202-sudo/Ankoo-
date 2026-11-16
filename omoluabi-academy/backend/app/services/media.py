@@ -171,15 +171,27 @@ def _escape_path(p: Path) -> str:
 
 
 def slide(
-    dst: Path, *, heading: str, body: str, footer: str, size: tuple[int, int] = (1920, 1080)
+    dst: Path,
+    *,
+    heading: str,
+    body: str,
+    footer: str,
+    size: tuple[int, int] = (1920, 1080),
+    body_wrap: int = 46,
+    body_size: int = 56,
 ) -> Path:
-    """A branded educational card: navy background, gold rule, Yoruba text with correct marks."""
+    """A branded educational card: navy background, gold rule, Yoruba text with correct marks.
+
+    ``body_wrap``/``body_size`` narrow the text column, e.g. to leave room for the presenter.
+    """
     w, h = size
     heading_file = dst.with_suffix(".heading.txt")
     body_file = dst.with_suffix(".body.txt")
     footer_file = dst.with_suffix(".footer.txt")
-    heading_file.write_text(yoruba.normalise(textwrap.fill(heading, 38)), encoding="utf-8")
-    body_file.write_text(yoruba.normalise(textwrap.fill(body, 46)), encoding="utf-8")
+    heading_file.write_text(
+        yoruba.normalise(textwrap.fill(heading, max(20, body_wrap - 8))), encoding="utf-8"
+    )
+    body_file.write_text(yoruba.normalise(textwrap.fill(body, body_wrap)), encoding="utf-8")
     footer_file.write_text(footer, encoding="utf-8")
     vf = ",".join(
         [
@@ -187,7 +199,7 @@ def slide(
             f"drawtext=fontfile={FONT_BOLD}:textfile='{_escape_path(heading_file)}':text_shaping=1:"
             f"fontcolor={GOLD}:fontsize=64:line_spacing=18:x=120:y=200",
             f"drawtext=fontfile={FONT_BOLD}:textfile='{_escape_path(body_file)}':text_shaping=1:"
-            f"fontcolor={CREAM}:fontsize=56:line_spacing=26:x=120:y=430",
+            f"fontcolor={CREAM}:fontsize={body_size}:line_spacing=26:x=120:y=430",
             f"drawtext=fontfile={FONT_REGULAR}:textfile='{_escape_path(footer_file)}':text_shaping=1:"
             f"fontcolor={CREAM}@0.7:fontsize=30:x=120:y=h-110",
         ]
