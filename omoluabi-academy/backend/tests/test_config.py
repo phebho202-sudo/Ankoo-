@@ -36,6 +36,7 @@ def test_production_rejects_unsafe_defaults():
     assert any("CORS" in p for p in problems)
     assert any("PUBLIC_BASE_URL" in p for p in problems)
     assert any("TOKEN_ENCRYPTION_KEY" in p for p in problems)
+    assert any("REDIS_URL" in p for p in problems)
 
 
 def test_production_accepts_safe_config():
@@ -47,6 +48,7 @@ def test_production_accepts_safe_config():
         cors_origins="https://admin.omoluabi.ng",
         public_base_url="https://admin.omoluabi.ng",
         token_encryption_key="k" * 44,
+        redis_url="redis://:secret@redis:6379/0",
     )
     assert s.validate_for_production() == []
 
@@ -60,5 +62,6 @@ def test_production_allows_no_service_token():
         cors_origins="https://admin.omoluabi.ng",
         public_base_url="https://admin.omoluabi.ng",
         token_encryption_key="k" * 44,
+        redis_url="redis://:secret@redis:6379/0",
     )
     assert s.validate_for_production() == []

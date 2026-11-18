@@ -117,3 +117,30 @@ def test_research_validation(client, owner_headers):
     assert r.status_code == 400
     r = client.post("/api/v1/research", headers=owner_headers, json={"episode_id": "nope"})
     assert r.status_code == 404
+
+
+def test_episode_pages_are_stable_when_dates_tie(client, owner_headers, eager):
+    """Sample channels share publication dates: paging must neither skip nor repeat rows,
+    and the most recently recorded channel's episodes come first among equal dates."""
+    h = owner_headers
+    ids = []
+    for ref in ("@first", "@second", "@third"):
+        ch = client.post(
+            "/api/v1/channels",
+            headers=h,
+            json={
+                "reference": ref,
+                "authorisation_basis": "research_only",
+                "authorisation_note": "Public videos, studied for research only",
+            },
+        ).json()
+        client.post(f"/api/v1/channels/{ch['id']}/scan", headers=h)
+        ids.append(ch["id"])
+    total = client.get("/api/v1/episodes?limit=100", headers=h).json()["total"]
+    seen = []
+    for offset in range(0, total, 4):
+        page = client.get(f"/api/v1/episodes?limit=4&offset={offset}", headers=h).json()
+        seen += [e["id"] for e in page["episodes"]]
+    assert len(seen) == total == len(set(seen))
+    first = client.get("/api/v1/episodes?limit=1", headers=h).json()["episodes"][0]
+    assert first["channel_id"] == ids[-1]

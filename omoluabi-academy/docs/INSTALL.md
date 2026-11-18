@@ -70,12 +70,13 @@ Stop with `docker compose down`. Your data stays in Docker volumes. `docker comp
 | Node.js | 22 LTS | `node --version` |
 | PostgreSQL | 16 | `psql --version` |
 | Redis | 7 | `redis-server --version` |
-| FFmpeg | 6+ (needed from Phase 6) | `ffmpeg -version` |
+| FFmpeg (with libass) | 6+ | `ffmpeg -version` |
+| DejaVu Sans font | any | `fc-list | grep DejaVuSans` (renders Yoruba tone marks correctly in videos) |
 
 **Ubuntu/Debian**
 ```bash
 sudo apt update
-sudo apt install -y python3 python3-venv postgresql redis-server ffmpeg git curl
+sudo apt install -y python3 python3-venv postgresql redis-server ffmpeg fonts-dejavu-core git curl
 curl -LsSf https://astral.sh/uv/install.sh | sh
 # Node.js 22: https://nodejs.org/en/download (or use nvm)
 ```
@@ -170,3 +171,8 @@ E2E_EMAIL=you@example.com E2E_PASSWORD='...' make e2e
 | `authentication_required` (401) from `curl` | Send `Authorization: Bearer <ADMIN_API_TOKEN>` (set in `backend/.env`). |
 | Dashboard says "Backend unreachable" | Start the API, or set `BACKEND_URL` in `frontend/.env.local`. |
 | `alembic upgrade` cannot connect | Check `DATABASE_URL` in `backend/.env`. |
+
+## Production
+
+This guide is for a development or evaluation install. For a server with HTTPS, backups,
+monitoring and alerts, follow [DEPLOYMENT.md](DEPLOYMENT.md).

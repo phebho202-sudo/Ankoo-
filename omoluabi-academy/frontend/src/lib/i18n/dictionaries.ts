@@ -67,6 +67,15 @@ export const en = {
     title: "Overview",
     subtitle: "The live state of the academy's systems. Every number here comes from the database.",
     health: "System health",
+    checkLevels: { ok: "OK", warn: "Warning", error: "Problem" },
+    checkNames: {
+      database: "Database", queue: "Job queue", worker: "Worker and scheduler", budget: "Monthly budget",
+      storage: "Media storage", publishing: "Publishing", jobs: "Background jobs", uploads: "Uploads",
+      licences: "Licences", audit: "Audit trail", account: "Platform account",
+    },
+    allChecksOk: "All checks pass.",
+    alertsOn: "Problems are also sent to your alert channel.",
+    alertsOff: "Problems are shown here only. Set ALERT_WEBHOOK_URL to receive them in chat or email.",
     api: "API",
     database: "Database",
     redis: "Job queue (Redis)",
@@ -684,6 +693,11 @@ export const en = {
     reject: "Reject",
     decided: "{who} decided on {when}.",
     sampleNote: "Sample video: a test tone and placeholder text. It can be reviewed, but never counts toward automatic publishing.",
+    cost: "Cost of this video",
+    costScript: "Script writing (AI)",
+    costVoice: "Voice and presenter",
+    costRender: "Rendering (local)",
+    costTotal: "Total",
   },
   accounts: {
     subtitle:
@@ -1047,6 +1061,15 @@ export const yo: Dictionary = {
     subtitle:
       "Ipò àwọn ẹ̀rọ ilé-ẹ̀kọ́ náà lọ́wọ́lọ́wọ́. Gbogbo nọ́ńbà ibí yìí wá láti inú ibi ìpamọ́ dátà.",
     health: "Ìlera sístẹ́mù",
+    checkLevels: { ok: "Ó dára", warn: "Ìkìlọ̀", error: "Ìṣòro" },
+    checkNames: {
+      database: "Ibi ìpamọ́ dátà", queue: "Ìlà iṣẹ́", worker: "Òṣìṣẹ́ àti olùṣètò", budget: "Ìṣúná oṣù",
+      storage: "Ibi ìpamọ́ fídíò", publishing: "Ìtẹ̀jáde", jobs: "Iṣẹ́ abẹ́lẹ̀", uploads: "Ìgbéjáde",
+      licences: "Ìwé àṣẹ", audit: "Àkọsílẹ̀ àyẹ̀wò", account: "Àkáǹtì ìkànnì",
+    },
+    allChecksOk: "Gbogbo àyẹ̀wò ló yege.",
+    alertsOn: "A tún ń fi àwọn ìṣòro ránṣẹ́ sí ibi ìkìlọ̀ rẹ.",
+    alertsOff: "Ibí nìkan ni a ti ń fi ìṣòro hàn. Ṣètò ALERT_WEBHOOK_URL láti gbà wọ́n nínú ìjíròrò tàbí ímeèlì.",
     api: "API",
     database: "Ibi ìpamọ́ dátà",
     redis: "Ìlà iṣẹ́ (Redis)",
@@ -1664,6 +1687,11 @@ export const yo: Dictionary = {
     reject: "Kọ̀ ọ́",
     decided: "{who} ló pinnu ní {when}.",
     sampleNote: "Fídíò àpẹẹrẹ: ìró ìdánwò àti ọ̀rọ̀ àpẹẹrẹ. A lè ṣàyẹ̀wò rẹ̀, ṣùgbọ́n a kò ní kà á mọ́ ìgbéjáde aládàáṣe.",
+    cost: "Owó fídíò yìí",
+    costScript: "Kíkọ àkọsílẹ̀ (AI)",
+    costVoice: "Ohùn àti olùkọ́",
+    costRender: "Ṣíṣe fídíò (lórí sáfà wa)",
+    costTotal: "Àpapọ̀",
   },
   accounts: {
     subtitle:

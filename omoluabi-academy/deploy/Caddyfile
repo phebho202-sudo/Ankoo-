@@ -1,0 +1,36 @@
+# Public entry point. Caddy obtains and renews the HTTPS certificate automatically.
+# Only the dashboard, the affiliate redirect (/go/...) and the payment webhook are public.
+# The API itself is private: the dashboard server calls it inside the Docker network.
+{$DOMAIN} {
+	encode zstd gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "camera=(), microphone=(), geolocation=()"
+		-Server
+	}
+
+	# Paystack payment notifications (signature-checked by the API).
+	handle /api/v1/payments/paystack/webhook {
+		reverse_proxy api:8000
+	}
+	# Liveness for an external uptime monitor (no data in the answer).
+	handle /health {
+		reverse_proxy api:8000
+	}
+	# Everything else under /api stays private.
+	handle /api/* {
+		respond 404
+	}
+	handle {
+		reverse_proxy frontend:3000
+	}
+
+	log {
+		output stdout
+		format json
+	}
+}

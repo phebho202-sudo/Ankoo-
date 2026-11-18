@@ -55,6 +55,7 @@ def render_out(db: Session, vr: VideoRender, *, full: bool = False) -> dict[str,
         out["review_checklist"] = vr.review_checklist
         out["checklist_items"] = list(videos.REVIEW_CHECKLIST)
         out["assets"] = [asset_out(a) for a in vr.assets]
+        out["cost"] = videos.video_cost(db, vr)
     return out
 
 

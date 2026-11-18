@@ -1,5 +1,5 @@
 # Common developer commands. Run `make help`.
-.PHONY: help owner e2e beat setup backend-setup frontend-setup migrate api worker web test lint up down
+.PHONY: help owner e2e beat setup backend-setup frontend-setup migrate api worker web test lint up down prod-up prod-stop prod-logs prod-owner backup
 
 help:
 	@grep -E '^[a-z-]+:.*?## ' $(MAKEFILE_LIST) | awk -F':.*?## ' '{printf "  %-16s %s\n", $$1, $$2}'
@@ -19,7 +19,7 @@ owner: ## Create the owner login (prompts for email and password)
 	@read -p "Owner email: " email; cd backend && .venv/bin/python -m app.cli create-owner --email "$$email"
 
 e2e: ## Browser tests of the running dashboard (needs E2E_EMAIL, E2E_PASSWORD; dev data only)
-	node frontend/e2e/dashboard.e2e.cjs && node frontend/e2e/phase3.e2e.cjs && node frontend/e2e/phase4.e2e.cjs && node frontend/e2e/phase5.e2e.cjs && node frontend/e2e/phase6.e2e.cjs && node frontend/e2e/phase7.e2e.cjs && node frontend/e2e/phase8.e2e.cjs && node frontend/e2e/phase9.e2e.cjs
+	node frontend/e2e/dashboard.e2e.cjs && node frontend/e2e/phase3.e2e.cjs && node frontend/e2e/phase4.e2e.cjs && node frontend/e2e/phase5.e2e.cjs && node frontend/e2e/phase6.e2e.cjs && node frontend/e2e/phase7.e2e.cjs && node frontend/e2e/phase8.e2e.cjs && node frontend/e2e/phase9.e2e.cjs && node frontend/e2e/phase10.e2e.cjs
 
 api: ## Run the API with auto-reload on :8000
 	cd backend && .venv/bin/uvicorn app.main:app --reload --port 8000
@@ -45,3 +45,21 @@ up: ## Start the full stack in Docker
 
 down: ## Stop the Docker stack (data volumes are kept)
 	docker compose down
+
+# ---------------------------------------------------------------- production (docs/DEPLOYMENT.md)
+PROD = docker compose -f docker-compose.prod.yml --env-file .env.prod
+
+prod-up: ## Production: build and start everything (needs .env.prod)
+	$(PROD) up -d --build
+
+prod-stop: ## Production: stop everything (data volumes are kept)
+	$(PROD) stop
+
+prod-logs: ## Production: follow the logs
+	$(PROD) logs -f --tail=200
+
+prod-owner: ## Production: create the owner login (prompts for email and password)
+	@read -p "Owner email: " email; $(PROD) run --rm api python -m app.cli create-owner --email "$$email"
+
+backup: ## Production: take a database backup now
+	$(PROD) exec backup /bin/sh /scripts/backup.sh

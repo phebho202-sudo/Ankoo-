@@ -5,7 +5,7 @@ import { GateReport } from "@/components/GateReport";
 import { Alert, Badge, Card, PageHeader } from "@/components/ui";
 import { DecisionForm } from "@/components/VideoForms";
 import type { VideoRender } from "@/lib/api";
-import { fmt, formatDateTime } from "@/lib/i18n/format";
+import { fmt, formatDateTime, formatUsdPrecise } from "@/lib/i18n/format";
 import { getI18n } from "@/lib/i18n/server";
 import { authedFetch } from "@/lib/session";
 import { inProgress, renderTone } from "@/lib/videos";
@@ -74,6 +74,16 @@ export default async function VideoRenderPage({ params }: { params: Promise<{ id
           )}
         </div>
         <div className="space-y-5">
+          {r.cost && (
+            <Card title={v.cost}>
+              <dl className="grid grid-cols-2 gap-2 text-sm" data-testid="video-cost">
+                <dt className="text-charcoal-400">{v.costScript}</dt><dd className="tabular-nums">{formatUsdPrecise(r.cost.script_usd, locale)}</dd>
+                <dt className="text-charcoal-400">{v.costVoice}</dt><dd className="tabular-nums">{formatUsdPrecise(r.cost.voice_usd, locale)}</dd>
+                <dt className="text-charcoal-400">{v.costRender}</dt><dd className="tabular-nums">{formatUsdPrecise(r.cost.render_usd, locale)}</dd>
+                <dt className="font-semibold">{v.costTotal}</dt><dd className="font-semibold tabular-nums">{formatUsdPrecise(r.cost.total_usd, locale)}</dd>
+              </dl>
+            </Card>
+          )}
           {Object.keys(r.platforms).length > 0 && (
             <Card title={v.platforms}>
               <ul className="space-y-1 text-sm">

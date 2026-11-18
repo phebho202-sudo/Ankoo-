@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { StatusPill } from "@/components/StatusPill";
 import { Alert, Card, PageHeader } from "@/components/ui";
-import { getReadiness, type Overview } from "@/lib/api";
+import { getReadiness, type Overview, type SystemHealth } from "@/lib/api";
 import { fmt, formatDateTime, formatUsd } from "@/lib/i18n/format";
 import { getI18n } from "@/lib/i18n/server";
 import { authedFetch } from "@/lib/session";
@@ -12,7 +12,11 @@ const JOB_ORDER = ["queued", "running", "succeeded", "failed", "blocked"] as con
 
 export default async function OverviewPage() {
   const { locale, t } = await getI18n();
-  const [ready, ov] = await Promise.all([getReadiness(), authedFetch<Overview>("/api/v1/overview")]);
+  const [ready, ov, hc] = await Promise.all([
+    getReadiness(),
+    authedFetch<Overview>("/api/v1/overview"),
+    authedFetch<SystemHealth>("/api/v1/system/health"),
+  ]);
   const o = t.overview;
 
   return (
@@ -43,6 +47,23 @@ export default async function OverviewPage() {
               <StatusPill ok={ready.ok && !!ready.data.checks.database?.ok} label={o.database} okText={t.common.ok} downText={t.common.down} />
               <StatusPill ok={ready.ok && !!ready.data.checks.redis?.ok} label={o.redis} okText={t.common.ok} downText={t.common.down} />
             </div>
+            {hc.ok && (
+              <div className="mt-4" data-testid="health-checks">
+                {hc.data.checks.every((c) => c.level === "ok") ? (
+                  <p className="text-sm text-emerald-900">{o.allChecksOk}</p>
+                ) : (
+                  <ul className="space-y-1 text-sm">
+                    {hc.data.checks.filter((c) => c.level !== "ok").map((c) => (
+                      <li key={c.code} data-level={c.level} className={c.level === "error" ? "text-red-800" : "text-charcoal"}>
+                        <span className="font-medium">{(o.checkLevels as Record<string, string>)[c.level]} · {(o.checkNames as Record<string, string>)[c.code.split(":")[0]] ?? c.code}</span>
+                        <span className="block text-xs text-charcoal-400" lang="en">{c.message}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                <p className="mt-2 text-xs text-charcoal-400">{hc.data.alerts_configured ? o.alertsOn : o.alertsOff}</p>
+              </div>
+            )}
             <p className="mt-4 text-xs text-charcoal-400">
               {o.environment}: <span className="font-medium text-charcoal">{ov.data.environment}</span>
             </p>

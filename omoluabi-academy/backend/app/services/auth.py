@@ -130,6 +130,31 @@ def change_password(db: Session, user: User, *, current: str, new: str, keep_tok
     )
 
 
+def reset_password(db: Session, *, email: str, new: str, actor: str = "cli") -> User:
+    """Server-side recovery (command line only): new password, lockout cleared, every
+    session of that user ended."""
+    user = db.execute(select(User).where(User.email == email.strip().lower())).scalar_one_or_none()
+    if user is None:
+        raise AppError("No user with that email")
+    problems = validate_password_strength(new)
+    if problems:
+        raise AppError("Password " + "; ".join(problems))
+    user.password_hash = hash_password(new)
+    user.failed_login_count, user.locked_until = 0, None
+    for s in user.sessions:
+        if s.revoked_at is None:
+            s.revoked_at = utcnow()
+    audit.record(
+        db,
+        actor=actor,
+        action="auth.password_reset",
+        entity_type="user",
+        entity_id=user.id,
+        details={"email": user.email},
+    )
+    return user
+
+
 @dataclass(frozen=True)
 class LoginResult:
     token: str

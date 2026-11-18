@@ -134,6 +134,8 @@ class Settings(BaseSettings):
             problems.append("CORS_ORIGINS still points at localhost")
         if not self.public_base_url.startswith("https://"):
             problems.append("PUBLIC_BASE_URL must be the dashboard's https:// address")
+        if self.redis_url.startswith("redis://") and "@" not in self.redis_url:
+            problems.append("REDIS_URL must include a password in production")
         if self.token_encryption_key is None:
             problems.append("TOKEN_ENCRYPTION_KEY must be set (platform tokens are encrypted)")
         return problems

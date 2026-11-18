@@ -453,6 +453,7 @@ export type VideoRender = {
   review_checklist?: Record<string, boolean>;
   checklist_items?: string[];
   assets?: Asset[];
+  cost?: { script_usd: string; voice_usd: string; render_usd: string; total_usd: string };
 };
 
 export type VideoList = {
@@ -582,4 +583,10 @@ export type AnalyticsReport = {
   sponsorships: { status: string; count: number; value_minor: number; currency: string }[];
   youtube_revenue_reported: boolean;
   estimates_included: boolean;
+};
+
+export type SystemHealth = {
+  status: "ok" | "warn" | "error";
+  checks: { code: string; level: "ok" | "warn" | "error"; message: string; details: Record<string, unknown> }[];
+  alerts_configured: boolean;
 };

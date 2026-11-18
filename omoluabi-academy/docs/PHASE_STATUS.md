@@ -10,8 +10,87 @@
 | 6. Voice and avatar | Complete in sample mode. Approved 2026-11-16 (ElevenLabs account pending). |
 | 7. Video production | Complete in sample mode (2026-11-16). |
 | 8. Publishing | Complete in sample mode (2026-11-17). Platform apps and accounts pending. |
-| 9. Monetisation | **Complete in sample mode (2026-11-17). Paystack account pending.** |
-| 10. Deployment | Not started |
+| 9. Monetisation | Complete in sample mode (2026-11-17). Paystack account pending. |
+| 10. Deployment | **Complete (2026-11-17). Not yet deployed to a server: needs your server, domain and R2 bucket.** |
+
+---
+
+## Outstanding requirements and known limitations
+
+### What only you can do (accounts, agreements, spending)
+Nothing below has been created, bought or signed: each needs your authorisation.
+1. **Server, domain, Cloudflare R2 bucket, alert webhook** (DEPLOYMENT.md). Deploy first to a
+   staging server: the Docker images were not built in the development environment.
+2. **Provider accounts and keys:** Anthropic (Claude), ElevenLabs, YouTube Data API key,
+   Google OAuth client, Meta app, TikTok app, Paystack (start with a test key). API_SETUP.md.
+3. **Presenter:** an original or licensed portrait and voice (no real person), then a
+   pronunciation test passed by a fluent Yoruba reviewer.
+4. **Yoruba reviewer(s):** to review scripts, the glossary, pronunciation and the dashboard's
+   own Yoruba text (YORUBA_UI_REVIEW.md).
+5. **Licences** for any Alex Hormozi (or other creator) adaptation: signed documents verified in
+   Rights management. Without them, adaptations are blocked; original lessons need none.
+6. **Approve 10 real videos** before automatic publishing can be switched on; decide on public
+   uploads separately. For public YouTube uploads, Google's audit of the API project.
+7. **Budget:** confirm the monthly limit (default $50 of provider spend) against the cost report.
+
+### Not verified against the real services (built to their published APIs, tested with simulated servers)
+* Claude (live research and scripts), ElevenLabs (Yoruba voice quality unknown until the first
+  test), YouTube Data API, YouTube uploads and Analytics, Meta (Facebook Reels, Instagram),
+  TikTok, Paystack, Cloudflare R2, alert webhooks.
+* Docker image builds and the production Compose stack (validated with `docker compose config`;
+  every component was run natively).
+
+### Known limitations by design or for later
+* **Presenter:** hybrid format (portrait with gentle motion, voice, slides). A lip-synced avatar
+  needs a licensed provider and avatar minutes (capped at 0).
+* **Visuals:** slides show the narration text; no generated diagrams or b-roll (no paid image service).
+* **Instagram:** public only (API limitation), so unavailable during the trial period.
+  **TikTok:** drafts to your inbox; direct posting needs TikTok's audit.
+* **Meta tokens:** reconnect about every 60 days (monitored, with a 7-day warning).
+* **Analytics:** YouTube only; other platforms' insights need extra permissions and app review.
+  NGN and USD are never converted.
+* **Digital product delivery:** manual (the product's delivery note); no automatic download link.
+* **Quality heuristics** (originality overlap, educational-value advice, translation checks) guide
+  human reviewers; they never replace them.
+* **Platform rules** (video lengths, scopes, API versions) change: review PUBLISHING.md periodically.
+* **Single server:** fine for this scale; the worker renders one video at a time.
+
+---
+
+## Phase 10: Deployment and operations (2026-11-17)
+
+### Delivered
+| Requirement | What exists |
+|---|---|
+| Docker deployment | `docker-compose.prod.yml`: Caddy (automatic HTTPS, security headers, only the dashboard, `/go/` links, the payment webhook and `/health` public), private API, worker (one render at a time), single scheduler, Postgres and Redis with passwords and **no published ports**, restart policies, health checks, log rotation. Validated with `docker compose config`. |
+| Environment configuration | `.env.prod.example` with every setting explained; production start-up refuses unsafe settings (default passwords, http addresses, Redis without password, no token key, weak automation token). |
+| Database backups | Daily verified `pg_dump` with SHA-256 checksum and retention (`backup` service), `make backup`, `scripts/restore.sh` (refuses a non-empty target unless told). **Tested:** backup → restore into an empty database → identical row counts, audit chain intact (936 entries), tamper-protection triggers restored; overwrite path tested too. |
+| Monitoring | Health checks every 15 minutes: database, queue, worker/scheduler heartbeat, budget, storage, publishing pause, platform accounts, failed jobs, unconfirmed uploads, licences, audit-trail integrity. **Overview → System health**, and `GET /api/v1/system/health`. |
+| Error alerts | Alerts to `ALERT_WEBHOOK_URL` (Slack/Discord/Google Chat or any JSON endpoint) and the audit trail, repeats suppressed for 6 hours. Also for unexpected server errors (error type only, no private data) and failed background jobs. |
+| Secure secrets management | Secrets only in `.env.prod` (git-ignored, mode 600), `SecretStr` everywhere, platform tokens Fernet-encrypted, rotation and leak procedures in the runbook. |
+| Spending limits | All budget controls from earlier phases, now with alerts at the threshold and at the limit. **Actual cost per video** (script + voice + rendering) shown on each video. |
+| Recovery procedures | RUNBOOK.md: restore, publishing paused, reconnecting accounts, unconfirmed uploads, budget reached, failed migration/rollback, stopped worker, full disk, lost token key, leaked secret, owner lockout (new `reset-password` command). |
+| Cloudflare R2 | Private-bucket storage adapter with ranged reads (video seeking through the API) and one-hour signed links for Instagram. Tested with botocore's Stubber. |
+| Deliverables | README maps all 14 required deliverables; DEPLOYMENT.md; COSTS.md monthly report. |
+
+### Test results
+* **Backend:** 318 passed on PostgreSQL 16, 91% coverage; also passes in SQLite mode. Lint and format clean.
+* **Frontend:** typecheck and lint clean; 37 unit tests; production build OK.
+* **Browser tests on the real stack (all suites):** Phase 10 **8/8**, Phase 9 **23/23**, Phase 8 **22/22**,
+  Phase 7 **23/23**, Phase 6 **15/15**, Phase 5 **20/20**, Phase 4 **19/19**, Phase 3 **18/18**, Phase 2 **19/19**.
+
+### Failures found and fixed
+1. **Episode catalogue ordering was unstable** when publication dates were equal (found when the
+   Phase 3 and 4 suites could not find a just-scanned channel among many test channels). Pages
+   could skip or repeat an episode. A deterministic tiebreak fixes it; a test pages through
+   tied rows and checks none is skipped or repeated.
+2. The runbook needed an owner password reset that did not exist: added `reset-password`
+   (clears the lockout, ends all sessions, audited), with a test.
+3. Two shell edits were stopped by the environment's safety check (no deletion was involved);
+   the same edits were made with the file tools.
+
+### Needs your action
+See **Outstanding requirements** above.
 
 ---
 

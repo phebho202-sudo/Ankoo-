@@ -68,6 +68,23 @@ Source of truth: `frontend/src/lib/i18n/dictionaries.ts`. Regenerate this file a
 | `overview.title` | Overview | Àkópọ̀ | |
 | `overview.subtitle` | The live state of the academy's systems. Every number here comes from the database. | Ipò àwọn ẹ̀rọ ilé-ẹ̀kọ́ náà lọ́wọ́lọ́wọ́. Gbogbo nọ́ńbà ibí yìí wá láti inú ibi ìpamọ́ dátà. | |
 | `overview.health` | System health | Ìlera sístẹ́mù | |
+| `overview.checkLevels.ok` | OK | Ó dára | |
+| `overview.checkLevels.warn` | Warning | Ìkìlọ̀ | |
+| `overview.checkLevels.error` | Problem | Ìṣòro | |
+| `overview.checkNames.database` | Database | Ibi ìpamọ́ dátà | |
+| `overview.checkNames.queue` | Job queue | Ìlà iṣẹ́ | |
+| `overview.checkNames.worker` | Worker and scheduler | Òṣìṣẹ́ àti olùṣètò | |
+| `overview.checkNames.budget` | Monthly budget | Ìṣúná oṣù | |
+| `overview.checkNames.storage` | Media storage | Ibi ìpamọ́ fídíò | |
+| `overview.checkNames.publishing` | Publishing | Ìtẹ̀jáde | |
+| `overview.checkNames.jobs` | Background jobs | Iṣẹ́ abẹ́lẹ̀ | |
+| `overview.checkNames.uploads` | Uploads | Ìgbéjáde | |
+| `overview.checkNames.licences` | Licences | Ìwé àṣẹ | |
+| `overview.checkNames.audit` | Audit trail | Àkọsílẹ̀ àyẹ̀wò | |
+| `overview.checkNames.account` | Platform account | Àkáǹtì ìkànnì | |
+| `overview.allChecksOk` | All checks pass. | Gbogbo àyẹ̀wò ló yege. | |
+| `overview.alertsOn` | Problems are also sent to your alert channel. | A tún ń fi àwọn ìṣòro ránṣẹ́ sí ibi ìkìlọ̀ rẹ. | |
+| `overview.alertsOff` | Problems are shown here only. Set ALERT_WEBHOOK_URL to receive them in chat or email. | Ibí nìkan ni a ti ń fi ìṣòro hàn. Ṣètò ALERT_WEBHOOK_URL láti gbà wọ́n nínú ìjíròrò tàbí ímeèlì. | |
 | `overview.api` | API | API | |
 | `overview.database` | Database | Ibi ìpamọ́ dátà | |
 | `overview.redis` | Job queue (Redis) | Ìlà iṣẹ́ (Redis) | |
@@ -641,6 +658,11 @@ Source of truth: `frontend/src/lib/i18n/dictionaries.ts`. Regenerate this file a
 | `videos.reject` | Reject | Kọ̀ ọ́ | |
 | `videos.decided` | {who} decided on {when}. | {who} ló pinnu ní {when}. | |
 | `videos.sampleNote` | Sample video: a test tone and placeholder text. It can be reviewed, but never counts toward automatic publishing. | Fídíò àpẹẹrẹ: ìró ìdánwò àti ọ̀rọ̀ àpẹẹrẹ. A lè ṣàyẹ̀wò rẹ̀, ṣùgbọ́n a kò ní kà á mọ́ ìgbéjáde aládàáṣe. | |
+| `videos.cost` | Cost of this video | Owó fídíò yìí | |
+| `videos.costScript` | Script writing (AI) | Kíkọ àkọsílẹ̀ (AI) | |
+| `videos.costVoice` | Voice and presenter | Ohùn àti olùkọ́ | |
+| `videos.costRender` | Rendering (local) | Ṣíṣe fídíò (lórí sáfà wa) | |
+| `videos.costTotal` | Total | Àpapọ̀ | |
 | `accounts.subtitle` | Connect the academy's YouTube channel, Facebook Page, Instagram account and TikTok account. Tokens are stored encrypted and never shown. During the trial, uploads are private, unlisted or drafts. | So ikanni YouTube, ojú-ìwé Facebook, àkáǹtì Instagram àti àkáǹtì TikTok ilé-ẹ̀kọ́ náà pọ̀. A ń tọ́jú àwọn kọ́kọ́rọ́ ìwọlé ní ìpamọ́ àṣírí, a kì í sì í fi wọ́n hàn. Nígbà ìdánwò, ìgbéjáde jẹ́ ti àṣírí, aláìfarahàn tàbí àkọpamọ́. | |
 | `accounts.sampleMode` | Test mode: real sign-in is switched off. Sample accounts publish nothing: uploads are only simulated. | Ipò ìdánwò: ìwọlé gidi ti wà ní pípa. Àkáǹtì àpẹẹrẹ kò ní gbé nǹkan jáde: àfarawé ìgbéjáde nìkan ni. | |
 | `accounts.providers.google` | YouTube (Google sign-in) | YouTube (ìwọlé Google) | |

@@ -41,17 +41,22 @@ publishing and monetisation, with a human approval gate at every risky step.
 ```
 omoluabi-academy/
 ├── backend/            FastAPI + SQLAlchemy + Alembic + Celery (Python 3.12+)
-│   ├── app/adapters/   provider interfaces, offline sample adapters, local storage
+│   ├── app/adapters/   provider interfaces and adapters (Claude, ElevenLabs, YouTube,
+│   │                   Meta, TikTok, Paystack, R2, local) + offline sample adapters
 │   ├── app/api/        HTTP routes
-│   ├── app/core/       config, logging, errors
+│   ├── app/core/       config, logging, errors, security, token encryption
 │   ├── app/models/     database models
-│   ├── app/services/   business logic (audit trail so far)
-│   ├── app/worker/     Celery app and tasks
+│   ├── app/services/   business logic (rights, scripts, voice, media, videos, publishing,
+│   │                   monetisation, analytics, budget, monitoring, audit trail)
+│   ├── app/worker/     Celery app, tasks and schedule
 │   ├── alembic/        database migrations
 │   └── tests/          pytest suite
 ├── frontend/           Next.js + TypeScript + Tailwind admin dashboard (English + Yorùbá)
-├── docs/               installation, architecture, phase status
-├── docker-compose.yml  full local stack
+├── deploy/             Caddyfile (production HTTPS front)
+├── scripts/            database backup and restore
+├── docs/               guides, architecture, costs, runbook, phase status
+├── docker-compose.yml       full local stack
+├── docker-compose.prod.yml  production stack
 └── Makefile            common commands
 ```
 
@@ -70,8 +75,30 @@ docker compose exec api python -m app.cli create-owner --email you@example.com -
 ## Documentation
 
 - [Installation guide](docs/INSTALL.md)
-- [API configuration: YouTube and Claude keys](docs/API_SETUP.md)
-- [Operating costs](docs/COSTS.md)
+- [API configuration: every provider, step by step](docs/API_SETUP.md)
+- [Production deployment guide](docs/DEPLOYMENT.md)
+- [Runbook: recovery procedures](docs/RUNBOOK.md)
+- [Publishing rules](docs/PUBLISHING.md)
+- [Operating costs and monthly report](docs/COSTS.md)
 - [Architecture and database schema](docs/ARCHITECTURE.md)
-- [Phase status, test results and known limitations](docs/PHASE_STATUS.md)
+- [Phase status, test results, outstanding requirements and known limitations](docs/PHASE_STATUS.md)
 - [Yoruba interface text for language review](docs/YORUBA_UI_REVIEW.md)
+
+## Required deliverables (directive section F)
+
+| # | Deliverable | Where |
+|---|---|---|
+| 1 | Complete source code | `backend/`, `frontend/`, `deploy/`, `scripts/` |
+| 2 | Project architecture | [ARCHITECTURE.md](docs/ARCHITECTURE.md) |
+| 3 | Database schema | [ARCHITECTURE.md § Database schema](docs/ARCHITECTURE.md#database-schema) and `backend/alembic/versions/` |
+| 4 | Installation instructions | [INSTALL.md](docs/INSTALL.md) |
+| 5 | API configuration instructions | [API_SETUP.md](docs/API_SETUP.md) |
+| 6 | Admin dashboard | `frontend/` (12 pages, English and Yoruba) |
+| 7 | Content discovery service | Episode catalogue + Research (YouTube Data API, Claude) |
+| 8 | Translation workflow | Yoruba scripts: generation, human language review, glossary, pronunciation |
+| 9 | Video production workflow | Voice production → Video production (16:9, 9:16, thumbnails, captions, owner approval) |
+| 10 | Publishing integrations | Social accounts + Publishing calendar (YouTube, Facebook, Instagram, TikTok) |
+| 11 | Automated test results | [PHASE_STATUS.md](docs/PHASE_STATUS.md) (backend, frontend and browser suites per phase) |
+| 12 | Production deployment guide | [DEPLOYMENT.md](docs/DEPLOYMENT.md), [RUNBOOK.md](docs/RUNBOOK.md) |
+| 13 | Monthly operating cost report | [COSTS.md](docs/COSTS.md) |
+| 14 | Outstanding requirements and known limitations | [PHASE_STATUS.md § Outstanding](docs/PHASE_STATUS.md#outstanding-requirements-and-known-limitations) |

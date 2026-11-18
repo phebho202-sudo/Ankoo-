@@ -637,3 +637,27 @@ def approved_count(db: Session) -> int:
             .where(VideoRender.status == RenderStatus.APPROVED, VideoRender.is_sample.is_(False))
         ).scalar_one()
     )
+
+
+def video_cost(db: Session, vr: VideoRender) -> dict[str, str]:
+    """Actual recorded cost of one video: every script version written for it (AI), its
+    narration and presenter (voice/avatar), and rendering (local, $0)."""
+    from decimal import Decimal
+
+    from app.models import ScriptRevision
+
+    script_cost = db.execute(
+        select(func.coalesce(func.sum(ScriptRevision.cost_usd), 0)).where(
+            ScriptRevision.script_id == vr.script_id
+        )
+    ).scalar_one()
+    run = db.get(ProductionRun, vr.run_id)
+    script_cost = Decimal(str(script_cost))
+    voice = Decimal(str(run.total_cost_usd)) if run else Decimal("0")
+    total = script_cost + voice
+    return {
+        "script_usd": f"{script_cost:.4f}",
+        "voice_usd": f"{voice:.4f}",
+        "render_usd": "0.0000",
+        "total_usd": f"{total:.4f}",
+    }

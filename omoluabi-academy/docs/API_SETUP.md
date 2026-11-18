@@ -14,7 +14,9 @@ Nothing in the software creates accounts or buys anything.
 | Meta app (Facebook Page, Instagram) | Reels on the academy's Page and Instagram account | Free | 8 |
 | TikTok developer app | Sending drafts to the academy's TikTok inbox | Free | 8 |
 | Paystack | Selling digital products | Per-transaction fee charged by Paystack | 9 |
-| Avatar provider, Cloudflare R2 | Later | Documented when built | 10 |
+| Cloudflare R2 | Media storage in production | First 10 GB free, then ≈ $0.015/GB-month, no egress fees | 10 |
+| Alert webhook (Slack, Discord, Google Chat) | Owner alerts | Free | 10 |
+| Licensed avatar provider | Optional lip-synced presenter | Per minute; capped at 0 until you decide | not connected |
 
 Keys go in environment variables (`backend/.env` for a native install, `.env` for Docker),
 **never** in code and never in the dashboard. Restart the API and worker after changing them.
@@ -195,3 +197,26 @@ check it on the platform before scheduling more.
 No new key. After Phase 9, reconnect the YouTube account once (Social accounts → Connect)
 so Google asks for the analytics permissions. Revenue appears only if your channel is in
 the YouTube Partner Programme; otherwise it is shown as *Not reported*.
+
+## 9. Media storage: Cloudflare R2 (Phase 10)
+
+1. Cloudflare dashboard → **R2** → create a bucket (e.g. `omoluabi-media`). Keep it
+   **private** (no public access, no custom domain needed).
+2. **Manage R2 API tokens** → create a token with *Object Read & Write* for that bucket only.
+3. Set:
+   ```
+   STORAGE_BACKEND=r2
+   R2_ACCOUNT_ID=<your Cloudflare account ID>
+   R2_ACCESS_KEY_ID=<token access key>
+   R2_SECRET_ACCESS_KEY=<token secret>
+   R2_BUCKET=omoluabi-media
+   ```
+The dashboard plays media through the API (with seeking). Instagram receives a signed link
+valid for one hour, so the bucket never has to be public. Moving existing local media to R2:
+copy the `storage` volume's files into the bucket with the same paths (e.g. `rclone copy`).
+
+## 10. Owner alerts
+
+Create an incoming webhook in Slack, Discord or Google Chat (or any service that accepts a
+JSON POST) and set `ALERT_WEBHOOK_URL`. The message is sent as both `text` and `content`.
+Without it, alerts appear only on the Overview page and in the audit trail.

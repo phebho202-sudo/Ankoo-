@@ -6,3 +6,6 @@ backend/var/
 .ruff_cache/
 .coverage
 htmlcov/
+.env.prod
+.env.*.local
+backups/

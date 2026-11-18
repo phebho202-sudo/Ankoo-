@@ -101,6 +101,12 @@ def test_render_flow_over_api(client, owner_headers, reviewer, eager, tmp_path, 
     v = client.get(f"/api/v1/videos/{vid}", headers=h).json()
     assert v["status"] == "awaiting_approval", v["error"]
     assert v["formats"] == ["long", "vertical"] and v["is_sample"]
+    assert v["cost"] == {  # sample mode: nothing paid, and it says so
+        "script_usd": "0.0000",
+        "voice_usd": "0.0000",
+        "render_usd": "0.0000",
+        "total_usd": "0.0000",
+    }
     assert all(c["ok"] for c in v["checks"]), v["checks"]
     kinds = {a["kind"] for a in v["assets"]}
     assert kinds == {

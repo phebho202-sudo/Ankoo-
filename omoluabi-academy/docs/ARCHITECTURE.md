@@ -6,7 +6,7 @@
             ┌──────────────────────┐
  Owner ───▶ │ Next.js admin (3000) │  server-side fetch, never shows invented data
             └──────────┬───────────┘
-                       │ HTTPS + admin bearer token
+                       │ owner session token (server side)
             ┌──────────▼───────────┐        ┌──────────────┐
             │ FastAPI API (8000)   │──────▶ │ PostgreSQL   │  source of truth + audit trail
             └──────────┬───────────┘        └──────▲───────┘
@@ -18,8 +18,11 @@
             │ Celery workers       │───────────────┘
             │ (research, scripts,  │
             │  TTS, video, publish)│──▶ Provider adapters ──▶ Claude, ElevenLabs, YouTube,
-            └──────────────────────┘                          avatar API, R2, Meta, TikTok
+            └──────────────────────┘                          R2, Meta, TikTok, Paystack
 ```
+In production, Caddy (HTTPS) sits in front of the dashboard; the API is reachable from the
+internet only for the payment webhook and `/health`. Celery beat schedules publishing,
+monitoring, analytics import and licence checks.
 
 * **API** handles owner actions and approvals. It is quick and never runs long media work.
 * **Workers** run every slow or paid operation (LLM calls, TTS, rendering, uploads).
@@ -31,14 +34,16 @@
 
 `app/adapters/base.py` defines one interface per capability:
 
-| Capability | Interface | Planned live provider | Phase |
+| Capability | Interface | Live provider | Status |
 |---|---|---|---|
-| `llm` | `LLMProvider.complete()` | Claude API (official `anthropic` SDK) | **3 (built)** |
-| `tts` | `TTSProvider.synthesize()` / `estimate_cost()` | ElevenLabs (`httpx`; Yoruba support to be confirmed per account) | **6 (built)** |
-| `avatar` | `AvatarProvider.render()` | licensed avatar API (when affordable) | 6 |
-| `storage` | `StorageProvider.put/get/...` | local filesystem now, Cloudflare R2 later | 1 / 10 |
-| `video_source` | `VideoSourceProvider.resolve_channel()` / `list_channel_videos()` | YouTube Data API v3 (`httpx`) | **3 (built)** |
-| `publisher` | `PublisherProvider.upload()` | YouTube, Meta, TikTok | 8 |
+| `llm` | `LLMProvider.complete()` | Claude API (official `anthropic` SDK) | built (Phase 3) |
+| `tts` | `TTSProvider.synthesize()` / `estimate_cost()` | ElevenLabs (`httpx`; Yoruba support to be confirmed per account) | built (Phase 6) |
+| `avatar` | `AvatarProvider.render()` | licensed avatar API (when affordable) | interface + sample only; capped at 0 minutes |
+| `storage` | `StorageProvider.put/get/get_range/...` | local filesystem, Cloudflare R2 (`boto3`) | built (Phases 1 and 10) |
+| `video_source` | `VideoSourceProvider.resolve_channel()` / `list_channel_videos()` | YouTube Data API v3 (`httpx`) | built (Phase 3) |
+| `publisher` | `OAuthClient` + `PublisherProvider.upload()/verify()` | YouTube, Facebook Reels, Instagram Reels, TikTok inbox | built (Phase 8) |
+| analytics | `YouTubeAnalytics.video_report()` | YouTube Analytics API v2 | built (Phase 9) |
+| payments | `PaymentProvider` | Paystack | built (Phase 9) |
 
 `app/adapters/registry.py` chooses the implementation:
 
@@ -60,7 +65,7 @@ logic changes.
   internals never leak.
 * Logs are JSON lines (or text in development). Secret-like keys are redacted.
 
-## Database schema (Phases 1–2)
+## Database schema
 
 ### `audit_logs`: append-only, tamper-evident
 | Column | Type | Notes |
@@ -302,11 +307,24 @@ functions plus the database report). The public `/go/<slug>` route (no login) co
 through `/api/v1/public/go/<slug>` and redirects. The Paystack webhook is
 `/api/v1/payments/paystack/webhook` (signature-checked, idempotent).
 
-Later phases add: source channels, episodes, licences and rights, research reports,
-scripts and revisions, pronunciation dictionary, voice/video assets, publications,
-platform accounts and tokens, budgets and spend, and monetisation tables.
+### Operations (Phase 10)
 
-## Admin dashboard (Phase 2)
+* **Storage:** `LocalStorage` (development) or `R2Storage` (production, private bucket,
+  S3-compatible). Both support ranged reads, so video players can seek; R2 can issue
+  short-lived signed URLs for platforms that fetch media themselves.
+* **Monitoring:** `app/services/monitoring.py` (database, queue, worker heartbeat, budget,
+  storage, publishing pause, accounts, failed jobs, unconfirmed uploads, licences, audit
+  chain). `system.heartbeat` every 5 minutes, `system.monitor` every 15 minutes;
+  `GET /api/v1/system/health` for the dashboard.
+* **Alerts:** `app/services/alerts.py`: audit entry + optional webhook, repeats suppressed for
+  6 hours; also raised for unexpected server errors (type only) and failed jobs.
+* **Transactions:** every route uses `Depends(get_db, scope="function")`, so the commit
+  happens before the response is sent.
+* **Deployment:** `docker-compose.prod.yml` (Caddy HTTPS front, private API, Postgres and
+  Redis with passwords and no published ports, log rotation, health checks, daily backups).
+  See DEPLOYMENT.md and RUNBOOK.md.
+
+## Admin dashboard
 
 * Next.js App Router. Every page is rendered on the server, which calls the API with the
   owner's session token. The browser never holds the token in JavaScript (httpOnly cookie).
@@ -319,8 +337,8 @@ platform accounts and tokens, budgets and spend, and monetisation tables.
   build. Tests also check matching placeholders and NFC-normalised text.
 * **Fonts:** self-hosted Noto Sans and Noto Serif, because system fonts misplace stacked
   Yoruba diacritics (e.g. ọ̀, ẹ́).
-* Pages whose features belong to later phases say so plainly ("Not built yet · Phase N"),
-  describe what they will do and their safeguards, and show **no sample data**.
+* All twelve pages are built. Reviewers see only Yoruba scripts and Voice production; the
+  rest is owner-only (enforced by the API). Public routes: `/login` and `/go/<link>`.
 
 ## Security model
 
@@ -330,6 +348,10 @@ platform accounts and tokens, budgets and spend, and monetisation tables.
   on logout, rejected for deactivated users.
 * `ADMIN_API_TOKEN` (optional) is for automation only. It can read and run jobs but
   **cannot change settings**: that needs a real owner login.
-* Production start-up refuses default database passwords, short admin tokens and localhost
-  CORS origins.
-* Containers run as non-root users. Ports bind to 127.0.0.1 in the dev compose file.
+* Production start-up refuses default database passwords, short admin tokens, localhost
+  CORS origins, a non-https public address, a Redis without password and a missing token
+  encryption key.
+* Platform tokens are Fernet-encrypted at rest; payment webhooks are HMAC-verified;
+  affiliate clicks store no personal data.
+* Containers run as non-root users. Ports bind to 127.0.0.1 in the dev compose file; in
+  production only Caddy publishes ports.

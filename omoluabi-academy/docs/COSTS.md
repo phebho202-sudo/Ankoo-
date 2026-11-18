@@ -1,11 +1,11 @@
-# Operating costs
+# Operating costs and monthly report
 
 Figures are estimates from published list prices (Claude API prices as of 2026-11).
 The platform records the **actual** cost of every paid call against its job, and the
-Overview page shows real month-to-date spend. Your Anthropic and Google invoices are the
-authoritative bill.
+Overview page shows real month-to-date spend. Your provider invoices (Anthropic, ElevenLabs,
+hosting) are the authoritative bill.
 
-## Built so far (Phases 1–9)
+## Cost of each item
 
 | Item | Cost |
 |---|---|
@@ -14,12 +14,10 @@ authoritative bill.
 | Same report on `claude-sonnet-5-5` | ≈ $0.02–$0.07 |
 | Same report on `claude-haiku-5-5` | ≈ $0.001–$0.004 |
 | Worst case reserved per report (budget guard) | ≈ $0.21 with no transcript, up to ≈ $0.55 with the longest allowed transcript (200,000 characters). Input estimate plus the 8,000-token output cap, priced at the most expensive known rate. Actual cost is usually far lower and replaces the reservation. |
-
 | Yoruba script, 8-minute lesson, `claude-opus-5-5` | **≈ $0.16** original; ≈ $0.17 adaptation of a 3,000-word transcript. Each "ask the writer for changes" revision costs about the same again. Human edits are free. |
 | Yoruba short (under 60 s) | ≈ $0.04 |
 | Same 8-minute script on `claude-sonnet-5-5` / `claude-haiku-5-5` | ≈ $0.08 / ≈ $0.004 |
 | Worst case reserved per script (budget guard) | ≈ $0.41, up to ≈ $0.75 with the longest allowed transcript (16,000-token output cap, priced at the most expensive known rate) |
-
 | ElevenLabs narration, 8-minute lesson (~6,000 characters) | **≈ $1.80** at the placeholder rate of $0.30 per 1,000 characters. **Set your real rate** (`ELEVENLABS_USD_PER_1K_CHARS`); subscription plans are usually cheaper per character. |
 | ElevenLabs narration, short (~700 characters) | ≈ $0.21 |
 | Pronunciation test (~420 characters) | ≈ $0.13 per test |
@@ -28,17 +26,45 @@ authoritative bill.
 | Publishing (YouTube, Facebook, Instagram, TikTok APIs) | **$0**. Free within each platform's quota (YouTube: about 4 uploads a day on the default 10,000 units). |
 | YouTube Analytics import | **$0** (free API). |
 | Paystack | No monthly fee; Paystack charges a fee per successful payment (see their current pricing). The platform records the order amount; Paystack's fee appears on your Paystack statement. |
+| Cloudflare R2 media storage | First 10 GB-month free, then about $0.015 per GB-month; no download (egress) fees. A month of 20 lessons + 20 shorts adds roughly 3–5 GB. |
+| Server (hosting) | About $8–$15 a month for 4 vCPU / 8 GB at budget providers (e.g. Hetzner); about $24–$48 at DigitalOcean/AWS-style providers. Check the provider's current price. |
+| Domain name | About $10–$20 a year (≈ $1–$2 a month). |
+| Backups off the server | R2 bucket: a few cents a month at this size. |
+| Monitoring and alerts | $0 (built in; free uptime monitor; Slack/Discord webhooks are free). |
 | Lip-synced avatar | Not connected. Capped at 0 minutes until you raise `budget.max_avatar_minutes_per_month`. |
 
 These script figures assume Yoruba with full tone marks uses noticeably more tokens than
 English. Check the real cost on each script's version history after your first live runs.
 
-**Example month:** 60 research reports + 20 lessons (each revised once) + 20 shorts on
-Opus 5.5 ≈ **$10–$16** for writing, plus voice for the same 20 lessons + 20 shorts + a few
-tests (~136,000 characters) ≈ **$41 at the placeholder rate**. That's **≈ $51–$57** before
-hosting (Phase 10): inside the USD 35–70 target, but voice is now the biggest line. Ways to
-stay lean if needed: a subscription plan with a lower per-character rate, fewer full
-lessons and more shorts, or a cheaper writing model (your decision).
+## Monthly operating cost report
+
+Estimates for running the academy in production, from list prices. The dashboard records
+the real figures: **Overview** (month-to-date spend against the limit), each **video**
+(script + voice + rendering cost) and **Analytics** (costs by month, cost per approved video).
+
+| Line | Lean month | Standard month | Notes |
+|---|---|---|---|
+| Content | 30 research reports, 8 lessons, 20 shorts | 60 reports, 20 lessons (each revised once), 20 shorts | |
+| Claude (research + scripts), Opus 5.5 | ≈ $4–$7 | ≈ $10–$16 | Sonnet 5.5 roughly halves this (your choice of model). |
+| ElevenLabs voice | ≈ $19 (≈ 62,000 characters) | ≈ $41 (≈ 136,000 characters) | At the **placeholder** $0.30 per 1,000 characters. A subscription plan is usually cheaper per character: set your real rate. |
+| Avatar | $0 | $0 | Hybrid presenter (default). |
+| Rendering, publishing, analytics | $0 | $0 | Local FFmpeg; free platform APIs. |
+| Server | ≈ $8–$15 | ≈ $8–$15 | 4 vCPU / 8 GB at a budget host. |
+| R2 storage + backups | ≈ $0 | ≈ $0–$1 | Inside the free 10 GB for the first months. |
+| Domain | ≈ $1–$2 | ≈ $1–$2 | |
+| **Total** | **≈ $32–$45** | **≈ $60–$75** | Target: USD 35–70, excluding significant avatar rendering. |
+
+**Reading the report**
+* The standard month sits at the top of the target, and **voice is the biggest line**. Your
+  real ElevenLabs plan rate decides whether it fits: on a plan cheaper than the placeholder
+  rate, the standard month comes down to roughly $45–$60.
+* The default **monthly limit is $50** of provider spend (Claude + ElevenLabs + avatar; hosting
+  is paid separately). The standard month's provider spend (≈ $51–$57) would reach it:
+  either raise it to about $60 in System settings (your explicit approval, recorded) or run
+  closer to the lean month.
+* Payment fees (Paystack) are deducted from sales, not from this budget.
+* Every number above is an estimate until the first live month. Compare it with the
+  dashboard's recorded spend and your provider invoices after month one.
 
 ## Safety controls in place
 
@@ -51,4 +77,8 @@ lessons and more shorts, or a cheaper writing model (your decision).
 * Unknown models (e.g. a fallback model with no price on file) are costed at the most
   expensive known rate, so recorded spend is never under-stated.
 
-The full monthly cost report (voice, avatar, storage, hosting) is completed in Phase 10.
+* **Alerts:** the monitor warns at `budget.alert_threshold_percent` (80%) of the monthly
+  limit and reports an error at 100%, through the dashboard and your alert channel.
+* **Per-video cap** (`budget.max_cost_per_video_usd`), **avatar minutes** (0 by default),
+  **retry cap** and **storage limit** are all owner settings; raising any of them needs your
+  explicit confirmation.

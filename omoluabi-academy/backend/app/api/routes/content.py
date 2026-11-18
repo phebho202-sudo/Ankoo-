@@ -239,7 +239,9 @@ def list_episodes(
     total = db.execute(select(func.count()).select_from(base.subquery())).scalar_one()
     rows = db.execute(
         base.options(selectinload(Episode.channel), selectinload(Episode.transcript))
-        .order_by(Episode.published_at.desc())
+        # Ties (same publication date) are ordered newest-recorded first, then by ID, so pages
+        # never skip or repeat an episode.
+        .order_by(Episode.published_at.desc(), Episode.created_at.desc(), Episode.id)
         .limit(limit)
         .offset(offset)
     ).scalars()
