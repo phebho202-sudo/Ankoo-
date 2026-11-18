@@ -26,7 +26,6 @@
       "permissions": []
     },
     "web": {
-      "favicon": "./assets/favicon.png",
       "output": "static",
       "name": "Mojere Market",
       "shortName": "Mojere",
