@@ -1,5 +1,7 @@
 import { View } from 'react-native';
 
+import { SiteLinks } from '@/components/site-links';
+import { PageTitle } from '@/components/page-title';
 import { AppText, Notice, Screen } from '@/components/ui';
 import { BRAND } from '@/constants/brand';
 import { spacing } from '@/theme';
@@ -20,6 +22,7 @@ function Section({ title, children }: { title: string; children: string }) {
 export default function TermsScreen() {
   return (
     <Screen>
+      <PageTitle title="Terms" />
       <Notice tone="warning" title="Draft — pending legal review">
         <AppText variant="small">
           These terms are a plain-language draft for testing and will be finalised before public launch.
@@ -42,11 +45,12 @@ export default function TermsScreen() {
         {'We may remove listings, limit features or suspend accounts that break these rules or put others at risk.'}
       </Section>
       <Section title="Privacy">
-        {'We collect your name, email, general location, listings, messages and activity in the app to run the marketplace. Other users see your display name, general area, listings and reviews — never your email, phone number or exact address unless you choose to share them. Messages are visible only to the people in the conversation, and to staff when investigating a report. We do not sell your personal data. You can delete your account and data at any time in Profile → Delete my account. Records of payments are kept for accounting, without your name.'}
+        {'Our Privacy Policy (Profile → Privacy Policy) explains this in full. In short: we collect your name, email, general location, listings, messages and activity in the app to run the marketplace. Other users see your display name, general area, listings and reviews — never your email, phone number or exact address unless you choose to share them. Messages are visible only to the people in the conversation, and to staff when investigating a report. We do not sell your personal data. You can delete your account and data at any time in Profile → Delete my account. Records of payments are kept for accounting, without your name.'}
       </Section>
       <Section title="Contact">
         {`Questions, complaints or data requests: ${BRAND.supportEmail}`}
       </Section>
+      <SiteLinks />
     </Screen>
   );
 }

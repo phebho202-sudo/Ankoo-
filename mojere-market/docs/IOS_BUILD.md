@@ -23,8 +23,9 @@ Apple's site). Nothing else in this guide costs money.
 
 ## Step 1 — Before you pay Apple (free)
 
-1. **Privacy Policy web page.** Apple requires a public link. Have a lawyer review the text in
-   `src/app/terms.tsx`, then put it on a free web page (for example **Google Sites**). Copy the link.
+1. **Privacy Policy web page.** Apple requires a public link. Publish the Mojere Market website
+   (`docs/WEBSITE.md`); your policy is then at `https://<your-site>.expo.app/privacy` and your support page at
+   `/support`. Have a lawyer review the text first.
 2. **Support contact.** Create an email address for support (for example a new Gmail such as
    `mojeremarket.help@gmail.com`). Already done: the app shows mojeremarket.help@gmail.com; send your developer a new address if you change it, because Apple
    asks for a way to contact you.

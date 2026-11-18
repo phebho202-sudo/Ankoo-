@@ -119,7 +119,11 @@ export default function SignUpScreen() {
             <AppText variant="small">
               I accept the{' '}
               <Link href="/terms" style={{ color: colors.primary, fontWeight: '700' }}>
-                Terms and Privacy Policy
+                Terms
+              </Link>{' '}
+              and{' '}
+              <Link href="/privacy" style={{ color: colors.primary, fontWeight: '700' }}>
+                Privacy Policy
               </Link>
               , and I understand Mojere Market does not hold or protect payments between users.
             </AppText>

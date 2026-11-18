@@ -19,7 +19,7 @@ Nothing here happens automatically. Tick each item yourself. Items marked 💳 c
 ## 3. Legal and trust
 - [ ] Have a **Nigerian lawyer** review the Terms and Privacy text (`src/app/terms.tsx`), including the
       **Nigeria Data Protection Act 2023** requirements, and update the app.
-- [ ] Publish the Privacy Policy on a **public web page** (both app stores require a link).
+- [ ] Publish the website (`docs/WEBSITE.md`): Privacy Policy at `/privacy`, Support at `/support`, account deletion at `/delete-account` (both app stores require these links).
 - [ ] Set up a support email address and send it to your developer to show in the app (Apple and Google require a contact).
 - [ ] Try **Profile → Delete my account** with a test account (required by Apple and Google).
 - [ ] Read the community guidelines (`src/app/guidelines.tsx`) and adjust the prohibited-items list.

@@ -1,5 +1,8 @@
 # Mojere Market — Privacy Policy (DRAFT)
 
+> **Now built into the app and website:** the live text is in `src/app/privacy.tsx` (page `/privacy`).
+> No Google Sites page is needed. Keep this file only as a reference copy for your lawyer.
+
 > **Draft for lawyer review.** This text describes what the Mojere Market app actually does today.
 > It is not legal advice. Before you publish it, replace everything in [square brackets] and ask a
 > Nigerian lawyer to check it against the Nigeria Data Protection Act 2023 (NDPA). Update it whenever

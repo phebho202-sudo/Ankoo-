@@ -87,6 +87,9 @@ export default function RootLayout() {
               options={{ title: "Categories and settings" }}
             />
             <Stack.Screen name="admin/audit" options={{ title: "Audit log" }} />
+            <Stack.Screen name="about" options={{ title: "About Mojere Market" }} />
+            <Stack.Screen name="privacy" options={{ title: "Privacy Policy" }} />
+            <Stack.Screen name="support" options={{ title: "Help and support" }} />
             <Stack.Screen
               name="delete-account"
               options={{ title: "Delete account" }}

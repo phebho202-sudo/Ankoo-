@@ -1,7 +1,7 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { router } from 'expo-router';
 import { useMemo, useState } from 'react';
-import { ActivityIndicator, Alert, FlatList, Pressable, RefreshControl, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, FlatList, Pressable, RefreshControl, StyleSheet, View } from 'react-native';
 
 import { Chip } from '@/components/filter-sheet';
 import { ListingPhoto } from '@/components/listing-card';
@@ -13,6 +13,7 @@ import { formatNaira } from '@/lib/format';
 import { useListingAction, useMyListings, type MyListing } from '@/lib/selling';
 import { timeAgo } from '@/lib/time';
 import { colors, radius, spacing } from '@/theme';
+import { showAlert } from '@/lib/dialog';
 
 type Tab = 'live' | 'draft' | 'paused' | 'sold';
 const TABS: { value: Tab; label: string }[] = [
@@ -43,7 +44,7 @@ function Row({ l }: { l: MyListing }) {
   }
 
   function confirm(title: string, message: string, a: 'sold' | 'delete') {
-    Alert.alert(title, message, [
+    showAlert(title, message, [
       { text: 'Cancel', style: 'cancel' },
       { text: a === 'delete' ? 'Delete' : 'Mark as sold', style: a === 'delete' ? 'destructive' : 'default', onPress: () => void run(a) },
     ]);

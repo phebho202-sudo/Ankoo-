@@ -3,7 +3,7 @@ import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
-import { ActivityIndicator, Alert, View } from 'react-native';
+import { ActivityIndicator, View } from 'react-native';
 
 import { SelectField, TextField } from '@/components/form';
 import { AppText, Button, Card, Notice, Screen } from '@/components/ui';
@@ -28,6 +28,7 @@ import { useLocations } from '@/lib/profile';
 import { useCategories } from '@/lib/selling';
 import { businessSchema, type BusinessFormValues } from '@/lib/validation';
 import { colors, radius, spacing } from '@/theme';
+import { showAlert } from '@/lib/dialog';
 
 type Parsed = ReturnType<typeof businessSchema.parse>;
 
@@ -252,7 +253,7 @@ function PlanSection({ subscriptions }: { subscriptions: Subscription[] }) {
                 label={p.price_kobo === 0 ? 'Switch to free' : paymentsEnabled ? `Pay ${formatNaira(p.price_kobo)}` : 'Request this plan'}
                 kind="outline"
                 onPress={() =>
-                  Alert.alert(`Choose ${p.name}?`, p.price_kobo ? `${formatNaira(p.price_kobo)} per month.` : 'Paid features stop at once.', [
+                  showAlert(`Choose ${p.name}?`, p.price_kobo ? `${formatNaira(p.price_kobo)} per month.` : 'Paid features stop at once.', [
                     { text: 'Cancel', style: 'cancel' },
                     { text: 'Continue', onPress: () => void choose(p.code, p.price_kobo) },
                   ])

@@ -26,7 +26,13 @@
       "permissions": []
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "output": "static",
+      "name": "Mojere Market",
+      "shortName": "Mojere",
+      "themeColor": "#0F7A4A",
+      "backgroundColor": "#F6F5F1",
+      "bundler": "metro"
     },
     "plugins": [
       "expo-router",

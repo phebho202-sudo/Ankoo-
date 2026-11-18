@@ -1,14 +1,18 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { Alert, View } from 'react-native';
+import { View } from 'react-native';
 
 import { TextField } from '@/components/form';
 import { AppText, Button, Card, Notice, Screen } from '@/components/ui';
 import { BRAND } from '@/constants/brand';
+import { PageTitle } from '@/components/page-title';
+import { SiteLinks } from '@/components/site-links';
 import { DELETE_CONFIRM_WORD, deleteMyAccount } from '@/lib/account';
+import { contactSupport } from '@/lib/support';
 import { useAuth } from '@/lib/auth';
 import { spacing } from '@/theme';
+import { showAlert } from '@/lib/dialog';
 
 export default function DeleteAccountScreen() {
   const { session } = useAuth();
@@ -20,9 +24,37 @@ export default function DeleteAccountScreen() {
   if (!session) {
     return (
       <Screen>
-        <Notice title="You are not logged in">
-          <AppText variant="small">Log in to the account you want to delete.</AppText>
-        </Notice>
+        <PageTitle title="Delete your account" />
+        <AppText variant="heading">Delete your {BRAND.name} account</AppText>
+        <Card>
+          <AppText variant="title">Delete it yourself (fastest)</AppText>
+          <AppText variant="small">
+            1. Log in to {BRAND.name} with the account you want to delete.{'\n'}2. Go to Profile → Delete my account.{'\n'}3. Type
+            DELETE and confirm. Your account is deleted straight away.
+          </AppText>
+          <Button label="Log in" onPress={() => router.push('/auth/sign-in')} />
+        </Card>
+        <Card>
+          <AppText variant="title">Or ask us to delete it</AppText>
+          <AppText variant="small">
+            Email {BRAND.supportEmail} from the email address of your account, with the subject “Delete my account”. We will
+            delete it within 30 days and confirm by email.
+          </AppText>
+          <Button
+            label="Email a deletion request"
+            kind="outline"
+            onPress={() => void contactSupport('Delete my account')}
+          />
+        </Card>
+        <Card>
+          <AppText variant="title">What is deleted and what is kept</AppText>
+          <AppText variant="small">
+            Deleted: your profile, login, photos, listings, messages, offers, reviews, saved items, notifications and business
+            storefront. Kept: records of payments you made, for accounting and legal reasons, without your name or contact
+            details.
+          </AppText>
+        </Card>
+        <SiteLinks />
       </Screen>
     );
   }
@@ -35,7 +67,7 @@ export default function DeleteAccountScreen() {
     try {
       await deleteMyAccount(userId, word);
       queryClient.clear();
-      Alert.alert('Account deleted', `Your ${BRAND.name} account has been deleted.`);
+      showAlert('Account deleted', `Your ${BRAND.name} account has been deleted.`);
       router.replace('/');
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Could not delete your account. Please try again.');

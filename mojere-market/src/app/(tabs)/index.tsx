@@ -6,8 +6,10 @@ import { useQueryClient } from '@tanstack/react-query';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ListingCard } from '@/components/listing-card';
+import { PageTitle } from '@/components/page-title';
 import { Logo } from '@/components/logo';
 import { SetupNotice } from '@/components/setup-notice';
+import { SiteLinks } from '@/components/site-links';
 import { AppText, Button, Card } from '@/components/ui';
 import { BRAND } from '@/constants/brand';
 import { useListingStrip, type ListingSummary } from '@/lib/listings';
@@ -71,6 +73,7 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }} edges={['top', 'left', 'right']}>
+      <PageTitle />
       <ScrollView
         contentContainerStyle={{ padding: spacing.lg, gap: spacing.lg }}
         keyboardShouldPersistTaps="handled"
@@ -201,6 +204,7 @@ export default function HomeScreen() {
         <AppText variant="caption" style={{ textAlign: 'center' }}>
           {BRAND.secondaryTagline}
         </AppText>
+        <SiteLinks />
       </ScrollView>
     </SafeAreaView>
   );

@@ -1,18 +1,7 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { router, Stack, useLocalSearchParams } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
-import {
-  ActivityIndicator,
-  Alert,
-  FlatList,
-  KeyboardAvoidingView,
-  Modal,
-  Platform,
-  Pressable,
-  StyleSheet,
-  TextInput,
-  View,
-} from 'react-native';
+import { ActivityIndicator, FlatList, KeyboardAvoidingView, Modal, Platform, Pressable, StyleSheet, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { TextField } from '@/components/form';
@@ -45,6 +34,7 @@ import {
 } from '@/lib/offers';
 import { timeAgo } from '@/lib/time';
 import { colors, fontSize, MIN_TOUCH, radius, spacing } from '@/theme';
+import { showAlert } from '@/lib/dialog';
 
 /* ---------------- Offers panel ---------------- */
 
@@ -73,7 +63,7 @@ function OfferCard({ offer, me, onCounter }: { offer: Offer; me: string; onCount
   }
 
   function askAccept() {
-    Alert.alert(
+    showAlert(
       'Accept this offer?',
       `You agree to sell for ${formatNaira(offer.amount_kobo)}. The item will show as reserved. No money is taken by Mojere Market.`,
       [
@@ -128,7 +118,7 @@ function OfferCard({ offer, me, onCounter }: { offer: Offer; me: string; onCount
             <Button
               label={iAmBuyer ? 'I received the item' : 'I handed over the item and was paid'}
               onPress={() =>
-                Alert.alert('Confirm the handover?', 'Only confirm once the item and the money have really changed hands.', [
+                showAlert('Confirm the handover?', 'Only confirm once the item and the money have really changed hands.', [
                   { text: 'Not yet', style: 'cancel' },
                   { text: 'Confirm', onPress: () => void confirmHandover() },
                 ])
@@ -392,7 +382,7 @@ export default function ChatScreen() {
                 if (!otherId) return;
                 if (blocked) block.mutate({ userId: otherId, block: false });
                 else
-                  Alert.alert('Block this person?', 'They will not be able to message you or make offers on your items.', [
+                  showAlert('Block this person?', 'They will not be able to message you or make offers on your items.', [
                     { text: 'Cancel', style: 'cancel' },
                     { text: 'Block', style: 'destructive', onPress: () => block.mutate({ userId: otherId, block: true }) },
                   ]);

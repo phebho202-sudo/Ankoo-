@@ -1,6 +1,7 @@
 import { View } from 'react-native';
 
 import { AppText, Button, Card, Notice, Screen } from '@/components/ui';
+import { PageTitle } from '@/components/page-title';
 import { BRAND } from '@/constants/brand';
 import { contactSupport } from '@/lib/support';
 import { spacing } from '@/theme';
@@ -57,6 +58,7 @@ const SECTIONS: { title: string; points: string[] }[] = [
 export default function GuidelinesScreen() {
   return (
     <Screen>
+      <PageTitle title="Community guidelines" />
       <AppText muted>{BRAND.name} works because buyers and sellers in Ondo State can trust each other. Please follow these rules.</AppText>
       {SECTIONS.map((s) => (
         <Card key={s.title}>

@@ -6,6 +6,7 @@ import { ActivityIndicator, View } from 'react-native';
 
 import { Logo } from '@/components/logo';
 import { SetupNotice } from '@/components/setup-notice';
+import { SiteLinks } from '@/components/site-links';
 import { AppText, Button, Card, Notice, Screen } from '@/components/ui';
 import { BRAND } from '@/constants/brand';
 import { INITIAL_CATEGORIES } from '@/constants/catalog';
@@ -162,6 +163,7 @@ export default function ProfileScreen() {
         <Logo />
         <AppText variant="caption">{BRAND.region}</AppText>
       </View>
+      <SiteLinks />
     </Screen>
   );
 }
