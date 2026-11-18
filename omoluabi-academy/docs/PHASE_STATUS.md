@@ -11,7 +11,7 @@
 | 7. Video production | Complete in sample mode (2026-11-16). |
 | 8. Publishing | Complete in sample mode (2026-11-17). Platform apps and accounts pending. |
 | 9. Monetisation | Complete in sample mode (2026-11-17). Paystack account pending. |
-| 10. Deployment | **Complete (2026-11-17). Not yet deployed to a server: needs your server, domain and R2 bucket.** |
+| 10. Deployment | Complete. Approved 2026-11-18. Not yet deployed to a server: needs your server, domain and R2 bucket. |
 
 ---
 
