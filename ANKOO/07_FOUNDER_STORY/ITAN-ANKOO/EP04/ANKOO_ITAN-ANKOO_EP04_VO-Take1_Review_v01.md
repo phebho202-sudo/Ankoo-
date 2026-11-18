@@ -22,3 +22,10 @@
 | 20–22 | ✅ | "…aṣọ ìbílẹ̀ **ní** Nàìjíríà ga" (small addition, fine) |
 | 23 | ✅ edit | Small stumble ("tí àwọn,") will be cut |
 | 24–25 | ❌ re-record | Several restarts; the final words differ from the script ("láti rí nǹkan, ohun kan ni láti kọ́ ìtàn mìíràn nìyẹn"). The closing teaser is the most important line, so a clean re-record is recommended |
+
+## Take 2: lines 24–25 re-record (18 Nov 2026)
+- **File:** "New Recording 5.m4a" (0:40). Five takes, clean audio (−25 LUFS, peak −5.6 dBFS).
+- All five takes say "Ṣùgbọ́n láti rí **ìran** kan, ohun kan ni" correctly (the one false start at 29.7 s is not used).
+- **Selected:** take 3 (16.3–21.9 s), with the most deliberate pacing: "Ṣùgbọ́n láti rí ìran kan, … ohun kan ni, … láti kọ́ (ọ) ìtàn mìíràn nìyẹn."
+- **Backup:** take 1 (2.7–8.0 s).
+- Line 25 is resolved. Line 24 is resolved.
