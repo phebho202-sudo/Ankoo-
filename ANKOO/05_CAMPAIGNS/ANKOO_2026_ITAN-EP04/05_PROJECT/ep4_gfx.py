@@ -1,6 +1,6 @@
 import sys, json
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
-S=sys.argv[1]; VOJ=sys.argv[2]; LOGO=sys.argv[3]; B=f"{S}/build_ep4"
+S=sys.argv[1]; VOJ=sys.argv[2]; LOGO=sys.argv[3]; B=sys.argv[4] if len(sys.argv)>4 else f"{S}/build_ep4"
 import os; os.makedirs(B,exist_ok=True)
 IV=(242,235,221,255)
 INTER="/usr/share/fonts/opentype/inter/Inter-Light.otf"; INTERM="/usr/share/fonts/opentype/inter/Inter-Medium.otf"
@@ -52,7 +52,7 @@ for k,txt in EN.items():
     a,b=L[k]; parts=txt if isinstance(txt,list) else [txt]
     n=len(parts); seg=(b-a)/n
     for i,p in enumerate(parts): ev.append((a+i*seg-0.1,a+(i+1)*seg+0.25,p))
-a,b=L[24]; ev.append((a-0.1,a+2.9,"But seeing a vision is one thing.")); ev.append((a+3.75,b+0.3,"Building it… that is another story."))
+a,b=L[24]; m=a+0.47*(b-a); ev.append((a-0.1,m,"But seeing a vision is one thing.")); ev.append((m+0.3,b+0.3,"Building it… that is another story."))
 ev.sort()
 ev=[(a,min(b,ev[i+1][0]-0.02) if i+1<len(ev) else b,t) for i,(a,b,t) in enumerate(ev)]
 hdr="""[Script Info]

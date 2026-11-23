@@ -7,3 +7,9 @@
 - **Music:** original score composed for this episode (`score_ep4.py`), ducked under the narration. **Mix:** −14.4 LUFS.
 - **Grade:** HLG→SDR (mobius), yellow wall desaturated, warm highlights, cool shadows, vignette. Same as the Perfect Fit film.
 - **Length:** 2:04.
+
+## v02 (23 Nov 2026)
+- **Narration:** founder's new recording (take 3), aligned to the 25 lines by timing (`vo_align.py`), with storytelling pauses and a clarity/levelling chain. No automatic transcription was done (the voice was kept in-session), so the founder should check the subtitle alignment.
+- **Music:** original Yoruba-rhythm score (`score_yoruba.py`): agogo 12/8 bell, shekere, low drum, and gangan phrases in the narration gaps; the talking drum says À-NKÓ-Ò at the logo.
+- **Shots:** same 38 shots, re-timed per section to the new narration (`seg_ep4_v2.json`). Static mural shots are slowed by 5–6% where the source was short.
+- **Length:** 2:09.5; −14.0 LUFS.

@@ -1,0 +1,41 @@
+[Script Info]
+ScriptType: v4.00+
+PlayResX: 1080
+PlayResY: 1920
+WrapStyle: 0
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Sub,Inter Medium,44,&H00DDEBF2,&H00DDEBF2,&H70060606,&H00000000,0,0,0,0,100,100,0.5,0,1,3,0,2,110,110,450,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:00.70,0:00:02.33,Sub,,0,0,0,,{\blur6\fad(180,180)}What exactly did I see?
+Dialogue: 0,0:00:03.38,0:00:07.00,Sub,,0,0,0,,{\blur6\fad(180,180)}In the last episode, I told you I saw an opportunity.
+Dialogue: 0,0:00:07.35,0:00:10.41,Sub,,0,0,0,,{\blur6\fad(180,180)}Today, let me tell you what I saw.
+Dialogue: 0,0:00:10.66,0:00:13.64,Sub,,0,0,0,,{\blur6\fad(180,180)}You know that we Nigerians love to dress well.
+Dialogue: 0,0:00:14.29,0:00:19.33,Sub,,0,0,0,,{\blur6\fad(180,180)}At weddings, at introductions, at birthdays… every occasion that matters to us.
+Dialogue: 0,0:00:19.58,0:00:23.28,Sub,,0,0,0,,{\blur6\fad(180,180)}And wearing matching outfits together is part of our culture.
+Dialogue: 0,0:00:24.03,0:00:26.70,Sub,,0,0,0,,{\blur6\fad(180,180)}But I saw that we could still do it much better.
+Dialogue: 0,0:00:26.80,0:00:30.76,Sub,,0,0,0,,{\blur6\fad(180,180)}How it is designed, how it is made,
+Dialogue: 0,0:00:30.78,0:00:35.10,Sub,,0,0,0,,{\blur6\fad(180,180)}how it is presented, and how people see it.
+Dialogue: 0,0:00:35.65,0:00:38.98,Sub,,0,0,0,,{\blur6\fad(180,180)}I wanted to be part of changing that.
+Dialogue: 0,0:00:39.23,0:00:43.97,Sub,,0,0,0,,{\blur6\fad(180,180)}I wanted to build a fashion house that would give our traditional fashion
+Dialogue: 0,0:00:43.99,0:00:48.73,Sub,,0,0,0,,{\blur6\fad(180,180)}greater sophistication, proper structure, creativity…
+Dialogue: 0,0:00:48.75,0:00:53.86,Sub,,0,0,0,,{\blur6\fad(180,180)}and a refined luxury experience.
+Dialogue: 0,0:00:55.51,0:00:59.34,Sub,,0,0,0,,{\blur6\fad(180,180)}For the name, I wanted something with real meaning in our culture.
+Dialogue: 0,0:00:59.89,0:01:03.33,Sub,,0,0,0,,{\blur6\fad(180,180)}We all know this saying: “E ja se Ankoo.”
+Dialogue: 0,0:01:03.88,0:01:09.58,Sub,,0,0,0,,{\blur6\fad(180,180)}It means coming together and wearing matching outfits.
+Dialogue: 0,0:01:10.43,0:01:11.99,Sub,,0,0,0,,{\blur6\fad(180,180)}It is unity.
+Dialogue: 0,0:01:12.44,0:01:15.74,Sub,,0,0,0,,{\blur6\fad(180,180)}It is togetherness.
+Dialogue: 0,0:01:16.19,0:01:18.01,Sub,,0,0,0,,{\blur6\fad(180,180)}It shows who we are.
+Dialogue: 0,0:01:18.11,0:01:22.69,Sub,,0,0,0,,{\blur6\fad(180,180)}And it shows that we belong to one another.
+Dialogue: 0,0:01:23.34,0:01:26.35,Sub,,0,0,0,,{\blur6\fad(180,180)}That is why I named it ANKOO.
+Dialogue: 0,0:01:28.20,0:01:33.80,Sub,,0,0,0,,{\blur6\fad(180,180)}But my vision went beyond simply making traditional clothes.
+Dialogue: 0,0:01:34.15,0:01:37.42,Sub,,0,0,0,,{\blur6\fad(180,180)}I wanted to elevate Nigerian traditional fashion.
+Dialogue: 0,0:01:37.77,0:01:42.87,Sub,,0,0,0,,{\blur6\fad(180,180)}I wanted us to celebrate who we are, with pride.
+Dialogue: 0,0:01:42.97,0:01:46.38,Sub,,0,0,0,,{\blur6\fad(180,180)}And to present it the way it deserves, with sophistication and respect.
+Dialogue: 0,0:01:47.03,0:01:50.93,Sub,,0,0,0,,{\blur6\fad(180,180)}I want ANKOO to become a recognised
+Dialogue: 0,0:01:50.95,0:01:55.23,Sub,,0,0,0,,{\blur6\fad(180,180)}contemporary African luxury menswear and lifestyle house.
+Dialogue: 0,0:01:56.88,0:01:59.37,Sub,,0,0,0,,{\blur6\fad(180,180)}But seeing a vision is one thing.
+Dialogue: 0,0:01:59.67,0:02:02.37,Sub,,0,0,0,,{\blur6\fad(180,180)}Building it… that is another story.
