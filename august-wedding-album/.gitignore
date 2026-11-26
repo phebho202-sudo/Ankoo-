@@ -1,3 +1,4 @@
 output/
 album/
 INDEX.md
+__pycache__/
