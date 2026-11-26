@@ -12,7 +12,7 @@
 2. **There is no past ad performance to learn from yet.** The budgets below are opening test budgets. They are not forecasts.
 3. **The media is stronger for weddings than for collections.** The best assets are the September 2026 wedding (ivory satin groom's tuxedo, groomsmen in white, a black-and-white tailoring detail) and the ANKOO studio mural. I found **no** clean Agbada/Kaftan product photography, founder videos or ÌTÀN ÀNKÓÒ episodes in the connected Drive.
 4. **Timing matters.** It is late November. Diaspora clients are arriving for December, and the next wedding wave (January to April "white weddings" and introductions) is booking now. The first campaign should sell **private consultations for upcoming weddings and occasions over WhatsApp**. It should not chase likes.
-5. **Recommended start:** Starter budget, **₦15,000/day (₦450,000 for 30 days)**, across three campaigns: C (Wedding & Occasion → WhatsApp), B (Craftsmanship, video audience builder) and E (Retargeting from day 8). Stay Nigeria-only for the first 30 days, led by Lagos, with Akure, Abuja, Ibadan and Port Harcourt behind it. Run a UK diaspora test only after the Nigerian funnel works.
+5. **Approved working budget:** **₦10,000/day (₦300,000 for 30 days)**, ad spend only. See section 7.0. It is concentrated on two cities, Lagos and Akure/Ondo/Ekiti, across three campaigns: C (Wedding & Occasion → WhatsApp), B (Craftsmanship, video audience builder) and E (Retargeting from day 8). Abuja, Ibadan, Port Harcourt and the UK diaspora come in month 2 if the results justify it.
 
 ---
 
@@ -24,8 +24,8 @@
 | Facebook Page | Unknown | Needs the Meta connection |
 | Instagram account | Unknown | Needs the Meta connection |
 | Ad account status, spend limit, payment method | Unknown | Needs the Meta connection |
-| Pixel / Conversions API / domain verification | Unknown | Needs the Meta connection. Also: **no ANKOO website was found**. Without a site, a Pixel is not needed for the first phase. |
-| WhatsApp Business | Unknown | Needs the Meta connection. The WhatsApp number must be linked to the Facebook Page before click-to-WhatsApp ads can run. |
+| Pixel / Conversions API / domain verification | Unknown | ANKOO supplied **ankoo.ng**. This session's network could not reach ankoo.ng or Instagram, so I could not check whether it is a live website or the Instagram handle, or whether a Pixel is installed. |
+| WhatsApp Business | Number supplied by ANKOO: **+234 816 545 2482** (08165452482). Link to the Page **not yet verified**. | It must be a WhatsApp Business account linked to the Facebook Page before click-to-WhatsApp ads can run. |
 | Existing campaigns / audiences | Unknown | Needs the Meta connection |
 | Google Drive media | **Connected and audited** | About 130 photos and videos reviewed. See section 3. |
 | Canva | Connected | No ANKOO brand kit. One unrelated grey/black moodboard. |
@@ -150,14 +150,14 @@ Interest names change. I will confirm each one exists using Meta's targeting sea
 
 ## 6. Ad copy: five variations
 
-House rules: no prices, no delivery promises, no invented testimonials, no discounts. "Bespoke" and "private consultation" are used only because ANKOO offers them. **Replace `[WhatsApp]` with the confirmed number.**
+House rules: no prices, no delivery promises, no invented testimonials, no discounts. "Bespoke" and "private consultation" are used only because ANKOO offers them. WhatsApp destination: **+234 816 545 2482**.
 
 ### V1: Groom / Wedding (Campaign C, creative A2)
 - **Primary text:** Some days you only get once. Your wedding is one of them. ANKOO creates bespoke groom's wear, from Agbada to tailored tuxedos, cut to your measurements and finished by hand. Begin with a private consultation.
 - **Headline:** Bespoke menswear for the moment that defines you
 - **Description:** Private consultations in Akure & Lagos
 - **CTA:** Send WhatsApp Message
-- **Destination:** Click-to-WhatsApp, `[WhatsApp]`
+- **Destination:** Click-to-WhatsApp, +234 816 545 2482
 - **Format:** Single image 4:5 (feed) plus a 9:16 Stories crop
 
 ### V2: Groom & groomsmen (Campaign C, creative A4)
@@ -194,6 +194,26 @@ Each campaign tests 2–3 variants. Once an ad has about 2,000 impressions, I'll
 ## 7. Three 30-day budget options (₦, ad spend only)
 
 All figures are **ad spend only**. They exclude management fees, production, photography and Meta's **7.5% VAT**, which is added on top for Nigerian billing. Meta may underspend or slightly overspend on a given day, but the campaign total will not exceed the approved budget. **No reach, enquiry, sales or ROAS outcome is guaranteed.** The KPIs are benchmarks to measure against, set from the first 7 days of real data.
+
+### 7.0 Approved working budget: ₦10,000/day (₦300,000 / 30 days)
+
+ANKOO set the budget at **₦10,000** per day. If you meant ₦10,000 for the *whole month*, tell me before launch: that is too little for three campaigns, and I would run one WhatsApp ad set in Lagos only.
+
+At this level, spreading thin across five cities would starve every ad set of data, so the plan is concentrated:
+
+| Campaign | Ad set | Daily | 30-day |
+|---|---|---|---|
+| C Wedding & Occasion → WhatsApp | C1 Lagos | ₦3,500 | ₦105,000 |
+| | C2 Akure + Ondo/Ekiti | ₦2,500 | ₦75,000 |
+| B Craftsmanship → ThruPlay | B1 Lagos + Akure + Ibadan + Abuja | ₦2,000 | ₦60,000 |
+| E Retargeting → WhatsApp | E1 video viewers + engagers, 30 days | ₦2,000 from day 8 (days 1–7 go to C1) | ₦60,000 |
+| **Total** | | **₦10,000** | **₦300,000** |
+
+Plus Meta's 7.5% VAT (about ₦22,500 over 30 days). The spend limit on the ad account will be set to ₦300,000, so this total cannot be exceeded.
+
+**Day-14 review rule:** if one city's cost per *qualified* conversation is less than half the other's, move ₦1,000/day to the stronger one. That is a reallocation within the ₦10,000, not an increase. Abuja, Ibadan and Port Harcourt get their own ad sets only with a budget increase, which comes to you first.
+
+**What this budget realistically buys:** enough to learn which creative and city start real WhatsApp conversations, and to begin building a retargeting pool. It is a test, not a scale budget. No number of enquiries or sales is promised.
 
 ### Option 1: Starter (recommended to begin)
 - **Daily:** ₦15,000 | **30-day total:** ₦450,000
