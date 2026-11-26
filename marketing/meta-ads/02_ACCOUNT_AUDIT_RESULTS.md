@@ -107,3 +107,20 @@ The Page used for now is "Felix Boluwaji E" (1520324057824670), as a stand-in un
 2. **B1 ads.** ThruPlay needs **video**. The Drive videos exceed the 10 MB download limit. Fix: export 15–30 s vertical clips under 10 MB, or upload them directly to Ads Manager's media library.
 3. **E1 retargeting ad set.** Needs video-viewer and engager audiences, which can't exist until B and C have run for about a week.
 4. **Account spend limit (₦300,000).** Not settable through this connection. Set it in Ads Manager → Billing & payments → Account spending limit.
+
+## 6. Creative assets in the Meta media library (26 Nov 2026)
+
+ANKOO confirmed that the garments are ANKOO-made, that the couple, groomsmen and photographers consent to paid-ad use, and that ARCON is handled.
+All images were cropped only (no edits, no distortion), uploaded as **advertiser-supplied** (not AI-generated), and are reusable by any Page.
+
+| Asset | Use | Size | Image hash |
+|---|---|---|---|
+| A2 Groom, ivory tuxedo | V1 hero, wedding | 1080×1350 | d5128ef28dca046b11bc38dec771d58b |
+| A3 Tailoring detail (B&W) | V3 craftsmanship | 1080×1350 | 1a2aa645fe6e70f4e34287213445e4e4 |
+| A4 Groom + groomsmen | V2 groom & his men | 1080×1350 | 96514d5be8beb8ea0515259774536fc1 |
+| A5 Couple (B&W) | V5 retargeting / carousel | 1080×1350 | 12c919da40b44e0f9c92028b26facf8b |
+| A7 Groom portrait | Carousel card | 1080×1350 | 04ee3ea6b9eee139c17ceb774bd64cde |
+| A1 Studio mural | V4 heritage, feed | 1080×1350 | 1cd31a72e86c0b25308005add454a816 |
+| A1 Studio mural | V4 heritage, Stories/Reels | 1080×1920 | ecf6a6b49509750c4a16a627804bab8a |
+
+**Ads not yet created on purpose:** an ad is tied to a Page. Ads made on the stand-in Page would need rebuilding on ANKOO, and WhatsApp ads are refused until a Page has WhatsApp linked. They will be created once the ANKOO Page (with WhatsApp) is visible to the connection.
