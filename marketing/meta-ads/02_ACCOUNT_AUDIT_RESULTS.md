@@ -89,3 +89,21 @@ Lagos State + Akure (+40 km), ages 25–50, interests: Bespoke tailoring, Suit, 
 
 **E1 Retargeting → WhatsApp, ₦2,000/day from day 8**
 Video viewers (ThruPlay) and Page/IG engagers, last 30 days. Excludes people who messaged in the last 7 days. These audiences are created after B1 has run for about 7 days.
+
+## 5. Draft build status (Stage 3), 26 Nov 2026
+
+Everything below is **PAUSED**. Nothing has spent money.
+The Page used for now is "Felix Boluwaji E" (1520324057824670), as a stand-in until the ANKOO Page is visible to the connection.
+
+| Level | Name | ID | Status |
+|---|---|---|---|
+| Campaign | ANK_C_Wedding_WA_NG_2026-12 (Engagement) | 120254661186600606 | PAUSED. No ad sets yet. |
+| Campaign | ANK_B_Craft_ThruPlay_NG_2026-12 (Awareness) | 120254661193330606 | PAUSED |
+| Ad set | B1_Lagos-Akure-Ibadan-Abuja_25-50_Craft, ₦2,000/day, ThruPlay | 120254661216060606 | PAUSED. No ads yet. |
+| Campaign | ANK_E_Retarget_WA_NG_2026-12 (Engagement) | 120254661194250606 | PAUSED. No ad sets yet. |
+
+### Blocked items
+1. **C1 Lagos and C2 Akure WhatsApp ad sets.** Meta refused them: *"Page with WhatsApp Business account required. Your Page is not linked to a WhatsApp account."* Fix: link WhatsApp +234 816 545 2482 to the **ANKOO** Page, and make the ANKOO Page visible to the connection (re-login, selecting ANKOO).
+2. **B1 ads.** ThruPlay needs **video**. The Drive videos exceed the 10 MB download limit. Fix: export 15–30 s vertical clips under 10 MB, or upload them directly to Ads Manager's media library.
+3. **E1 retargeting ad set.** Needs video-viewer and engager audiences, which can't exist until B and C have run for about a week.
+4. **Account spend limit (₦300,000).** Not settable through this connection. Set it in Ads Manager → Billing & payments → Account spending limit.
