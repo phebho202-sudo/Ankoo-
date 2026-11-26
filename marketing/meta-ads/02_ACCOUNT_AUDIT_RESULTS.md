@@ -124,3 +124,28 @@ All images were cropped only (no edits, no distortion), uploaded as **advertiser
 | A1 Studio mural | V4 heritage, Stories/Reels | 1080×1920 | ecf6a6b49509750c4a16a627804bab8a |
 
 **Ads not yet created on purpose:** an ad is tied to a Page. Ads made on the stand-in Page would need rebuilding on ANKOO, and WhatsApp ads are refused until a Page has WhatsApp linked. They will be created once the ANKOO Page (with WhatsApp) is visible to the connection.
+
+## 7. Build progress update (26 Nov 2026, evening)
+
+WhatsApp +234 816 545 2482 was linked through the WhatsApp Business app. Meta accepted WhatsApp ad sets on the **"Felix Boluwaji E" Page (1520324057824670)**, so the number is linked to that Page. The ANKOO Page still does not appear in the connection's Page list.
+
+### Ad sets (all PAUSED)
+| Ad set | ID | Budget | Destination |
+|---|---|---|---|
+| C1_Lagos_25-50_WeddingInt | 120254661609140606 | ₦3,500/day | WhatsApp |
+| C2_Akure-40km_25-50_WeddingInt | 120254661611230606 | ₦2,500/day | WhatsApp |
+| B1_Lagos-Akure-Ibadan-Abuja_25-50_Craft | 120254661216060606 | ₦2,000/day | ThruPlay (needs video) |
+
+### Creatives (WhatsApp button; Meta image touch-ups, uncrop, AI backgrounds, animation and templates all OPTED OUT)
+| Creative | ID | Image |
+|---|---|---|
+| ANK_V1_Groom_Ivory_WA | 1182374304349508 | A2 |
+| ANK_V2_Groomsmen_WA | 1224352436824000 | A4 |
+| ANK_V3_Craft_Detail_WA | 2669719346822381 | A3 |
+| ANK_V4_Heritage_Mural_WA | 1836644397532660 | A1 4:5 |
+
+### Blocker: no payment method
+Creating the six ads (V1, V2, V4 in each of C1 and C2) was refused by Meta: *"No payment method. Visit the billing and payment centre to add a valid payment method."* ANKOO must add a payment method in Ads Manager → Billing & payments. Ads will then be created PAUSED.
+
+### Page naming
+Ads display the Page's name. If "Felix Boluwaji E" is renamed to "ANKOO" (Page → Settings → Page name), every ad above shows as ANKOO with no rebuild.
